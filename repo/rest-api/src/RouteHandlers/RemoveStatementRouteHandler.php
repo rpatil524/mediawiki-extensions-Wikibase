@@ -18,6 +18,7 @@ use Wikibase\Repo\RestApi\RouteHandlers\Middleware\AuthenticationMiddleware;
 use Wikibase\Repo\RestApi\RouteHandlers\Middleware\BotRightCheckMiddleware;
 use Wikibase\Repo\RestApi\RouteHandlers\Middleware\MiddlewareHandler;
 use Wikibase\Repo\RestApi\RouteHandlers\Middleware\RequestPreconditionCheck;
+use Wikibase\Repo\RestApi\RouteHandlers\Middleware\TempUserCreationResponseHeaderMiddleware;
 use Wikibase\Repo\RestApi\RouteHandlers\Middleware\UserAgentCheckMiddleware;
 use Wikibase\Repo\RestApi\WbRestApi;
 use Wikimedia\ParamValidator\ParamValidator;
@@ -59,7 +60,7 @@ class RemoveStatementRouteHandler extends SimpleHandler {
 			new MiddlewareHandler( [
 				WbRestApi::getUnexpectedErrorHandlerMiddleware(),
 				new UserAgentCheckMiddleware(),
-				new AuthenticationMiddleware(),
+				new AuthenticationMiddleware( MediaWikiServices::getInstance()->getUserIdentityUtils() ),
 				new BotRightCheckMiddleware( MediaWikiServices::getInstance()->getPermissionManager(), $responseFactory ),
 				WbRestApi::getPreconditionMiddlewareFactory()->newPreconditionMiddleware(
 					fn( RequestInterface $request ): string => RequestPreconditionCheck::getSubjectIdPrefixFromStatementId(
@@ -69,6 +70,7 @@ class RemoveStatementRouteHandler extends SimpleHandler {
 				WbRestApi::getStatementRedirectMiddlewareFactory()->newStatementRedirectMiddleware(
 					self::STATEMENT_ID_PATH_PARAM
 				),
+				new TempUserCreationResponseHeaderMiddleware(),
 			] )
 		);
 	}
