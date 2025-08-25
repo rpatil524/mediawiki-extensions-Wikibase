@@ -4,11 +4,13 @@ namespace Wikibase\Client\Tests\Unit\Hooks;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\FileRepo\File\File;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Title\Title;
+use MediaWiki\Utils\UrlUtils;
 use Wikibase\Client\Hooks\LinkedDataSchemaGenerator;
 use Wikibase\Client\RepoLinker;
 use Wikibase\DataModel\Entity\EntityIdParser;
@@ -59,6 +61,7 @@ class LinkedDataSchemaGeneratorTest extends \PHPUnit\Framework\TestCase {
 		$mockRevisionLookup = $this->createMockRevisionLookup();
 		$generator = new LinkedDataSchemaGenerator(
 			$mockRevisionLookup,
+			$this->createMock( UrlUtils::class ),
 			$this->createMock( EntityIdParser::class ),
 			$repoLinker,
 			[],
@@ -89,6 +92,7 @@ class LinkedDataSchemaGeneratorTest extends \PHPUnit\Framework\TestCase {
 		$mockRevisionLookup = $this->createMockRevisionLookup();
 		$generator = new LinkedDataSchemaGenerator(
 			$mockRevisionLookup,
+			$this->createMock( UrlUtils::class ),
 			$this->createMock( EntityIdParser::class ),
 			$repoLinker,
 			[],
@@ -117,6 +121,7 @@ class LinkedDataSchemaGeneratorTest extends \PHPUnit\Framework\TestCase {
 		$repoLinker = $this->stubRepoLinker();
 		$generator = new LinkedDataSchemaGenerator(
 			$this->createMockRevisionLookup(),
+			MediaWikiServices::getInstance()->getUrlUtils(),
 			$this->createMock( EntityIdParser::class ),
 			$repoLinker,
 			[],
@@ -240,6 +245,7 @@ class LinkedDataSchemaGeneratorTest extends \PHPUnit\Framework\TestCase {
 
 		$handler = new LinkedDataSchemaGenerator(
 			$this->createMock( RevisionLookup::class ),
+			$this->createMock( UrlUtils::class ),
 			$this->createMock( EntityIdParser::class ),
 			$this->createMock( RepoLinker::class ),
 			[],
