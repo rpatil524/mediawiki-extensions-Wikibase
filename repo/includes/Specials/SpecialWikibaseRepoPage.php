@@ -55,7 +55,6 @@ abstract class SpecialWikibaseRepoPage extends SpecialWikibasePage {
 
 	/**
 	 * @param string $title The title of the special page
-	 * @param string $restriction The required user right
 	 * @param string[] $tags List of tags to add to edits
 	 * @param SpecialPageCopyrightView $copyrightView
 	 * @param SummaryFormatter $summaryFormatter
@@ -64,14 +63,13 @@ abstract class SpecialWikibaseRepoPage extends SpecialWikibasePage {
 	 */
 	public function __construct(
 		$title,
-		$restriction,
 		array $tags,
 		SpecialPageCopyrightView $copyrightView,
 		SummaryFormatter $summaryFormatter,
 		EntityTitleLookup $entityTitleLookup,
 		MediaWikiEditEntityFactory $editEntityFactory
 	) {
-		parent::__construct( $title, $restriction );
+		parent::__construct( $title );
 		$this->tags = $tags;
 		$this->copyrightView = $copyrightView;
 		$this->summaryFormatter = $summaryFormatter;

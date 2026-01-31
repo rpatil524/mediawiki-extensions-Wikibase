@@ -39,7 +39,6 @@ abstract class SpecialNewEntity extends SpecialWikibaseRepoPage {
 
 	/**
 	 * @param string $name Name of the special page, as seen in links and URLs.
-	 * @param string $restriction User right required,
 	 * @param string[] $tags List of tags to add to edits
 	 * @param SpecialPageCopyrightView $copyrightView
 	 * @param EntityNamespaceLookup $entityNamespaceLookup
@@ -50,7 +49,6 @@ abstract class SpecialNewEntity extends SpecialWikibaseRepoPage {
 	 */
 	public function __construct(
 		$name,
-		$restriction,
 		array $tags,
 		SpecialPageCopyrightView $copyrightView,
 		EntityNamespaceLookup $entityNamespaceLookup,
@@ -61,7 +59,6 @@ abstract class SpecialNewEntity extends SpecialWikibaseRepoPage {
 	) {
 		parent::__construct(
 			$name,
-			$restriction,
 			$tags,
 			$copyrightView,
 			$summaryFormatter,
