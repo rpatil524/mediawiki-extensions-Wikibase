@@ -225,4 +225,13 @@ describe( 'Wikibase GraphQL', () => {
 			response.body
 		);
 	} );
+
+	it( 'throws an error when query is missing', async () => {
+		const response = await queryGraphQL( '' );
+
+		assert.deepEqual(
+			{ errors: [ { message: "The 'query' field is required and must not be empty" } ] },
+			response.body
+		);
+	} );
 } );
