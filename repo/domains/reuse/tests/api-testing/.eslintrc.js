@@ -3,7 +3,8 @@
 /* eslint-disable quotes */
 module.exports = {
 	extends: [
-		"wikimedia/mocha"
+		"wikimedia/mocha",
+		"wikimedia/node"
 	],
 	rules: {
 		camelcase: "off",

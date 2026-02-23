@@ -159,7 +159,12 @@ describe( 'Wikibase GraphQL', () => {
 		);
 	} );
 
-	it( 'property value pair match with searchItems', async () => {
+	it( 'property value pair match with searchItems', async function () {
+		// Skip search tests in CI if OpenSearch is not available
+		if ( process.env.QUIBBLE_OPENSEARCH && process.env.QUIBBLE_OPENSEARCH !== 'true' ) {
+			this.skip();
+		}
+
 		const response = await queryGraphQL( `
 			{
 				searchItems(
