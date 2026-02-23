@@ -4,11 +4,12 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Client\Hooks;
 
+use MediaWiki\CommentFormatter\CommentFormatter;
 use MediaWiki\Hook\EnhancedChangesListModifyBlockLineDataHook;
 use MediaWiki\Hook\EnhancedChangesListModifyLineDataHook;
 use MediaWiki\Hook\OldChangesListRecentChangesLineHook;
 use MediaWiki\Language\Language;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\RecentChanges\EnhancedChangesList;
 use MediaWiki\RecentChanges\OldChangesList;
 use MediaWiki\RecentChanges\RecentChange;
@@ -50,7 +51,9 @@ class ChangesListLinesHandler implements
 	}
 
 	public static function factory(
+		CommentFormatter $commentFormatter,
 		Language $contentLanguage,
+		LinkRenderer $linkRenderer,
 		UserNameUtils $userNameUtils,
 		EntityIdParser $entityIdParser,
 		RepoLinker $repoLinker,
@@ -64,8 +67,8 @@ class ChangesListLinesHandler implements
 		$formatter = new ChangeLineFormatter(
 			$repoLinker,
 			$userNameUtils,
-			MediaWikiServices::getInstance()->getLinkRenderer(),
-			MediaWikiServices::getInstance()->getCommentFormatter()
+			$linkRenderer,
+			$commentFormatter
 		);
 
 		return new self( $changeFactory, $formatter );
