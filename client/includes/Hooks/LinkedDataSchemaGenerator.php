@@ -7,10 +7,10 @@ namespace Wikibase\Client\Hooks;
 use MediaWiki\FileRepo\File\File;
 use MediaWiki\Hook\SkinAfterBottomScriptsHook;
 use MediaWiki\Html\Html;
-use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\OutputPageParserOutputHook;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Title\Title;
+use MediaWiki\Utils\UrlUtils;
 use PageImages\PageImages;
 use Skin;
 use Wikibase\Client\RepoLinker;
@@ -27,6 +27,7 @@ use Wikimedia\Timestamp\TimestampFormat as TS;
 class LinkedDataSchemaGenerator implements OutputPageParserOutputHook, SkinAfterBottomScriptsHook {
 
 	private RevisionLookup $revisionLookup;
+	private UrlUtils $urlUtils;
 	private EntityIdParser $entityIdParser;
 	private RepoLinker $repoLinker;
 
@@ -36,12 +37,14 @@ class LinkedDataSchemaGenerator implements OutputPageParserOutputHook, SkinAfter
 
 	public function __construct(
 		RevisionLookup $revisionLookup,
+		UrlUtils $urlUtils,
 		EntityIdParser $entityIdParser,
 		RepoLinker $repoLinker,
 		array $pageSchemaNamespaces,
 		?PageImages $pageImages
 	) {
 		$this->revisionLookup = $revisionLookup;
+		$this->urlUtils = $urlUtils;
 		$this->entityIdParser = $entityIdParser;
 		$this->repoLinker = $repoLinker;
 		$this->pageSchemaNamespaces = $pageSchemaNamespaces;
@@ -50,6 +53,7 @@ class LinkedDataSchemaGenerator implements OutputPageParserOutputHook, SkinAfter
 
 	public static function factory(
 		RevisionLookup $revisionLookup,
+		UrlUtils $urlUtils,
 		EntityIdParser $entityIdParser,
 		RepoLinker $repoLinker,
 		SettingsArray $settings,
@@ -57,6 +61,7 @@ class LinkedDataSchemaGenerator implements OutputPageParserOutputHook, SkinAfter
 	): self {
 		return new self(
 			$revisionLookup,
+			$urlUtils,
 			$entityIdParser,
 			$repoLinker,
 			$settings->getSetting( 'pageSchemaNamespaces' ),
@@ -133,8 +138,7 @@ class LinkedDataSchemaGenerator implements OutputPageParserOutputHook, SkinAfter
 		}
 
 		if ( $imageFile ) {
-			$schema['image'] = MediaWikiServices::getInstance()->getUrlUtils()
-				->expand( $imageFile->getUrl(), PROTO_CANONICAL );
+			$schema['image'] = $this->urlUtils->expand( $imageFile->getUrl(), PROTO_CANONICAL );
 		}
 
 		if ( $description ) {

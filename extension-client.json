@@ -227,6 +227,7 @@
 			"factory": "\\Wikibase\\Client\\Hooks\\LinkedDataSchemaGenerator::factory",
 			"services": [
 				"RevisionLookup",
+				"UrlUtils",
 				"WikibaseClient.EntityIdParser",
 				"WikibaseClient.RepoLinker",
 				"WikibaseClient.Settings"
