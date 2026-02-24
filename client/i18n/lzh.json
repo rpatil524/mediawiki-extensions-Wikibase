@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Davidzdh",
+			"Dream Star.cn",
 			"Itsmine",
 			"SolidBlock",
 			"StarrySky",
@@ -15,6 +16,7 @@
 	"wikibase-dataitem": "{{WBREPONAME}}項",
 	"wikibase-editlinks": "纂鏈",
 	"wikibase-editlinkstitle": "修跨語鏈",
+	"wikibase-addlinkstitle": "新至他山",
 	"wikibase-linkitem-addlinks": "增鏈",
 	"wikibase-linkitem-input-site": "語：",
 	"wikibase-linkitem-input-page": "頁：",

@@ -358,6 +358,8 @@
 	"wikibase-parse-error-entity-id": "Le ID de entitate es mal formate.",
 	"wikibase-parse-error-quantity": "Le valor del quantitate es mal formate.",
 	"wikibase-parse-error-time": "Le valor temporal es mal formate.",
+	"wikibase-quantitydetails-unit-optional": "Unitate (optional)",
+	"wikibase-monolingualtextcode-mandatory": "Lingua (obligatori)",
 	"special-redirectentity": "Rediriger un entitate",
 	"wikibase-redirectentity-success": "$1 ha essite redirigite a $2.",
 	"wikibase-redirectentity-fromid": "Le ID desde le qual rediriger",

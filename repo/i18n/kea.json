@@ -1,12 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
+			"GrogeXaKaba",
+			"Letra.berdi",
 			"Quintino Lopes Castro Tavares",
 			"Waldyrious"
 		]
 	},
-	"wikibase-edit": "muda",
-	"wikibase-add": "adisiona",
-	"wikibase-sitelinks-special": "Otus websites",
-	"wikibase-statementview-rank-normal": "Prioridadi normal"
+	"wikibase-edit": "Idita",
+	"wikibase-add": "disona",
+	"wikibase-sitelinks-special": "Otus sáiti",
+	"wikibase-statementview-rank-normal": "Klasifikason nurmal"
 }

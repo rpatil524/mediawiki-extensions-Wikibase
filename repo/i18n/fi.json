@@ -376,6 +376,8 @@
 	"wikibase-parse-error-entity-id": "Entiteetin tunniste on väärin muotoiltu.",
 	"wikibase-parse-error-quantity": "Määrän arvo on väärin muotoiltu.",
 	"wikibase-parse-error-time": "Aika-arvo on väärin muotoiltu.",
+	"wikibase-quantitydetails-unit-optional": "Yksikkö (valinnainen)",
+	"wikibase-monolingualtextcode-mandatory": "Kieli (pakollinen)",
 	"special-redirectentity": "Uudelleenohjaa entiteetti",
 	"wikibase-redirectentity-success": "$1 ohjattiin kohteeseen $2.",
 	"wikibase-redirectentity-fromid": "Tunniste, josta uudelleenohjataan",

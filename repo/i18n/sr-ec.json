@@ -321,6 +321,7 @@
 	"wikibase-parse-error-entity-id": "ID ентитета је неисправно формирана.",
 	"wikibase-parse-error-quantity": "Вредност количине је неисправно формирана.",
 	"wikibase-parse-error-time": "Вредност за време је погрешно форматирана.",
+	"wikibase-monolingualtextcode-mandatory": "Језик (обавезно)",
 	"special-redirectentity": "Преусмеравање ентитета",
 	"wikibase-redirectentity-success": "$1 је преусмерено на $2.",
 	"wikibase-redirectentity-fromid": "ID са кога се преусмерава",
@@ -421,5 +422,7 @@
 	"special-setlabeldescriptionaliases-parameterized": "Постави назив, опис и псеудоним за $1",
 	"wikibase-scoped-search-search-entities": "Претрага ентитета",
 	"wikibase-scoped-search-item-scope-name": "Ставке",
-	"wikibase-scoped-search-property-scope-name": "Својства"
+	"wikibase-scoped-search-property-scope-name": "Својства",
+	"wikibase-stepper-progress": "$1 од $2",
+	"wikibase-indicator-popover-multiple-issue-previous": "Претходно"
 }

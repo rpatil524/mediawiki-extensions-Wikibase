@@ -339,7 +339,7 @@
 	"wikibase-api-target-not-empty": "Ne c'haller krouiñ un adkas nemet a-us un entite goullo pe unan bet dilamet",
 	"wikibase-api-target-is-redirect": "Ne c'hall ket pal un adkas bezañ un adkas eñ e-unan.",
 	"wikibase-api-target-is-incompatible": "Taol-esae evit adkas un entite war-zu un entite dezhañ ur seurt all.",
-	"wikibase-api-cant-redirect": "Ne c'haller ket krouiñ an adkas (marteze a-walc'h peogwir n'eo ket aotreet krouiñ adkasoù etre ar seurt entite-se)",
+	"wikibase-api-cant-redirect": "Ne c'haller ket krouiñ an adkas (marteze peogwir ne c’haller ket krouiñ adkasoù etre entiteoù eus ar seurt-se).",
 	"wikibase-self-conflict-patched": "Enframmet eo bet ho kemm er stumm diwezhañ, gant se eo bet friket lod eus ar c'hemmoù ho poa graet a-raok.",
 	"wikibase-conflict-patched": "Enframmet eo bet ho kemm er stumm diwezhañ.",
 	"wikibase-save-unresolved-redirect": "E-ser enrollañ ur c'hemm ez eus bet kavet un adkas diziskoulmet eus $1 war-zu $2.",
