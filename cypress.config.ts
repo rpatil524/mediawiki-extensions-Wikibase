@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress';
+import { unlinkSync } from 'fs';
 
 const envLogDir = process.env.LOG_DIR ? process.env.LOG_DIR + '/Wikibase' : null;
 
@@ -10,6 +11,13 @@ if ( process.env.MW_SERVER === undefined || process.env.MW_SCRIPT_PATH === undef
 process.env.REST_BASE_URL = process.env.MW_SERVER + process.env.MW_SCRIPT_PATH + '/';
 
 import { mwApiCommands } from 'cypress-wikibase-api';
+
+const compressedVideoPath = function ( uncompressedPath: string ): string {
+	const lastDot = uncompressedPath.lastIndexOf( '.' );
+	const base = uncompressedPath.slice( 0, lastDot );
+	const ext = uncompressedPath.slice( lastDot );
+	return base + '-compressed' + ext;
+};
 
 export default defineConfig( {
 	e2e: {
@@ -35,10 +43,30 @@ export default defineConfig( {
 				// eslint-disable-next-line es-x/no-rest-spread-properties
 				...mwApiCommands( config ),
 			} );
+			on( 'after:spec', ( spec, results ) => {
+				if ( results && results.video ) {
+					// Do we have failures for any retry attempts?
+					const failures = results.tests.some(
+						( test ) => test.attempts
+							.some( ( attempt ) => attempt.state === 'failed' ),
+					);
+					if ( !failures ) {
+						// delete the video if the spec passed and no tests retried
+						// eslint-disable-next-line security/detect-non-literal-fs-filename
+						unlinkSync( results.video );
+						// Cypress creates a zero-byte "compressed" video file even if you disable compression.
+						// Delete that file
+						// eslint-disable-next-line security/detect-non-literal-fs-filename
+						unlinkSync( compressedVideoPath( results.video ) );
+					}
+				}
+			} );
 		},
 		defaultCommandTimeout: 20000,
 	},
 	screenshotsFolder: envLogDir || 'cypress/screenshots',
+	video: true,
+	videoCompression: false,
 	videosFolder: envLogDir || 'cypress/videos',
 	downloadsFolder: envLogDir || 'cypress/downloads',
 } );
