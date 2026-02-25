@@ -61,20 +61,19 @@ class WikibaseStatsTest extends WikibaseLibraryTestCase {
 		$settings->setSetting( 'trackLuaFunctionCallsSampleRate', 1 );
 	}
 
-	protected function assertPostConditions(): void {
+	/**
+	 * @dataProvider provideLuaData
+	 * @inheritDoc testLua
+	 */
+	public function testLua( $key, $testName, $expected ) {
 		// testLua runs the lua code in self::$moduleName
-		if ( $this->luaTestName === null ) {
-			parent::assertPostConditions();
-			return;
-		}
+		parent::testLua( $key, $testName, $expected );
 
 		$settings = WikibaseClient::getSettings();
 		$siteId = $settings->getSetting( 'siteGlobalID' );
 		$this->assertSame( 5.0, $this->unitTestingHelper->sum(
 			"WikibaseClient.Scribunto_Lua_function_calls_total{site=\"$siteId\"}"
 		) );
-
-		parent::assertPostConditions();
 	}
 
 	protected function tearDown(): void {
