@@ -366,6 +366,7 @@
 	"wikibase-parse-error-entity-id": "Το αναγνωριστικό οντότητας έχει λανθασμένη μορφή.",
 	"wikibase-parse-error-quantity": "Η τιμή της ποσότητας είναι λάθος διαμορφωμένη.",
 	"wikibase-parse-error-time": "Η τιμή χρόνου είναι κακώς διαμορφωμένη.",
+	"wikibase-monolingualtextcode-mandatory": "Γλώσσα (υποχρεωτικό)",
 	"special-redirectentity": "Ανακατεύθυνση μιας οντότητας",
 	"wikibase-redirectentity-success": "$1 ανακατευθύνθηκε σε $2 .",
 	"wikibase-redirectentity-fromid": "Το αναγνωριστικό από το οποίο θα γίνει ανακατεύθυνση",

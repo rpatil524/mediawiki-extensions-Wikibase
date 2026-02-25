@@ -362,6 +362,8 @@
 	"wikibase-parse-error-entity-id": "Назнаката на предметот е неправилно срочена.",
 	"wikibase-parse-error-quantity": "Вредноста за количина е неправилно срочена.",
 	"wikibase-parse-error-time": "Вредноста за време е неправилно срочена.",
+	"wikibase-quantitydetails-unit-optional": "Единица (незадолж.)",
+	"wikibase-monolingualtextcode-mandatory": "Јазик (задолж.)",
 	"special-redirectentity": "Пренасочување на единица",
 	"wikibase-redirectentity-success": "$1 е пренасочена кон $2.",
 	"wikibase-redirectentity-fromid": "Назнака од која се пренасочува",
