@@ -232,6 +232,12 @@ const setPopoverContentForMainSnak = function ( statementId, popoverContentItems
 	statementsStore.popoverHtmlForMainSnaks.set( statementId, popoverContentItems );
 };
 
+const clearPopoverContentAndIndicatorForMainSnak = function ( statementId ) {
+	const statementsStore = useSavedStatementsStore();
+	statementsStore.popoverHtmlForMainSnaks.delete( statementId );
+	statementsStore.indicatorHtmlForMainSnaks.delete( statementId );
+};
+
 const getPopoverContentForQualifier = function ( statementId, snakHash ) {
 	const statementsStore = useSavedStatementsStore();
 	const popoverContentItems = statementsStore.popoverHtmlForQualifiers.get( `${ statementId }|${ snakHash }` ) || [];
@@ -250,6 +256,13 @@ const getPopoverContentForQualifier = function ( statementId, snakHash ) {
 const setPopoverContentForQualifier = function ( statementId, snakHash, popoverContentItems ) {
 	const statementsStore = useSavedStatementsStore();
 	statementsStore.popoverHtmlForQualifiers.set( `${ statementId }|${ snakHash }`, popoverContentItems );
+};
+
+const clearPopoverContentAndIndicatorForQualifier = function ( statementId, snakHash ) {
+	const qualifierKey = `${ statementId }|${ snakHash }`;
+	const statementsStore = useSavedStatementsStore();
+	statementsStore.popoverHtmlForQualifiers.delete( qualifierKey );
+	statementsStore.indicatorHtmlForQualifiers.delete( qualifierKey );
 };
 
 const getPopoverContentForReferenceSnak = function ( statementId, referenceHash, snakHash ) {
@@ -272,6 +285,13 @@ const setPopoverContentForReferenceSnak = function ( statementId, referenceHash,
 	statementsStore.popoverHtmlForReferenceSnaks.set( `${ statementId }|${ referenceHash }|${ snakHash }`, popoverContentItems );
 };
 
+const clearPopoverContentAndIndicatorForReferenceSnak = function ( statementId, referenceHash, snakHash ) {
+	const referenceKey = `${ statementId }|${ referenceHash }|${ snakHash }`;
+	const statementsStore = useSavedStatementsStore();
+	statementsStore.popoverHtmlForReferenceSnaks.delete( referenceKey );
+	statementsStore.indicatorHtmlForReferenceSnaks.delete( referenceKey );
+};
+
 module.exports = {
 	useSavedStatementsStore,
 	getPropertyIds,
@@ -288,8 +308,11 @@ module.exports = {
 	setIndicatorHtmlForReferenceSnak,
 	setPopoverContentForMainSnak,
 	getPopoverContentForMainSnak,
+	clearPopoverContentAndIndicatorForMainSnak,
 	setPopoverContentForQualifier,
 	getPopoverContentForQualifier,
+	clearPopoverContentAndIndicatorForQualifier,
 	setPopoverContentForReferenceSnak,
-	getPopoverContentForReferenceSnak
+	getPopoverContentForReferenceSnak,
+	clearPopoverContentAndIndicatorForReferenceSnak
 };
