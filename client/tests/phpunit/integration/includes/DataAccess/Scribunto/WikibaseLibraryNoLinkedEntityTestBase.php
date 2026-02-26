@@ -18,7 +18,7 @@ use MediaWiki\Title\Title;
  * @license GPL-2.0-or-later
  * @author Marius Hoch < hoo@online.de >
  */
-class WikibaseLibraryNoLinkedEntityTest extends WikibaseLibraryTestCase {
+abstract class WikibaseLibraryNoLinkedEntityTestBase extends WikibaseLibraryTestCase {
 
 	/** @inheritDoc */
 	protected static $moduleName = 'WikibaseLibraryNoLinkedEntityTests';

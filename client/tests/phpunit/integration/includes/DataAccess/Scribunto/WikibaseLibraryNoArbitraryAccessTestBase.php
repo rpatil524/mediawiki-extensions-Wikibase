@@ -16,7 +16,7 @@ namespace Wikibase\Client\Tests\Integration\DataAccess\Scribunto;
  * @license GPL-2.0-or-later
  * @author Marius Hoch < hoo@online.de >
  */
-class WikibaseLibraryNoArbitraryAccessTest extends WikibaseLibraryTestCase {
+abstract class WikibaseLibraryNoArbitraryAccessTestBase extends WikibaseLibraryTestCase {
 
 	/** @inheritDoc */
 	protected static $moduleName = 'WikibaseLibraryNoArbitraryAccessTests';

@@ -33,7 +33,7 @@ use Wikimedia\TestingAccessWrapper;
  * @author Marius Hoch < hoo@online.de >
  * @author Lucie-Aimée Kaffee
  */
-class WikibaseLibraryTest extends WikibaseLibraryTestCase {
+abstract class WikibaseLibraryTestBase extends WikibaseLibraryTestCase {
 
 	/** @inheritDoc */
 	protected static $moduleName = 'WikibaseLibraryTests';

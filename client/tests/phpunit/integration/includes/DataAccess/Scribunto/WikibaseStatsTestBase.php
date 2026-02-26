@@ -21,7 +21,7 @@ use Wikimedia\Stats\UnitTestingHelper;
  * @license GPL-2.0-or-later
  * @author Marius Hoch
  */
-class WikibaseStatsTest extends WikibaseLibraryTestCase {
+abstract class WikibaseStatsTestBase extends WikibaseLibraryTestCase {
 
 	private UnitTestingHelper $unitTestingHelper;
 	private bool $oldTrackLuaFunctionCallsPerWiki;
