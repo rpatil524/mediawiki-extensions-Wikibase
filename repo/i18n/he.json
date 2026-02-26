@@ -375,6 +375,8 @@
 	"wikibase-parse-error-entity-id": "מזהה הישות פגום.",
 	"wikibase-parse-error-quantity": "ערך הכמות פגום.",
 	"wikibase-parse-error-time": "ערך הזמן פגום.",
+	"wikibase-quantitydetails-unit-optional": "יחידה (לא חובה)",
+	"wikibase-monolingualtextcode-mandatory": "שפה (חובה)",
 	"special-redirectentity": "הפניית ישות",
 	"wikibase-redirectentity-success": "הישות $1 הופנתה לישות $2",
 	"wikibase-redirectentity-fromid": "המזהה שממנו להפנות",
