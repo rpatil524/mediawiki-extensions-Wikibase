@@ -202,6 +202,18 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
+		yield 'searchItems with and' => [
+			"{ searchItems( query: {
+        and: [
+            { property: \"{$itemProperty->getId()}\", value: \"{$itemUsedAsStatementValue->getId()}\" },
+            { property: \"{$stringProperty->getId()}\", value: \"potato\" }
+        ]
+    } ) { edges { node { id } } } }",
+			[ 'data' => [ 'searchItems' => [ 'edges' => [
+				[ 'node' => [ 'id' => $item->getId() ] ],
+			] ] ] ],
+		];
+
 		$offset = $this->encodeOffsetAsCursor( 1 );
 		yield 'pagination - with offset' => [
 			"{  searchItems(
@@ -333,6 +345,20 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 				} ) { edges { node { id } } }
 			}",
 			"Invalid search query: Filters must not contain both an 'and' and a 'property' field",
+		];
+
+		$stringProperty = $this->createProperty( 'string' );
+		yield 'invalid search query: "and" nested' => [
+			"{
+				searchItems(query: {
+					and: [ { property: \"{$stringProperty->getId()}\" },
+						{
+							and: [{ property: \"{$stringProperty->getId()}\"}]
+						}
+					]
+				}) { edges { node { id } } }
+			}",
+			'Field "and" is not defined by type "ItemSearchCondition".',
 		];
 
 		$unsupportedProperty = $this->createProperty( 'wikibase-property' );

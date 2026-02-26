@@ -33,6 +33,7 @@ class Types {
 	private ?ObjectType $entityValueType = null;
 	private ?ItemType $itemType = null;
 	private ?ItemSearchFilterType $itemSearchFilterType = null;
+	private ?ItemSearchConditionType $itemSearchConditionType = null;
 	private ?ObjectType $itemSearchResultConnectionType = null;
 	private ?ObjectType $itemSearchResultNodeType = null;
 	private ?ObjectType $itemSearchResultEdgeType = null;
@@ -119,6 +120,10 @@ class Types {
 
 	public function getItemSearchFilterType(): ItemSearchFilterType {
 		return $this->itemSearchFilterType ??= new ItemSearchFilterType( $this );
+	}
+
+	public function getItemSearchConditionType(): ItemSearchConditionType {
+		return $this->itemSearchConditionType ??= new ItemSearchConditionType( $this );
 	}
 
 	public function getItemSearchResultConnectionType(): ObjectType {
