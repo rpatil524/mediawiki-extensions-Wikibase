@@ -20,7 +20,7 @@ use Wikibase\DataModel\Services\Lookup\EntityLookup;
  * @license GPL-2.0-or-later
  * @author Marius Hoch < hoo@online.de >
  */
-class WikibaseLibraryInProcessEntityCacheTest extends WikibaseLibraryTestCase {
+abstract class WikibaseLibraryInProcessEntityCacheTestBase extends WikibaseLibraryTestCase {
 
 	/** @inheritDoc */
 	protected static $moduleName = 'WikibaseLibraryInProcessEntityCacheTests';
@@ -56,7 +56,7 @@ class WikibaseLibraryInProcessEntityCacheTest extends WikibaseLibraryTestCase {
 	 * @return EntityLookup
 	 */
 	protected static function getEntityLookup() {
-		$phpunit = new self();
+		$phpunit = new static();
 
 		static $entityLookup = null;
 		if ( !$entityLookup ) {

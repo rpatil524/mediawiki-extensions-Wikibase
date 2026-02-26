@@ -25,7 +25,7 @@ use Wikimedia\TestingAccessWrapper;
  * @license GPL-2.0-or-later
  * @author Marius Hoch < hoo@online.de >
  */
-class WikibaseEntityLibraryTest extends WikibaseLibraryTestCase {
+abstract class WikibaseEntityLibraryTestBase extends WikibaseLibraryTestCase {
 
 	/**
 	 * @var bool
