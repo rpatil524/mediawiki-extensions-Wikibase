@@ -15,12 +15,13 @@
 		></cdx-text-input>
 		<cdx-popover
 			v-model:open="showPopup"
+			class="time-value-popover"
 			:use-close-button="true"
 			:use-primary-action="false"
 			:use-default-action="false"
 			:render-in-place="true"
 			:anchor="inputElement"
-			placement="bottom-end"
+			placement="bottom-start"
 			@update:open="closePopup"
 		>
 			<template #header>
@@ -317,6 +318,14 @@ module.exports = exports = defineComponent( {
 			width: 100%;
 		}
 
+		.time-value-popover {
+			// Fallback property for browsers without CSS 'min' support
+			min-width: 90%;
+			// Pass 'min' verbatim through less, since less's min requires values of the same unit
+			min-width: ~"min( 90%, 280px )";
+			padding: 0.75rem @spacing-100 @spacing-50 @spacing-100;
+		}
+
 		.content .cdx-popover__header p {
 			padding: 0;
 			margin: 0;
@@ -329,10 +338,6 @@ module.exports = exports = defineComponent( {
 			position: absolute;
 			top: @spacing-25;
 			right: @spacing-50;
-		}
-
-		.cdx-popover {
-			padding: 0.75rem @spacing-100 @spacing-50 @spacing-100;
 		}
 
 		div.time-options {
