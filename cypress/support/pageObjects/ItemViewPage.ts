@@ -26,6 +26,10 @@ export class ItemViewPage {
 
 	public static ADD_STATEMENT_BUTTON = '.wikibase-wbui2025-add-statement-button>.cdx-button';
 
+	public static COMMONS_MEDIA_THUMBNAIL_LINK = 'span.snakValue div.thumb a.image';
+
+	public static COMMONS_MEDIA_THUMBNAIL_IMAGE = 'span.snakValue div.thumb a.image span img';
+
 	private itemId: string;
 
 	public constructor( itemId: string ) {

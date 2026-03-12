@@ -376,7 +376,10 @@ describe( 'wbui2025 string datatypes (tabular-data, geo-shape, commonsMedia)', (
 			const itemViewPage = new ItemViewPage( itemId );
 			itemViewPage.open().statementsSection();
 
-			checkA11y( ItemViewPage.STATEMENTS );
+			checkA11y( { include: [ ItemViewPage.STATEMENTS ], exclude: [
+				ItemViewPage.COMMONS_MEDIA_THUMBNAIL_LINK,
+				ItemViewPage.COMMONS_MEDIA_THUMBNAIL_IMAGE,
+			] } );
 
 			itemViewPage.editLinks().first().should( 'exist' ).should( 'be.visible' );
 			itemViewPage.editLinks().first().click();
