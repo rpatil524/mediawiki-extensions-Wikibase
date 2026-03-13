@@ -627,6 +627,38 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
+		$urlProperty = $this->createProperty( 'url' );
+		$urlContent = 'https://www.example.org/';
+		$statementWithUrlValue = NewStatement::forProperty( $urlProperty->getId() )
+			->withSubject( $itemId )
+			->withSomeGuid()
+			->withValue( new StringValue( $urlContent ) )
+			->build();
+		$item->getStatements()->addStatement( $statementWithUrlValue );
+		yield 'statement with url value' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$urlProperty->getId()}\") {
+					value {
+						... on UrlValue { content url }
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'value' => [
+									'content' => $urlContent,
+									'url' => $urlContent,
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
 		$propertyProperty = $this->createProperty( 'wikibase-property' );
 		$propertyUsedAsValue = $this->createProperty( 'string', 'property used as value' );
 		$statementWithPropertyValue = NewStatement::forProperty( $propertyProperty->getId() )

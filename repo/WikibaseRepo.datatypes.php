@@ -437,6 +437,9 @@ return call_user_func( function() {
 			'rdf-data-type' => function() {
 				return PropertySpecificComponentsRdfBuilder::OBJECT_PROPERTY;
 			},
+			'graphql-value-type' => static function () {
+				return WbReuse::getGraphQLTypes()->getUrlValueType();
+			},
 		],
 		'PT:external-id' => [
 			// NOTE: for 'formatter-factory-callback', we fall back to plain text formatting

@@ -38,6 +38,7 @@ class Types {
 	private ?CommonsMediaValueType $commonsMediaValueType = null;
 	private ?ExternalIdValueType $externalIdValueType = null;
 	private ?GeoShapeValueType $geoShapeValueType = null;
+	private ?UrlValueType $urlValueType = null;
 	private ?ObjectType $entityValueType = null;
 	private ?ItemType $itemType = null;
 	private ?ItemSearchFilterType $itemSearchFilterType = null;
@@ -155,6 +156,10 @@ class Types {
 
 	public function getCommonsMediaValueType(): CommonsMediaValueType {
 		return $this->commonsMediaValueType ??= new CommonsMediaValueType( $this );
+	}
+
+	public function getUrlValueType(): UrlValueType {
+		return $this->urlValueType ??= new UrlValueType( $this );
 	}
 
 	public function getEntityValueType(): ObjectType {
