@@ -35,6 +35,7 @@ class Types {
 	private ?InterfaceType $urlProviderType = null;
 
 	private ?StringValueType $stringValueType = null;
+	private ?CommonsMediaValueType $commonsMediaValueType = null;
 	private ?ExternalIdValueType $externalIdValueType = null;
 	private ?GeoShapeValueType $geoShapeValueType = null;
 	private ?ObjectType $entityValueType = null;
@@ -150,6 +151,10 @@ class Types {
 			$this->propertyInfoLookup,
 			$this
 		);
+	}
+
+	public function getCommonsMediaValueType(): CommonsMediaValueType {
+		return $this->commonsMediaValueType ??= new CommonsMediaValueType( $this );
 	}
 
 	public function getEntityValueType(): ObjectType {

@@ -32,6 +32,7 @@ use Wikibase\DataModel\Services\Lookup\PropertyDataTypeLookup;
 use Wikibase\DataModel\Snak\PropertySomeValueSnak;
 use Wikibase\DataModel\Tests\NewItem;
 use Wikibase\DataModel\Tests\NewStatement;
+use Wikibase\Lib\Formatters\CommonsInlineImageFormatter;
 use Wikibase\Lib\Store\EntityRevisionLookup;
 use Wikibase\Lib\Store\LatestRevisionIdResult;
 use Wikibase\Lib\Store\PropertyInfoLookup;
@@ -586,6 +587,38 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 								'value' => [
 									'content' => $geoShapeContent,
 									'url' => $geoShapeBaseUrl . str_replace( ' ', '_', $geoShapeContent ),
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$commonsMediaProperty = $this->createProperty( 'commonsMedia' );
+		$commonsMediaContent = 'Cityscape Berlin.jpg';
+		$statementWithCommonsMediaValue = NewStatement::forProperty( $commonsMediaProperty->getId() )
+			->withSubject( $itemId )
+			->withSomeGuid()
+			->withValue( new StringValue( $commonsMediaContent ) )
+			->build();
+		$item->getStatements()->addStatement( $statementWithCommonsMediaValue );
+		yield 'statement with commonsMedia value' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$commonsMediaProperty->getId()}\") {
+					value {
+						... on CommonsMediaValue { content url }
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'value' => [
+									'content' => $commonsMediaContent,
+									'url' => CommonsInlineImageFormatter::COMMONS_BASE_URL . str_replace( ' ', '_', $commonsMediaContent ),
 								],
 							],
 						],

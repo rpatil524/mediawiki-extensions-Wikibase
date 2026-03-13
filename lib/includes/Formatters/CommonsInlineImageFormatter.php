@@ -25,6 +25,8 @@ use ValueFormatters\ValueFormatter;
  */
 class CommonsInlineImageFormatter implements ValueFormatter {
 
+	public const COMMONS_BASE_URL = 'https://commons.wikimedia.org/wiki/File:';
+
 	private const FALLBACK_THUMBNAIL_WIDTH = 320; // 320 the was default hardcoded value. Removed in T224189
 
 	/**
@@ -128,7 +130,7 @@ class CommonsInlineImageFormatter implements ValueFormatter {
 	private function wrapThumb( Title $title, $thumbHtml ) {
 		$attributes = [
 			'class' => 'image',
-			'href' => 'https://commons.wikimedia.org/wiki/File:' . $title->getPartialURL(),
+			'href' => self::COMMONS_BASE_URL . $title->getPartialURL(),
 		];
 
 		return Html::rawElement(
@@ -145,7 +147,7 @@ class CommonsInlineImageFormatter implements ValueFormatter {
 	 */
 	private function getCaptionHtml( Title $title, $file = null ) {
 		$attributes = [
-			'href' => 'https://commons.wikimedia.org/wiki/File:' . $title->getPartialURL(),
+			'href' => self::COMMONS_BASE_URL . $title->getPartialURL(),
 		];
 		$innerHtml = Html::element( 'a', $attributes, $title->getText() );
 

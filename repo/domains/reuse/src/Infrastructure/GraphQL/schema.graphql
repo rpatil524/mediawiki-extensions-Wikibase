@@ -70,14 +70,19 @@ type PredicateProperty implements LabelProvider {
   label(languageCode: LanguageCode!): String
 }
 
-union Value = StringValue | GeoShapeValue | ExternalIdValue | ItemValue | PropertyValue | GlobeCoordinateValue | MonolingualTextValue | QuantityValue | TimeValue | EntityValue | UnknownValue
+union Value = CommonsMediaValue | GeoShapeValue | StringValue | ExternalIdValue | ItemValue | PropertyValue | GlobeCoordinateValue | MonolingualTextValue | QuantityValue | TimeValue | EntityValue | UnknownValue
 
-type StringValue implements StringContentProvider {
+type CommonsMediaValue implements StringContentProvider & UrlProvider {
   content: String!
+  url: String
 }
 
 interface StringContentProvider {
   content: String!
+}
+
+interface UrlProvider {
+  url: String
 }
 
 type GeoShapeValue implements StringContentProvider & UrlProvider {
@@ -85,8 +90,8 @@ type GeoShapeValue implements StringContentProvider & UrlProvider {
   url: String
 }
 
-interface UrlProvider {
-  url: String
+type StringValue implements StringContentProvider {
+  content: String!
 }
 
 type ExternalIdValue implements StringContentProvider & UrlProvider {

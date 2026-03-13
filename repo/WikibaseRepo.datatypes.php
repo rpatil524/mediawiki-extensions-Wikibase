@@ -136,6 +136,9 @@ return call_user_func( function() {
 				}
 				return WikibaseRepo::getCommonsMediaValueNormalizer();
 			},
+			'graphql-value-type' => static function () {
+				return WbReuse::getGraphQLTypes()->getCommonsMediaValueType();
+			},
 		],
 		'PT:geo-shape' => [
 			'expert-module' => 'jquery.valueview.experts.GeoShape',
