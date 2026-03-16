@@ -34,6 +34,7 @@ use Wikibase\DataModel\Tests\NewItem;
 use Wikibase\DataModel\Tests\NewStatement;
 use Wikibase\Lib\Store\EntityRevisionLookup;
 use Wikibase\Lib\Store\LatestRevisionIdResult;
+use Wikibase\Lib\Store\PropertyInfoLookup;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\QueryContext;
 use Wikibase\Repo\Domains\Reuse\WbReuse;
@@ -51,6 +52,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 
 	/** @var Property[] */
 	private static array $properties = [];
+	private static array $propertyFormatterUrls = [];
 
 	/** @var Item[] */
 	private static array $items = [];
@@ -477,6 +479,80 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 									'after' => $timeValue->getAfter(),
 									'precision' => $timeValue->getPrecision(),
 									'calendarModel' => $timeValue->getCalendarModel(),
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$externalIdProperty = $this->createProperty( 'external-id' );
+		self::$propertyFormatterUrls[$externalIdProperty->getId()->getSerialization()] = 'https://viaf.org/viaf/$1';
+		$externalIdValue = '122530980';
+		$item->getStatements()->addStatement(
+			NewStatement::forProperty( $externalIdProperty->getId() )
+				->withSubject( $itemId )
+				->withSomeGuid()
+				->withValue( $externalIdValue )
+				->build()
+		);
+		yield 'statement with ExternalIdValue and url' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$externalIdProperty->getId()}\") {
+					value {
+						... on ExternalIdValue {
+							content
+							url
+						}
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'value' => [
+									'content' => $externalIdValue,
+									'url' => "https://viaf.org/viaf/$externalIdValue",
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
+		$externalIdProperty = $this->createProperty( 'external-id' );
+		self::$propertyFormatterUrls[$externalIdProperty->getId()->getSerialization()] = null;
+		$externalIdValue = '122530980';
+		$item->getStatements()->addStatement(
+			NewStatement::forProperty( $externalIdProperty->getId() )
+				->withSubject( $itemId )
+				->withSomeGuid()
+				->withValue( $externalIdValue )
+				->build()
+		);
+		yield 'statement with ExternalIdValue and null url' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$externalIdProperty->getId()}\") {
+					value {
+						... on ExternalIdValue {
+							content
+							url
+						}
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'value' => [
+									'content' => $externalIdValue,
+									'url' => null,
 								],
 							],
 						],
@@ -1059,6 +1135,18 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			'WikibaseRepo.PrefetchingTermLookup',
 			$termLookup ?? $this->createStub( PrefetchingTermLookup::class ),
 		);
+		$propertyInfoLookup = $this->createStub( PropertyInfoLookup::class );
+		$propertyInfoLookup->method( 'getPropertyInfo' )->willReturnCallback(
+			static function ( NumericPropertyId $propertyId ): array {
+				$formatterUrl = self::$propertyFormatterUrls[$propertyId->getSerialization()] ?? null;
+				if ( $formatterUrl === null ) {
+					return [];
+				}
+
+				return [ PropertyInfoLookup::KEY_FORMATTER_URL => $formatterUrl ];
+			}
+		);
+		$this->setService( 'WikibaseRepo.PropertyInfoLookup', $propertyInfoLookup );
 
 		$revisionLookup = $this->createStub( EntityRevisionLookup::class );
 		$revisionLookup->method( 'getLatestRevisionId' )->willReturnCallback(

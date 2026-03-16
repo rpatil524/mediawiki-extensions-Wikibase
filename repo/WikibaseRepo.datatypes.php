@@ -454,6 +454,9 @@ return call_user_func( function() {
 				);
 				return new ExternalIdentifierRdfBuilder( $vocab, $uriPatternProvider );
 			},
+			'graphql-value-type' => static function () {
+				return WbReuse::getGraphQLTypes()->getExternalIdValueType();
+			},
 		],
 		'VT:wikibase-entityid' => [
 			'validator-factory-callback' => function() {

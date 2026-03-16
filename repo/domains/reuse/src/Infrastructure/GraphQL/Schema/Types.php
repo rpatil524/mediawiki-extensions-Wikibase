@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Wikibase\Lib\DataTypeDefinitions;
 use Wikibase\Lib\SettingsArray;
+use Wikibase\Lib\Store\PropertyInfoLookup;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\ItemSearchResult;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyValuePair;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
@@ -34,6 +35,7 @@ class Types {
 	private ?InterfaceType $urlProviderType = null;
 
 	private ?StringValueType $stringValueType = null;
+	private ?ExternalIdValueType $externalIdValueType = null;
 	private ?GeoShapeValueType $geoShapeValueType = null;
 	private ?ObjectType $entityValueType = null;
 	private ?ItemType $itemType = null;
@@ -51,6 +53,7 @@ class Types {
 		private readonly DataTypeDefinitions $dataTypeDefinitions,
 		private readonly ItemDescriptionsResolver $itemDescriptionsResolver,
 		private readonly ItemLabelsResolver $itemLabelsResolver,
+		private readonly PropertyInfoLookup $propertyInfoLookup,
 		private readonly SettingsArray $settings,
 
 	) {
@@ -138,6 +141,13 @@ class Types {
 	public function getGeoShapeValueType(): GeoShapeValueType {
 		return $this->geoShapeValueType ??= new GeoShapeValueType(
 			$this->settings->getSetting( 'geoShapeStorageBaseUrl' ),
+			$this
+		);
+	}
+
+	public function getExternalIdValueType(): ExternalIdValueType {
+		return $this->externalIdValueType ??= new ExternalIdValueType(
+			$this->propertyInfoLookup,
 			$this
 		);
 	}

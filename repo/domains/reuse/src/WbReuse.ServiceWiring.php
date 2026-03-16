@@ -80,6 +80,7 @@ return [
 			WikibaseRepo::getDataTypeDefinitions( $services ),
 			WbReuse::getItemDescriptionsResolver( $services ),
 			WbReuse::getItemLabelsResolver( $services ),
+			WikibaseRepo::getPropertyInfoLookup( $services ),
 			WikibaseRepo::getSettings( $services ),
 		);
 	},
