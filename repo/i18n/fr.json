@@ -89,7 +89,6 @@
 	"wikibase-cancel": "annuler",
 	"wikibase-add": "ajouter",
 	"wikibase-addstatement": "ajouter une déclaration",
-	"wikibase-addstatement-property-not-supported-on-mobile": "(Non pris en charge sur mobile)",
 	"wikibase-addqualifier": "ajouter un qualificatif",
 	"wikibase-addreference": "ajouter une référence",
 	"wikibase-save-inprogress": "Enregistrement en cours...",

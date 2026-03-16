@@ -40,7 +40,6 @@
 	"wikibase-cancel": "avbryt",
 	"wikibase-add": "lägg till",
 	"wikibase-addstatement": "lägg till uttalande",
-	"wikibase-addstatement-property-not-supported-on-mobile": "(stöds inte på mobil)",
 	"wikibase-addqualifier": "lägg till bestämning",
 	"wikibase-addreference": "lägg till referens",
 	"wikibase-save-inprogress": "Sparar...",

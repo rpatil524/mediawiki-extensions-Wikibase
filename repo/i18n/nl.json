@@ -54,7 +54,6 @@
 	"wikibase-cancel": "annuleren",
 	"wikibase-add": "toevoegen",
 	"wikibase-addstatement": "verklaring toevoegen",
-	"wikibase-addstatement-property-not-supported-on-mobile": "(niet ondersteund op mobiele apparaten)",
 	"wikibase-addqualifier": "kwalificatie toevoegen",
 	"wikibase-addreference": "bron toevoegen",
 	"wikibase-save-inprogress": "Bezig met opslaan...",

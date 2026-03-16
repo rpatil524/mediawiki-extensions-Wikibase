@@ -43,7 +43,6 @@
 	"wikibase-cancel": "anuluj",
 	"wikibase-add": "dodaj",
 	"wikibase-addstatement": "dodaj stwierdzenie",
-	"wikibase-addstatement-property-not-supported-on-mobile": "(nieobsługiwana na urządzeniach mobilnych)",
 	"wikibase-addqualifier": "dodaj kwalifikator",
 	"wikibase-addreference": "dodaj przypis",
 	"wikibase-save-inprogress": "Zapisywanie...",

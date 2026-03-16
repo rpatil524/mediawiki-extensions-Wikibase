@@ -61,7 +61,6 @@
 	"wikibase-cancel": "取消",
 	"wikibase-add": "新增",
 	"wikibase-addstatement": "添加陳述",
-	"wikibase-addstatement-property-not-supported-on-mobile": "（行動裝置不支援）",
 	"wikibase-addqualifier": "新增限定詞",
 	"wikibase-addreference": "新增參考文獻",
 	"wikibase-save-inprogress": "儲存中...",
