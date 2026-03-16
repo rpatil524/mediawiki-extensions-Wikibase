@@ -39,6 +39,7 @@ class Types {
 	private ?CommonsMediaValueType $commonsMediaValueType = null;
 	private ?ExternalIdValueType $externalIdValueType = null;
 	private ?GeoShapeValueType $geoShapeValueType = null;
+	private ?TabularValueType $tabularValueType = null;
 	private ?UrlValueType $urlValueType = null;
 	private ?ObjectType $entityValueType = null;
 	private ?ItemType $itemType = null;
@@ -144,6 +145,13 @@ class Types {
 	public function getGeoShapeValueType(): GeoShapeValueType {
 		return $this->geoShapeValueType ??= new GeoShapeValueType(
 			$this->settings->getSetting( 'geoShapeStorageBaseUrl' ),
+			$this
+		);
+	}
+
+	public function getTabularValueType(): TabularValueType {
+		return $this->tabularValueType ??= new TabularValueType(
+			$this->settings->getSetting( 'tabularDataStorageBaseUrl' ),
 			$this
 		);
 	}
