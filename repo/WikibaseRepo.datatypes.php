@@ -197,6 +197,8 @@ return call_user_func( function() {
 			'rdf-data-type' => function() {
 				return PropertySpecificComponentsRdfBuilder::OBJECT_PROPERTY;
 			},
+
+			'graphql-value-type' => static fn() => WbReuse::getGraphQLTypes()->getTabularValueType(),
 		],
 		'VT:globecoordinate' => [
 			'expert-module' => 'jquery.valueview.experts.GlobeCoordinateInput',

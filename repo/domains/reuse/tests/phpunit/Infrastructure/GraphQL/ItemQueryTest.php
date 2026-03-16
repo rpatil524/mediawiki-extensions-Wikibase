@@ -595,6 +595,39 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
+		$tabularProperty = $this->createProperty( 'tabular-data' );
+		$tabularContent = 'Data:CapacityExchange/capacities.tab';
+		$statementWithTabularValue = NewStatement::forProperty( $tabularProperty->getId() )
+			->withSubject( $itemId )
+			->withSomeGuid()
+			->withValue( new StringValue( $tabularContent ) )
+			->build();
+		$item->getStatements()->addStatement( $statementWithTabularValue );
+		$tabularBaseUrl = WikibaseRepo::getSettings()->getSetting( 'tabularDataStorageBaseUrl' );
+		yield 'statement with tabular data value' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$tabularProperty->getId()}\") {
+					value {
+						... on TabularValue { content url }
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'value' => [
+									'content' => $tabularContent,
+									'url' => $tabularBaseUrl . str_replace( ' ', '_', $tabularContent ),
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
 		$commonsMediaProperty = $this->createProperty( 'commonsMedia' );
 		$commonsMediaContent = 'Cityscape Berlin.jpg';
 		$statementWithCommonsMediaValue = NewStatement::forProperty( $commonsMediaProperty->getId() )
