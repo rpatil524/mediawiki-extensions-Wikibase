@@ -10,10 +10,12 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
  * @license GPL-2.0-or-later
  */
 class StringValueType extends ObjectType {
-	public function __construct( private readonly Types $types ) {
+	public function __construct( Types $types ) {
 		$stringContentProviderType = $types->getStringContentProviderType();
-		$stringContentField = clone $stringContentProviderType->getField( 'content' );
-		$stringContentField->resolveFn = fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue();
+		$stringContentField = Types::copyFieldDefinition(
+			$stringContentProviderType->getField( 'content' ),
+			fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue(),
+		);
 		parent::__construct( [
 			'interfaces' => [ $stringContentProviderType ],
 			'fields' => [ $stringContentField ],

@@ -17,10 +17,12 @@ class PredicatePropertyType extends ObjectType {
 		PropertyLabelsResolver $labelsResolver,
 		InterfaceType $labelProviderType
 	) {
-		$labelField = clone $labelProviderType->getField( 'label' ); // cloned to not override the resolver in other places
-		$labelField->resolveFn = fn( PredicateProperty $property, array $args ) => $labelsResolver->resolve(
-			$property->id,
-			$args['languageCode']
+		$labelField = Types::copyFieldDefinition(
+			$labelProviderType->getField( 'label' ),
+			fn( PredicateProperty $property, array $args ) => $labelsResolver->resolve(
+				$property->id,
+				$args['languageCode']
+			),
 		);
 
 		parent::__construct( [

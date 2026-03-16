@@ -2,6 +2,7 @@
 
 namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema;
 
+use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -245,14 +246,18 @@ class Types {
 
 	public function getItemSearchResultNodeType(): ObjectType {
 		$labelProviderType = $this->getLabelProviderType();
-		$labelField = clone $labelProviderType->getField( 'label' ); // cloned to not override the resolver in other places
-		$labelField->resolveFn = fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemLabelsResolver
-				->resolve( $itemSearchResult->itemId, $args[ 'languageCode' ] );
+		$labelField = self::copyFieldDefinition(
+			$labelProviderType->getField( 'label' ),
+			fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemLabelsResolver
+				->resolve( $itemSearchResult->itemId, $args['languageCode'] ),
+		);
 
 		$descriptionProviderType = $this->getDescriptionProviderType();
-		$descriptionField = clone $descriptionProviderType->getField( 'description' );
-		$descriptionField->resolveFn = fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemDescriptionsResolver
-			->resolve( $itemSearchResult->itemId, $args[ 'languageCode' ] );
+		$descriptionField = self::copyFieldDefinition(
+			$descriptionProviderType->getField( 'description' ),
+			fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemDescriptionsResolver
+				->resolve( $itemSearchResult->itemId, $args['languageCode'] )
+		);
 
 		return $this->itemSearchResultNodeType ??= new ObjectType( [
 			'name' => 'ItemSearchResultNode',
@@ -267,5 +272,12 @@ class Types {
 			],
 			'interfaces' => [ $labelProviderType, $descriptionProviderType ],
 		] );
+	}
+
+	public static function copyFieldDefinition( FieldDefinition $definition, callable $resolveFn ): FieldDefinition {
+		$newField = clone $definition; // cloned to not override the resolver in other places where the field is used
+		$newField->resolveFn = $resolveFn;
+
+		return $newField;
 	}
 }
