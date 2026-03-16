@@ -15,7 +15,6 @@ class StringValueType extends ObjectType {
 		$stringContentField = clone $stringContentProviderType->getField( 'content' );
 		$stringContentField->resolveFn = fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue();
 		parent::__construct( [
-			'name' => 'StringValue',
 			'interfaces' => [ $stringContentProviderType ],
 			'fields' => [ $stringContentField ],
 		] );

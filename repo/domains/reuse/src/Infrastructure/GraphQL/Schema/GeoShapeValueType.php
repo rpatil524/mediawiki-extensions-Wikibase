@@ -23,7 +23,6 @@ class GeoShapeValueType extends ObjectType {
 		$urlField->resolveFn = fn( Statement|PropertyValuePair $valueProvider ) => $this->formatUrl( $valueProvider->value->getValue() );
 
 		parent::__construct( [
-			'name' => 'GeoShapeValue',
 			'interfaces' => [ $contentProviderType, $urlProviderType ],
 			'fields' => [ $contentField, $urlField ],
 		] );
