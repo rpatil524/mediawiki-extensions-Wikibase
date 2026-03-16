@@ -17,14 +17,18 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
 class ItemType extends ObjectType {
 	public function __construct( private readonly Types $types ) {
 		$labelProviderType = $types->getLabelProviderType();
-		$labelField = clone $labelProviderType->getField( 'label' ); // cloned to not override the resolver in other places
-		$labelField->resolveFn = fn( Item $item, array $args ) => $item->labels
-			->getLabelInLanguage( $args['languageCode'] )?->text;
+		$labelField = Types::copyFieldDefinition(
+			$labelProviderType->getField( 'label' ),
+			fn( Item $item, array $args ) => $item->labels
+				->getLabelInLanguage( $args['languageCode'] )?->text,
+		);
 
 		$descriptionProviderType = $types->getDescriptionProviderType();
-		$descriptionField = clone $descriptionProviderType->getField( 'description' ); // cloned to not override resolver
-		$descriptionField->resolveFn = fn( Item $item, array $args ) => $item->descriptions
-			->getDescriptionInLanguage( $args['languageCode'] )?->text;
+		$descriptionField = Types::copyFieldDefinition(
+			$descriptionProviderType->getField( 'description' ),
+			fn( Item $item, array $args ) => $item->descriptions
+				->getDescriptionInLanguage( $args['languageCode'] )?->text,
+		);
 
 		parent::__construct( [
 			'fields' => [

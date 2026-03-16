@@ -14,16 +14,20 @@ class ExternalIdValueType extends ObjectType {
 
 	public function __construct( private readonly PropertyInfoLookup $propertyInfoLookup, Types $types ) {
 		$stringContentProviderType = $types->getStringContentProviderType();
-		$stringContentField = clone $stringContentProviderType->getField( 'content' );
-		$stringContentField->resolveFn = fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue();
+		$stringContentField = Types::copyFieldDefinition(
+			$stringContentProviderType->getField( 'content' ),
+			fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue(),
+		);
 
 		$urlProviderType = $types->getUrlProviderType();
-		$urlField = clone $urlProviderType->getField( 'url' );
-		$urlField->resolveFn = function ( Statement|PropertyValuePair $valueProvider ): ?string {
-			$propertyInfo = $this->propertyInfoLookup->getPropertyInfo( $valueProvider->property->id );
+		$urlField = Types::copyFieldDefinition(
+			$urlProviderType->getField( 'url' ),
+			function ( Statement|PropertyValuePair $valueProvider ): ?string {
+				$propertyInfo = $this->propertyInfoLookup->getPropertyInfo( $valueProvider->property->id );
 				$formatterUrl = $propertyInfo[PropertyInfoLookup::KEY_FORMATTER_URL] ?? null;
 				return $this->formatUrl( $formatterUrl, (string)$valueProvider->value->getValue() );
-		};
+			},
+		);
 
 		parent::__construct( [
 			'interfaces' => [ $stringContentProviderType, $urlProviderType ],

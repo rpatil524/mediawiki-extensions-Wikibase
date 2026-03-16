@@ -15,12 +15,16 @@ class GeoShapeValueType extends ObjectType {
 		Types $types
 	) {
 		$contentProviderType = $types->getStringContentProviderType();
-		$contentField = clone $contentProviderType->getField( 'content' );
-		$contentField->resolveFn = fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue();
+		$contentField = Types::copyFieldDefinition(
+			$contentProviderType->getField( 'content' ),
+			fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->value->getValue()
+		);
 
 		$urlProviderType = $types->getUrlProviderType();
-		$urlField = clone $urlProviderType->getField( 'url' );
-		$urlField->resolveFn = fn( Statement|PropertyValuePair $valueProvider ) => $this->formatUrl( $valueProvider->value->getValue() );
+		$urlField = Types::copyFieldDefinition(
+			$urlProviderType->getField( 'url' ),
+			fn( Statement|PropertyValuePair $valueProvider ) => $this->formatUrl( $valueProvider->value->getValue() ),
+		);
 
 		parent::__construct( [
 			'interfaces' => [ $contentProviderType, $urlProviderType ],
