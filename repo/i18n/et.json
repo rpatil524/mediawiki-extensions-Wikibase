@@ -6,6 +6,7 @@
 			"Boxmein",
 			"Macofe",
 			"Pikne",
+			"Rivoz",
 			"WikedKentaur"
 		]
 	},
@@ -177,6 +178,7 @@
 	"wikibase-item-reference-edit-placeholder": "Sisesta üksuse identifikaator, nt Q10",
 	"wikibase-item-reference-edit-invalid-format": "Sisestatud üksuse identifikaator on vigases vormingus",
 	"wikibase-item-reference-edit-nonexistent-item": "Sellise identifikaatoriga üksust pole olemas",
+	"wikibase-wbui2025-globecoordinateinput-precision-automatic": "Automaatne",
 	"wikibase-wikibaserepopage-not-itemid": "\"$1\" pole sobiv üksuse identifikaator.",
 	"wikibase-wikibaserepopage-invalid-langcode": "Keelekood \"$1\" on tundmatu. Palun kasuta süsteemile tuntavat keelekoodi nagu \"en\".",
 	"wikibase-wikibaserepopage-invalid-id": "Identifikaator \"$1\" on süsteemis tundmatu. Palun kasuta sobivat olemi identifikaatorit.",
