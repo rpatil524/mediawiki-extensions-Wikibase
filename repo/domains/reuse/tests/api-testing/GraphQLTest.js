@@ -269,26 +269,16 @@ describe( 'Wikibase GraphQL', () => {
 		);
 	} );
 
-	it( 'retains boolean fields', async () => {
+	it( 'retains boolean fields (T419560)', async () => {
 		const response = await queryGraphQL( { query: `
 		{
-			searchItems( query: { property: "${ property2.id }" }, first: 1 ) {
-				pageInfo { hasPreviousPage, hasNextPage }
+			__type(name: "Item") {
+				fields { isDeprecated }
 			}
 		}` } );
 
-		assert.deepEqual(
-			response.body,
-			{
-				data: {
-					searchItems: {
-						pageInfo: {
-							hasPreviousPage: false,
-							hasNextPage: true
-						}
-					}
-				}
-			} );
+		expect( response.body.data.__type.fields )
+			.to.deep.include( { isDeprecated: false } );
 	} );
 
 	it( 'supports operationName parameter, required only if multiple operations are present in the query', async () => {
