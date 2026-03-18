@@ -70,7 +70,7 @@ class MwTimeIsoParser extends StringValueParser {
 	private $lang;
 
 	/**
-	 * @var ValueParser
+	 * @var IsoTimestampParser
 	 */
 	private $isoTimestampParser;
 
