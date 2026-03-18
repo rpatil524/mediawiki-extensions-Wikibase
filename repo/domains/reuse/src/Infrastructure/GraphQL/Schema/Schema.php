@@ -33,12 +33,10 @@ class Schema extends GraphQLSchema {
 				'complexity' => fn() => GraphQLService::LOAD_ITEM_COMPLEXITY,
 			],
 			'itemsById' => [
-				// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 				'type' => Type::nonNull( Type::listOf( $this->types->getItemType() ) ),
 				// phpcs:ignore Generic.Files.LineLength.TooLong
 				'description' => 'Fetch multiple items by their IDs, including labels, descriptions, aliases, sitelinks, and statements.',
 				'args' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'ids' => Type::nonNull( Type::listOf( Type::nonNull( $this->types->getItemIdType() ) ) ),
 				],
 				'resolve' => fn( $rootValue, array $args, $context ) => $itemResolver

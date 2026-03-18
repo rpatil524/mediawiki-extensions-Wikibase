@@ -128,6 +128,7 @@ class GetClaims extends ApiBase {
 			$this->errorReporter->dieException( $e, 'param-invalid' );
 		}
 
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 		$entity = $this->entityLoadingHelper->loadEntity( $params, $entityId );
 
 		$statements = $this->getStatements( $entity, $guid );

@@ -188,6 +188,7 @@ class ParseValue extends ApiBase {
 				);
 			}
 			try {
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 				$name = $this->propertyDataTypeLookup->getDataTypeIdForProperty( $propertyId );
 			} catch ( PropertyDataTypeLookupException ) {
 				$this->errorReporter->dieWithError(

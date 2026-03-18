@@ -39,7 +39,6 @@ class ItemType extends ObjectType {
 				$labelField,
 				$descriptionField,
 				'aliases' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'type' => Type::nonNull( Type::listOf( Type::string() ) ),
 					'args' => [
 						'languageCode' => Type::nonNull( $types->getLanguageCodeType() ),
@@ -67,7 +66,6 @@ class ItemType extends ObjectType {
 					},
 				],
 				'statements' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'type' => Type::nonNull( Type::listOf( $this->statementType() ) ),
 					'args' => [
 						'propertyId' => Type::nonNull( $types->getPropertyIdType() ),
@@ -115,7 +113,6 @@ class ItemType extends ObjectType {
 					},
 				],
 				'qualifiers' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'type' => Type::nonNull( Type::listOf( $qualifierType ) ),
 					'args' => [
 						'propertyId' => Type::nonNull( $this->types->getPropertyIdType() ),
@@ -124,7 +121,6 @@ class ItemType extends ObjectType {
 						->getQualifiersByPropertyId( new NumericPropertyId( $args[ 'propertyId' ] ) ),
 				],
 				'references' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'type' => Type::nonNull( Type::listOf( $this->referenceType() ) ),
 					'resolve' => fn( Statement $statement ) => $statement->references,
 				],
@@ -149,7 +145,6 @@ class ItemType extends ObjectType {
 			'name' => 'Reference',
 			'fields' => [
 				'parts' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'type' => Type::nonNull( Type::listOf( $referencePartType ) ),
 					'resolve' => fn( Reference $reference ) => $reference->parts,
 				],
