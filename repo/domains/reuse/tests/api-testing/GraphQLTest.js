@@ -252,6 +252,7 @@ describe( 'Wikibase GraphQL', () => {
 			}` } );
 
 		assert.deepEqual(
+			response.body,
 			{
 				data: {
 					__schema: {
@@ -264,8 +265,7 @@ describe( 'Wikibase GraphQL', () => {
 						}
 					}
 				}
-			},
-			response.body
+			}
 		);
 	} );
 
@@ -320,8 +320,8 @@ describe( 'Wikibase GraphQL', () => {
 		const response = await queryGraphQL( { query: '' } );
 
 		assert.deepEqual(
-			{ errors: [ { message: "The 'query' field is required and must not be empty" } ] },
-			response.body
+			response.body,
+			{ errors: [ { message: "The 'query' field is required and must not be empty" } ] }
 		);
 	} );
 
@@ -332,8 +332,8 @@ describe( 'Wikibase GraphQL', () => {
 			.send( { query: '' } );
 
 		assert.deepEqual(
-			{ errors: [ { message: "Requests must be sent as 'application/json'" } ] },
-			response.body
+			response.body,
+			{ errors: [ { message: "Requests must be sent as 'application/json'" } ] }
 		);
 	} );
 } );
