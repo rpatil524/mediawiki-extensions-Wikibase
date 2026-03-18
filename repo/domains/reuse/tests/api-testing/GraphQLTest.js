@@ -22,7 +22,10 @@ async function createProperty( property ) {
 function queryGraphQL( requestBody ) {
 	return clientFactory.getHttpClient()
 		.post( config.base_uri + 'api.php?action=wbgraphql&format=json' )
-		.set( 'X-Config-Override', JSON.stringify( { wgSearchType: 'CirrusSearch' } ) )
+		.set( 'X-Config-Override', JSON.stringify( {
+			wgSearchType: 'CirrusSearch',
+			wgShowExceptionDetails: false // this is off in prod and makes errors more verbose
+		} ) )
 		.type( 'json' )
 		.send( requestBody );
 }

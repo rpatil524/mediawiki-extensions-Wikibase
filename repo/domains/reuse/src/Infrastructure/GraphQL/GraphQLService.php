@@ -3,10 +3,12 @@
 namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL;
 
 use GraphQL\Error\DebugFlag;
+use GraphQL\Error\Error;
+use GraphQL\Executor\ExecutionResult;
 use GraphQL\GraphQL;
 use MediaWiki\Config\Config;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Schema;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\InvalidResult;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\ValidResult;
 
 /**
  * @license GPL-2.0-or-later
@@ -29,43 +31,41 @@ class GraphQLService {
 
 	public function query( string $query, array $variables = [], ?string $operationName = null ): array {
 		$validationResult = GraphQLQueryValidator::validate( $query );
-
-		if ( $validationResult instanceof InvalidResult ) {
-			$this->tracking->trackValidationError( $validationResult->errorType );
-			return $validationResult->errorResponse;
-		}
-
-		$parsedQuery = $validationResult->documentNode;
-
 		$context = new QueryContext();
-		$result = GraphQL::executeQuery(
-			$this->schema,
-			$parsedQuery,
-			contextValue: $context,
-			variableValues: $variables,
-			operationName: $operationName,
-			validationRules: [
-				...GraphQL::getStandardValidationRules(),
-				$this->queryComplexityRule,
-			],
-		)->setErrorsHandler( function ( array $errors, callable $formatter ): array {
-			$this->tracking->trackErrors( $this->queryComplexityRule, $errors );
-			$this->errorLogger->logUnexpectedErrors( $errors );
-			return array_map( $formatter, $errors );
-		} );
+
+		if ( $validationResult instanceof ValidResult ) {
+			$parsedQuery = $validationResult->parsedQuery;
+			$result = GraphQL::executeQuery(
+				$this->schema,
+				$validationResult->parsedQuery,
+				contextValue: $context,
+				variableValues: $variables,
+				operationName: $operationName,
+				validationRules: [
+					...GraphQL::getStandardValidationRules(),
+					$this->queryComplexityRule,
+				],
+			);
+		} else {
+			$parsedQuery = null;
+			$result = new ExecutionResult(
+				errors: [ new Error( message: $validationResult->getMessage(), previous: $validationResult ) ]
+			);
+		}
 
 		if ( $context->redirects ) {
 			$result->extensions[ QueryContext::KEY_MESSAGE ] = QueryContext::MESSAGE_REDIRECTS;
 			$result->extensions[ QueryContext::KEY_REDIRECTS ] = $context->redirects;
 		}
 
+		$this->tracking->trackUsage( $result, $parsedQuery, $operationName );
+		$this->tracking->trackErrors( $this->queryComplexityRule, $result->errors );
+		$this->errorLogger->logUnexpectedErrors( $result->errors );
+
 		$includeDebugInfo = DebugFlag::INCLUDE_TRACE | DebugFlag::INCLUDE_DEBUG_MESSAGE;
-		$output = $result->toArray(
+		return $result->toArray(
 			$this->config->get( 'ShowExceptionDetails' ) ? $includeDebugInfo : DebugFlag::NONE
 		);
-
-		$this->tracking->trackUsage( $output, $parsedQuery, $operationName );
-		return $output;
 	}
 
 }

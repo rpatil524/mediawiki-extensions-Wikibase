@@ -4,9 +4,7 @@ namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL;
 
 use GraphQL\Error\SyntaxError;
 use GraphQL\Language\Parser;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLErrorResponse;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLErrorType;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\InvalidResult;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\ValidResult;
 
 /**
@@ -14,21 +12,15 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\ValidResult;
  */
 class GraphQLQueryValidator {
 
-	public static function validate( string $query ): InvalidResult|ValidResult {
+	public static function validate( string $query ): ValidResult|GraphQLError {
 		if ( trim( $query ) === '' ) {
-			return new InvalidResult(
-				GraphQLErrorResponse::fromArray( [ 'message' => "The 'query' field is required and must not be empty" ] ),
-				GraphQLErrorType::MISSING_QUERY->name,
-			);
+			return GraphQLError::missingQuery();
 		}
 
 		try {
 			$documentNode = Parser::parse( $query );
 		} catch ( SyntaxError $e ) {
-			return new InvalidResult(
-				GraphQLErrorResponse::fromSyntaxError( $e ),
-				GraphQLErrorType::INVALID_QUERY->name,
-			);
+			return GraphQLError::invalidQuery( $e->getMessage() );
 		}
 
 		return new ValidResult( $documentNode );
