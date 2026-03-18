@@ -307,7 +307,7 @@ class SpecialNewProperty extends SpecialNewEntity {
 					'wikibase-validator-label-conflict',
 					$formData[self::FIELD_LABEL],
 					$formData[self::FIELD_LANG],
-					$collidingPropertyId
+					$collidingPropertyId->getSerialization()
 				);
 			}
 		}

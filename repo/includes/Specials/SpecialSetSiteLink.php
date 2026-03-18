@@ -462,7 +462,7 @@ class SpecialSetSiteLink extends SpecialModifyEntity {
 			$itemTitle = $this->getEntityTitle( $badgeId );
 
 			if ( $itemTitle === null || !$itemTitle->exists() ) {
-				$status->fatal( 'wikibase-wikibaserepopage-invalid-id', $badgeId );
+				$status->fatal( 'wikibase-wikibaserepopage-invalid-id', $badgeId->getSerialization() );
 				return false;
 			}
 
