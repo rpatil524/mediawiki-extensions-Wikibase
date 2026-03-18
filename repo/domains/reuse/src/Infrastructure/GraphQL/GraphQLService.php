@@ -7,6 +7,7 @@ use GraphQL\Error\Error;
 use GraphQL\Executor\ExecutionResult;
 use GraphQL\GraphQL;
 use MediaWiki\Config\Config;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Schema;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\ValidResult;
 
@@ -48,9 +49,7 @@ class GraphQLService {
 			);
 		} else {
 			$parsedQuery = null;
-			$result = new ExecutionResult(
-				errors: [ new Error( message: $validationResult->getMessage(), previous: $validationResult ) ]
-			);
+			$result = new ExecutionResult( errors: [ $validationResult ] );
 		}
 
 		if ( $context->redirects ) {
@@ -58,13 +57,30 @@ class GraphQLService {
 			$result->extensions[ QueryContext::KEY_REDIRECTS ] = $context->redirects;
 		}
 
-		$this->tracking->trackUsage( $result, $parsedQuery, $operationName );
-		$this->tracking->trackErrors( $this->queryComplexityRule, $result->errors );
+		$this->transformErrors( $result );
+		$this->tracking->recordQueryMetrics( $result, $parsedQuery, $operationName );
 		$this->errorLogger->logUnexpectedErrors( $result->errors );
 
 		$includeDebugInfo = DebugFlag::INCLUDE_TRACE | DebugFlag::INCLUDE_DEBUG_MESSAGE;
 		return $result->toArray(
 			$this->config->get( 'ShowExceptionDetails' ) ? $includeDebugInfo : DebugFlag::NONE
+		);
+	}
+
+	/**
+	 * Transforms errors for easier processing by tracking/logging code
+	 */
+	private function transformErrors( ExecutionResult $result ): void {
+		if ( count( $result->errors ) === 1 && $this->queryComplexityRule->wasViolated() ) {
+			$result->errors = [ GraphQLError::queryTooComplex(
+				$this->queryComplexityRule->getQueryComplexity(),
+				$this->queryComplexityRule->getMaxQueryComplexity(),
+			) ];
+		}
+
+		$result->errors = array_map(
+			fn( Error $error ) => $error->getPrevious() instanceof GraphQLError ? $error->getPrevious() : $error,
+			$result->errors,
 		);
 	}
 

@@ -47,6 +47,14 @@ class GraphQLError extends Error {
 		return new self( GraphQLErrorType::INVALID_QUERY, "Invalid query - $reason" );
 	}
 
+	public static function queryTooComplex( int $count, int $max ): self {
+		$percentageOverMax = ceil( $count / $max * 100 ) - 100;
+		return new self(
+			GraphQLErrorType::QUERY_TOO_COMPLEX,
+			"The query complexity is $percentageOverMax% over the limit."
+		);
+	}
+
 	public function isClientSafe(): bool {
 		return true;
 	}

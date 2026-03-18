@@ -20,12 +20,7 @@ class QueryComplexityRule extends QueryComplexity {
 	 * This method is used in order to check whether getQueryComplexity() can be called,
 	 * since getQueryComplexity() errors when it is called and the rule was not used.
 	 */
-	public function wasChecked(): bool {
-		return $this->wasChecked;
-	}
-
-	public static function maxQueryComplexityErrorMessage( int $max, int $count ): string {
-		$percentageOverMax = ceil( $count / $max * 100 ) - 100;
-		return "The query complexity is $percentageOverMax% over the limit.";
+	public function wasViolated(): bool {
+		return $this->wasChecked && $this->getQueryComplexity() > $this->getMaxQueryComplexity();
 	}
 }
