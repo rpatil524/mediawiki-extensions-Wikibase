@@ -30,7 +30,6 @@ use Wikibase\Lib\Store\PropertyInfoStore;
 use Wikibase\Lib\Store\RevisionBasedEntityLookup;
 use Wikibase\Lib\Store\SiteLinkStore;
 use Wikibase\Lib\Store\Sql\EntityChangeLookup;
-use Wikibase\Lib\Store\Sql\PrefetchingWikiPageEntityMetaDataAccessor;
 use Wikibase\Lib\Store\Sql\PropertyInfoTable;
 use Wikibase\Lib\Store\Sql\SiteLinkTable;
 use Wikibase\Lib\Store\Sql\SqlChangeStore;
@@ -106,7 +105,7 @@ class SqlStore implements Store {
 	private $propertyInfoTable = null;
 
 	/**
-	 * @var PrefetchingWikiPageEntityMetaDataAccessor|null
+	 * @var EntityPrefetcher|null
 	 */
 	private $entityPrefetcher = null;
 
@@ -483,7 +482,7 @@ class SqlStore implements Store {
 	}
 
 	/**
-	 * @return PrefetchingWikiPageEntityMetaDataAccessor
+	 * @return EntityPrefetcher
 	 */
 	public function getEntityPrefetcher() {
 		if ( $this->entityPrefetcher === null ) {

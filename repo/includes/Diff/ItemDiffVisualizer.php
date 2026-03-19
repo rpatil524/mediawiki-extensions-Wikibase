@@ -41,7 +41,7 @@ class ItemDiffVisualizer implements EntityDiffVisualizer {
 		MessageLocalizer $messageLocalizer,
 		SiteLookup $siteLookup,
 		EntityIdFormatter $entityIdFormatter,
-		EntityDiffVisualizer $basicEntityDiffVisualizer
+		BasicEntityDiffVisualizer $basicEntityDiffVisualizer
 	) {
 		$this->messageLocalizer = $messageLocalizer;
 		$this->siteLookup = $siteLookup;
