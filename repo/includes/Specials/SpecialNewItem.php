@@ -385,7 +385,7 @@ class SpecialNewItem extends SpecialNewEntity {
 					'wikibase-validator-label-with-description-conflict',
 					$formData[self::FIELD_LABEL],
 					$formData[self::FIELD_LANG],
-					$collidingItemId
+					$collidingItemId->getSerialization()
 				);
 			}
 		}
