@@ -84,14 +84,15 @@ class TrackingTest extends MediaWikiIntegrationTestCase {
 			$this->assertSame( 1, $statsHelper->count( $metric ) );
 		}
 
-		$otherMetrics = array_diff( $statsHelper->getAllFormatted(), $expectedMetrics );
-		foreach ( $otherMetrics as $metric ) {
-			$this->assertStringStartsNotWith(
-				'wikibase_graphql_error_total',
-				$metric,
-				"$metric was not expected to be tracked",
-			);
-		}
+		$allErrorMetrics = array_filter(
+			$statsHelper->getAllFormatted(),
+			fn( string $metric ) => str_contains( $metric, 'wikibase_graphql_error_total' ),
+		);
+		$this->assertSameSize(
+			$allErrorMetrics,
+			$expectedMetrics,
+			'Some of the following metrics were not expected to be recorded: ' . var_export( $allErrorMetrics, true ),
+		);
 	}
 
 	public function errorQueryProvider(): Generator {
@@ -153,14 +154,15 @@ class TrackingTest extends MediaWikiIntegrationTestCase {
 			$this->assertSame( $count, $statsHelper->count( $metricName ) );
 		}
 
-		$otherMetrics = array_diff( $statsHelper->getAllFormatted(), $expectedMetrics );
-		foreach ( $otherMetrics as $metric ) {
-			$this->assertStringStartsNotWith(
-				'wikibase_graphql_field_usage_total',
-				$metric,
-				"$metric was not expected to be tracked",
-			);
-		}
+		$allFieldMetrics = array_filter(
+			$statsHelper->getAllFormatted(),
+			fn( string $metric ) => str_contains( $metric, 'wikibase_graphql_field_usage_total' ),
+		);
+		$this->assertSame(
+			count( $allFieldMetrics ),
+			array_sum( $expectedMetrics ), // sum because $allFieldMetrics contains one entry per increment
+			'Some of the following metrics were not expected to be recorded: ' . var_export( $allFieldMetrics, true ),
+		);
 	}
 
 	public function fieldUsageQueryProvider(): Generator {
