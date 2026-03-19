@@ -9,6 +9,8 @@
 	},
 	"wikibase-edit": "Idita",
 	"wikibase-add": "kirsenta",
+	"wikibase-label-empty": "Nun utikéta ka foi difinidu",
+	"wikibase-description-empty": "Nun diskrison ka foi difinidu",
 	"wikibase-sitelinks-special": "Otus sáiti",
 	"wikibase-statementview-rank-normal": "Klasifikason nurmal"
 }
