@@ -28,46 +28,48 @@ class TrackingTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider queryProvider
 	 */
-	public function testHitTracking( string $query, array $metrics ): void {
+	public function testHitTracking( string $query, string $expectedStatus ): void {
 		$statsHelper = StatsFactory::newUnitTestingHelper();
 
 		$this->newGraphQLService( $statsHelper->getStatsFactory() )
 			->query( $query );
 
-		foreach ( $metrics as $metric ) {
-			$this->assertSame( 1, $statsHelper->count( $metric ) );
-		}
+		$this->assertSame(
+			1,
+			$statsHelper->count( "wikibase_graphql_hit_total{status=\"{$expectedStatus}\"}" )
+		);
+		$this->assertSame( 1, $statsHelper->count( 'wikibase_graphql_hit_total' ) );
 	}
 
 	public function queryProvider(): Generator {
 		yield 'success' => [
 			'{ item(id: "' . self::EXISTING_ITEM_ID . '") { id } }',
-			[ 'wikibase_graphql_hit_total{status="success"}' ],
+			'success',
 		];
 
 		yield 'introspection' => [
 			'{ __typename }',
-			[ 'wikibase_graphql_hit_total{status="introspection"}' ],
+			'introspection',
 		];
 
 		yield 'error - empty query' => [
 			'',
-			[ 'wikibase_graphql_hit_total{status="error"}' ],
+			'error',
 		];
 
 		yield 'error - invalid query - syntax error' => [
 			'{ fieldDoesNotExist',
-			[ 'wikibase_graphql_hit_total{status="error"}' ],
+			'error',
 		];
 
 		yield 'error - invalid query - unknown field' => [
 			'{ fieldDoesNotExist }',
-			[ 'wikibase_graphql_hit_total{status="error"}' ],
+			'error',
 		];
 
 		yield 'partial success - item not found' => [
 			'{ item(id: "Q9999") { id } }',
-			[ 'wikibase_graphql_hit_total{status="partial_success"}' ],
+			'partial_success',
 		];
 	}
 
