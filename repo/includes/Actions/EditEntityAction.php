@@ -168,27 +168,27 @@ class EditEntityAction extends ViewEntityAction {
 		}
 
 		if ( $olderRevision->getId() == $newerRevision->getId() ) {
-			return Status::newFatal( 'wikibase-undo-samerev', $this->getTitle() );
+			return Status::newFatal( 'wikibase-undo-samerev', $this->getTitle()->getPrefixedText() );
 		}
 
 		if ( $newerRevision->getPageId() != $latestRevision->getPageId() ) {
-			return Status::newFatal( 'wikibase-undo-badpage', $this->getTitle(), $newerRevision->getId() );
+			return Status::newFatal( 'wikibase-undo-badpage', $this->getTitle()->getPrefixedText(), $newerRevision->getId() );
 		}
 
 		if ( $olderRevision->getPageId() != $latestRevision->getPageId() ) {
-			return Status::newFatal( 'wikibase-undo-badpage', $this->getTitle(), $olderRevision->getId() );
+			return Status::newFatal( 'wikibase-undo-badpage', $this->getTitle()->getPrefixedText(), $olderRevision->getId() );
 		}
 
 		if ( $olderRevision->getContent( SlotRecord::MAIN ) === null ) {
-			return Status::newFatal( 'wikibase-undo-nocontent', $this->getTitle(), $olderRevision->getId() );
+			return Status::newFatal( 'wikibase-undo-nocontent', $this->getTitle()->getPrefixedText(), $olderRevision->getId() );
 		}
 
 		if ( $newerRevision->getContent( SlotRecord::MAIN ) === null ) {
-			return Status::newFatal( 'wikibase-undo-nocontent', $this->getTitle(), $newerRevision->getId() );
+			return Status::newFatal( 'wikibase-undo-nocontent', $this->getTitle()->getPrefixedText(), $newerRevision->getId() );
 		}
 
 		if ( $latestRevision->getContent( SlotRecord::MAIN ) === null ) {
-			return Status::newFatal( 'wikibase-undo-nocontent', $this->getTitle(), $latestRevision->getId() );
+			return Status::newFatal( 'wikibase-undo-nocontent', $this->getTitle()->getPrefixedText(), $latestRevision->getId() );
 		}
 
 		return Status::newGood( [ $olderRevision, $newerRevision, $latestRevision ] );
