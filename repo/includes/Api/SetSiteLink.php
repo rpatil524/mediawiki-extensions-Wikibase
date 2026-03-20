@@ -222,6 +222,7 @@ class SetSiteLink extends ModifyEntity {
 				'no-such-sitelink'
 			);
 		}
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 		return $siteLink->getPageName();
 	}
 

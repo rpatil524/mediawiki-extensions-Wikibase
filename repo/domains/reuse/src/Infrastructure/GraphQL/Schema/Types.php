@@ -198,7 +198,6 @@ class Types {
 			'description' => 'The result of a search query for items.',
 			'fields' => [
 				'edges' => [
-					// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 					'type' => Type::nonNull( Type::listOf( Type::nonNull( $this->getItemSearchResultEdgeType() ) ) ),
 					'description' => 'List of search result edges for the current page.',
 				],

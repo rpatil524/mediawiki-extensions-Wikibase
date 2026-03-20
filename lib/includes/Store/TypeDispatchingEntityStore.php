@@ -193,7 +193,6 @@ class TypeDispatchingEntityStore implements EntityStore {
 		}
 
 		if ( is_callable( $this->stores[$entityType] ) ) {
-			// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 			$this->stores[$entityType] = $this->stores[$entityType](
 				$this->defaultStore,
 				$this->lookup

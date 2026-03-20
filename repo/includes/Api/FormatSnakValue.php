@@ -152,6 +152,7 @@ class FormatSnakValue extends ApiBase {
 		$this->getResult()->addValue(
 			null,
 			'result',
+			// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 			$formattedValue
 		);
 	}

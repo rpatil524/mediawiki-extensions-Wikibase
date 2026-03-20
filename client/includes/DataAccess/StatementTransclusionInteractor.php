@@ -115,6 +115,7 @@ class StatementTransclusionInteractor {
 
 		$snaks = $this->snaksFinder->findSnaks(
 			$entity,
+			// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 			$propertyId,
 			$acceptableRanks
 		);

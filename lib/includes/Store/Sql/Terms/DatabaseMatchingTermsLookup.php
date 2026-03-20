@@ -135,12 +135,10 @@ class DatabaseMatchingTermsLookup implements MatchingTermsLookup {
 		}
 
 		if ( isset( $options['LIMIT'] ) && $options['LIMIT'] > 0 ) {
-			// @phan-suppress-next-line PhanTypeMismatchArgument False positive
 			$queryBuilder->limit( $options['LIMIT'] );
 		}
 
 		if ( isset( $options['OFFSET'] ) && $options['OFFSET'] > 0 ) {
-			// @phan-suppress-next-line PhanTypeMismatchArgument False positive
 			$queryBuilder->offset( $options['OFFSET'] );
 		}
 

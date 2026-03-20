@@ -157,6 +157,7 @@ class EchoNotificationsHandlers implements WikibaseHandleChangeHook, LocalUserCr
 			return false;
 		}
 
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 		$siteLinkDiffOp = $siteLinkDiff[$siteId]['name'];
 
 		$title = $this->getTitleForNotification( $siteLinkDiffOp );

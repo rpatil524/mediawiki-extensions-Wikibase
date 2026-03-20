@@ -9,8 +9,6 @@ use MediaWiki\User\UserIdentity;
 use StatusValue;
 use Wikimedia\Assert\Assert;
 
-// @phan-file-suppress PhanGenericConstructorTypes -- this class has no constructor
-
 /**
  * A status that may have resulted in a temporary user being created.
  *

@@ -82,7 +82,6 @@ class TypeDispatchingEntityRevisionLookup implements EntityRevisionLookup {
 		}
 
 		if ( is_callable( $this->lookups[$entityType] ) ) {
-			// @phan-suppress-next-line PhanUndeclaredInvokeInCallable
 			$this->lookups[$entityType] = $this->lookups[$entityType](
 				$this->defaultLookup
 			);

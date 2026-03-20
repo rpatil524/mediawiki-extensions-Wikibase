@@ -205,6 +205,7 @@ abstract class ModifyEntity extends ApiBase {
 				$this->errorReporter->dieException( $ex, 'unresolved-redirect' );
 			}
 
+			// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 			if ( $currentEntityRevision ) {
 				$currentEntityResult = $changeOp->validate( $currentEntityRevision->getEntity() );
 				if ( !$currentEntityResult->isValid() ) {

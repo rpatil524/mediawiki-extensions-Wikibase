@@ -135,12 +135,14 @@ class EntitySourceDefinitions {
 			if ( $source->getType() === DatabaseEntitySource::TYPE ) {
 				$entityTypes = $source->getEntityTypes();
 				foreach ( $entityTypes as $type ) {
+					// @phan-suppress-next-line PhanTypeMismatchProperty
 					$this->entityTypeToDatabaseSourceMapping[$type] = $source;
 				}
 			}
 		}
 		foreach ( $this->entityTypeToDatabaseSourceMapping as $mainEntityType => $source ) {
 			foreach ( $this->subEntityTypesMapper->getSubEntityTypes( $mainEntityType ) as $subEntityType ) {
+				// @phan-suppress-next-line PhanTypeMismatchProperty
 				$this->entityTypeToDatabaseSourceMapping[$subEntityType] = $this->entityTypeToDatabaseSourceMapping[$mainEntityType];
 			}
 		}
