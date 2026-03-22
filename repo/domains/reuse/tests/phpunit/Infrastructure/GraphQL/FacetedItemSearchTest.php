@@ -54,13 +54,13 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function searchProvider(): Generator {
-		$stringProperty = $this->createProperty( 'string' );
-		$itemProperty = $this->createProperty( 'wikibase-item' );
-		$otherItemProperty = $this->createProperty( 'wikibase-item' );
-		$itemUsedAsStatementValue = $this->createItem( NewItem::withLabel( 'en', 'value item' ) );
+	public static function searchProvider(): Generator {
+		$stringProperty = self::createProperty( 'string' );
+		$itemProperty = self::createProperty( 'wikibase-item' );
+		$otherItemProperty = self::createProperty( 'wikibase-item' );
+		$itemUsedAsStatementValue = self::createItem( NewItem::withLabel( 'en', 'value item' ) );
 
-		$item = $this->createItem(
+		$item = self::createItem(
 			NewItem::withLabel( 'en', 'some label' )
 				->andDescription( 'en', 'some description' )
 				->andStatement(
@@ -70,12 +70,12 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 				)
 				->andStatement( NewStatement::forProperty( $stringProperty->getId() )->withValue( 'potato' ) )
 		);
-		$item2 = $this->createItem(
+		$item2 = self::createItem(
 			NewItem::withLabel( 'en', 'item 2' )
 				->andStatement( NewStatement::someValueFor( $stringProperty->getId() )->withSomeGuid() )
 				->andStatement( NewStatement::someValueFor( $otherItemProperty->getId() )->withSomeGuid() )
 		);
-		$item3 = $this->createItem(
+		$item3 = self::createItem(
 			NewItem::withLabel( 'en', 'item 3' )
 				->andStatement( NewStatement::someValueFor( $stringProperty->getId() )->withSomeGuid() )
 		);
@@ -110,13 +110,13 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 				'data' => [
 					'searchItems' => [
 						'edges' => [
-							[ 'node' => [ 'id' => $item->getId() ], 'cursor' => $this->encodeOffsetAsCursor( 1 ) ],
+							[ 'node' => [ 'id' => $item->getId() ], 'cursor' => self::encodeOffsetAsCursor( 1 ) ],
 						],
 						'pageInfo' => [
-							'endCursor' => $this->encodeOffsetAsCursor( 1 ),
+							'endCursor' => self::encodeOffsetAsCursor( 1 ),
 							'hasPreviousPage' => false,
 							'hasNextPage' => false,
-							'startCursor' => $this->encodeOffsetAsCursor( 1 ),
+							'startCursor' => self::encodeOffsetAsCursor( 1 ),
 						],
 					],
 				],
@@ -234,17 +234,17 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 							[ 'node' => [ 'id' => $item2->getId() ] ],
 						],
 						'pageInfo' => [
-							'endCursor' => $this->encodeOffsetAsCursor( 2 ),
+							'endCursor' => self::encodeOffsetAsCursor( 2 ),
 							'hasPreviousPage' => false,
 							'hasNextPage' => true,
-							'startCursor' => $this->encodeOffsetAsCursor( 1 ),
+							'startCursor' => self::encodeOffsetAsCursor( 1 ),
 						],
 					],
 				],
 			],
 		];
 
-		$offset = $this->encodeOffsetAsCursor( 1 );
+		$offset = self::encodeOffsetAsCursor( 1 );
 		yield 'pagination - with offset' => [
 			"{  searchItems(
 				query: { property: \"{$stringProperty->getId()}\" },
@@ -266,17 +266,17 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 							[ 'node' => [ 'id' => $item3->getId() ] ],
 						],
 						'pageInfo' => [
-							'endCursor' => $this->encodeOffsetAsCursor( 3 ),
+							'endCursor' => self::encodeOffsetAsCursor( 3 ),
 							'hasPreviousPage' => true,
 							'hasNextPage' => false,
-							'startCursor' => $this->encodeOffsetAsCursor( 2 ),
+							'startCursor' => self::encodeOffsetAsCursor( 2 ),
 						],
 					],
 				],
 			],
 		];
 
-		$offset = $this->encodeOffsetAsCursor( 1 );
+		$offset = self::encodeOffsetAsCursor( 1 );
 		yield 'pagination - with offset and limit' => [
 			"{  searchItems(
 				query: { property: \"{$stringProperty->getId()}\" },
@@ -298,17 +298,17 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 							[ 'node' => [ 'id' => $item2->getId() ] ],
 						],
 						'pageInfo' => [
-							'endCursor' => $this->encodeOffsetAsCursor( 2 ),
+							'endCursor' => self::encodeOffsetAsCursor( 2 ),
 							'hasPreviousPage' => true,
 							'hasNextPage' => true,
-							'startCursor' => $this->encodeOffsetAsCursor( 2 ),
+							'startCursor' => self::encodeOffsetAsCursor( 2 ),
 						],
 					],
 				],
 			],
 		];
 
-		$property = $this->createProperty( 'string' );
+		$property = self::createProperty( 'string' );
 		yield 'pagination - no results' => [
 			"{ searchItems(query: { property: \"{$property->getId()}\" }) {
 				pageInfo {
@@ -342,7 +342,7 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expectedErrorMessage, $result['errors'][0]['message'] );
 	}
 
-	public function errorsProvider(): Generator {
+	public static function errorsProvider(): Generator {
 		yield 'rejects queries with more than one search' => [
 			'{
 			  s1: searchItems(query: { property: "P1" } ) { edges { node { id } } }
@@ -366,7 +366,7 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			"Invalid search query: 'and' fields must contain at least two elements",
 		];
 
-		$stringProperty = $this->createProperty( 'string' );
+		$stringProperty = self::createProperty( 'string' );
 		yield 'invalid search query: "and" and "property"' => [
 			"{
 				searchItems(query: {
@@ -377,7 +377,7 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			'Invalid search query: Query filters must only contain a single operator field or a property/value condition',
 		];
 
-		$stringProperty = $this->createProperty( 'string' );
+		$stringProperty = self::createProperty( 'string' );
 		yield 'invalid search query: "and" nested' => [
 			"{
 				searchItems(query: {
@@ -391,7 +391,7 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			'Field "and" is not defined by type "AndOperationCondition".',
 		];
 
-		$unsupportedProperty = $this->createProperty( 'wikibase-property' );
+		$unsupportedProperty = self::createProperty( 'wikibase-property' );
 		yield 'invalid search query: unsupported property data type' => [
 			"{
 			  searchItems(query: { property: \"{$unsupportedProperty->getId()}\" } ) { edges { node { id } } }
@@ -420,7 +420,7 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			'"after" does not contain a valid cursor',
 		];
 
-		$cursor = $this->encodeOffsetAsCursor( -1 );
+		$cursor = self::encodeOffsetAsCursor( -1 );
 		yield 'invalid cursor: offset below min' => [
 			"{
 			  searchItems(query: { property: \"{$stringProperty->getId()}\" }, after: \"$cursor\") { edges { node { id } } }
@@ -428,7 +428,7 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			'"after" does not contain a valid cursor',
 		];
 
-		$cursor = $this->encodeOffsetAsCursor( FacetedItemSearchRequest::MAX_OFFSET + 1 );
+		$cursor = self::encodeOffsetAsCursor( FacetedItemSearchRequest::MAX_OFFSET + 1 );
 		yield 'invalid cursor: offset above max' => [
 			"{
 			  searchItems(query: { property: \"{$stringProperty->getId()}\" }, after: \"$cursor\") { edges { node { id } } }
@@ -448,9 +448,9 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expectedErrorMessage, $result['errors'][0]['message'] );
 	}
 
-	private function createProperty( string $dataType, ?string $enLabel = null ): Property {
+	private static function createProperty( string $dataType, ?string $enLabel = null ): Property {
 		// assign the ID here so that we don't have to worry about collisions
-		$nextId = empty( self::$properties ) ? 'P1' : 'P' . $this->getNextNumericId( self::$properties );
+		$nextId = empty( self::$properties ) ? 'P1' : 'P' . self::getNextNumericId( self::$properties );
 		$property = new Property( new NumericPropertyId( $nextId ), null, $dataType );
 		if ( $enLabel ) {
 			$property->setLabel( 'en', $enLabel );
@@ -460,16 +460,16 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 		return $property;
 	}
 
-	private function createItem( NewItem $newItem ): Item {
+	private static function createItem( NewItem $newItem ): Item {
 		// assign the ID here so that we don't have to worry about collisions
-		$nextId = empty( self::$items ) ? 'Q1' : 'Q' . $this->getNextNumericId( self::$items );
+		$nextId = empty( self::$items ) ? 'Q1' : 'Q' . self::getNextNumericId( self::$items );
 		$item = $newItem->andId( $nextId )->build();
 		self::$items[] = $item;
 
 		return $item;
 	}
 
-	private function getNextNumericId( array $entities ): int {
+	private static function getNextNumericId( array $entities ): int {
 		$latestEntity = $entities[array_key_last( $entities )];
 		return (int)substr( $latestEntity->getId()->getSerialization(), 1 ) + 1;
 	}

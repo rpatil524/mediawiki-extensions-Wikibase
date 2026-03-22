@@ -18,12 +18,12 @@ use MediaWiki\Site\SiteLookup;
 use MediaWikiIntegrationTestCase;
 use Wikibase\DataAccess\PrefetchingTermLookup;
 use Wikibase\DataAccess\Tests\InMemoryPrefetchingTermLookup;
-use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Entity\Property;
+use Wikibase\DataModel\Fixtures\CustomEntityId;
 use Wikibase\DataModel\Reference;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
 use Wikibase\DataModel\Services\Lookup\InMemoryDataTypeLookup;
@@ -95,7 +95,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function queryProvider(): Generator {
+	public static function queryProvider(): Generator {
 		$enLabel = 'potato';
 		$enDescription = 'root vegetable';
 		$enAliases = [ 'spud', 'tater' ];
@@ -104,7 +104,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 		$sitelinkTitle = 'Potato';
 		$unusedPropertyId = 'P9999';
 
-		$item = $this->createItem(
+		$item = self::createItem(
 			NewItem::withLabel( 'en', $enLabel )
 				->andDescription( 'en', $enDescription )
 				->andAliases( 'en', $enAliases )
@@ -157,9 +157,9 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$stringProperty = $this->createProperty( 'string', 'string property' );
-		$qualifierProperty = $this->createProperty( 'string', 'qualifier prop' );
-		$referenceProperty = $this->createProperty( 'string', 'reference prop' );
+		$stringProperty = self::createProperty( 'string', 'string property' );
+		$qualifierProperty = self::createProperty( 'string', 'qualifier prop' );
+		$referenceProperty = self::createProperty( 'string', 'reference prop' );
 		$statementStringValue = 'statementStringValue';
 		$qualifierStringValue = 'qualifierStringValue';
 		$statementWithStringValue = NewStatement::forProperty( $stringProperty->getId() )
@@ -198,12 +198,12 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$itemProperty = $this->createProperty( 'wikibase-item' );
-		$itemUsedAsStatementValue = $this->createItem(
+		$itemProperty = self::createProperty( 'wikibase-item' );
+		$itemUsedAsStatementValue = self::createItem(
 			NewItem::withLabel( 'en', 'statement value item label' )
 				->andDescription( 'en', 'statement value item description' )
 		);
-		$itemUsedAsQualifierValue = $this->createItem( NewItem::withLabel( 'en', 'qualifier value item label' ) );
+		$itemUsedAsQualifierValue = self::createItem( NewItem::withLabel( 'en', 'qualifier value item label' ) );
 		$statementWithItemValue = NewStatement::forProperty( $itemProperty->getId() )
 			->withSubject( $itemId )
 			->withSomeGuid()
@@ -322,7 +322,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$globeCoordinateProperty = $this->createProperty( 'globe-coordinate' );
+		$globeCoordinateProperty = self::createProperty( 'globe-coordinate' );
 		$globeCoordinateValue = new GlobeCoordinateValue( new LatLongValue( 52.516, 13.383 ) );
 		$statementWithGlobeCoordinateValue = NewStatement::forProperty( $globeCoordinateProperty->getId() )
 			->withSubject( $itemId )
@@ -356,7 +356,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$monolingualTextProperty = $this->createProperty( 'monolingualtext' );
+		$monolingualTextProperty = self::createProperty( 'monolingualtext' );
 		$monolingualTextValue = new MonolingualTextValue( 'en', 'potato' );
 		$statementWithMonolingualTextValue = NewStatement::forProperty( $monolingualTextProperty->getId() )
 			->withSubject( $itemId )
@@ -388,7 +388,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$quantityProperty = $this->createProperty( 'quantity' );
+		$quantityProperty = self::createProperty( 'quantity' );
 		$quantityValue = new QuantityValue(
 			new DecimalValue( '+0.111' ),
 			'https://wikibase.example/wiki/Q123',
@@ -445,7 +445,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$timeProperty = $this->createProperty( 'time' );
+		$timeProperty = self::createProperty( 'time' );
 		$timeValue = new TimeValue(
 			timestamp: '+2001-01-01T00:00:00Z',
 			timezone: 60,
@@ -488,7 +488,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$externalIdProperty = $this->createProperty( 'external-id' );
+		$externalIdProperty = self::createProperty( 'external-id' );
 		self::$propertyFormatterUrls[$externalIdProperty->getId()->getSerialization()] = 'https://viaf.org/viaf/$1';
 		$externalIdValue = '122530980';
 		$item->getStatements()->addStatement(
@@ -525,7 +525,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$externalIdProperty = $this->createProperty( 'external-id' );
+		$externalIdProperty = self::createProperty( 'external-id' );
 		self::$propertyFormatterUrls[$externalIdProperty->getId()->getSerialization()] = null;
 		$externalIdValue = '122530980';
 		$item->getStatements()->addStatement(
@@ -562,7 +562,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$geoShapeProperty = $this->createProperty( 'geo-shape' );
+		$geoShapeProperty = self::createProperty( 'geo-shape' );
 		$geoShapeContent = 'Data:Neighbourhoods/New York City.map';
 		$statementWithGeoShapeValue = NewStatement::forProperty( $geoShapeProperty->getId() )
 			->withSubject( $itemId )
@@ -595,7 +595,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$tabularProperty = $this->createProperty( 'tabular-data' );
+		$tabularProperty = self::createProperty( 'tabular-data' );
 		$tabularContent = 'Data:CapacityExchange/capacities.tab';
 		$statementWithTabularValue = NewStatement::forProperty( $tabularProperty->getId() )
 			->withSubject( $itemId )
@@ -628,7 +628,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$commonsMediaProperty = $this->createProperty( 'commonsMedia' );
+		$commonsMediaProperty = self::createProperty( 'commonsMedia' );
 		$commonsMediaContent = 'Cityscape Berlin.jpg';
 		$statementWithCommonsMediaValue = NewStatement::forProperty( $commonsMediaProperty->getId() )
 			->withSubject( $itemId )
@@ -660,7 +660,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$urlProperty = $this->createProperty( 'url' );
+		$urlProperty = self::createProperty( 'url' );
 		$urlContent = 'https://www.example.org/';
 		$statementWithUrlValue = NewStatement::forProperty( $urlProperty->getId() )
 			->withSubject( $itemId )
@@ -692,8 +692,8 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$propertyProperty = $this->createProperty( 'wikibase-property' );
-		$propertyUsedAsValue = $this->createProperty( 'string', 'property used as value' );
+		$propertyProperty = self::createProperty( 'wikibase-property' );
+		$propertyUsedAsValue = self::createProperty( 'string', 'property used as value' );
 		$statementWithPropertyValue = NewStatement::forProperty( $propertyProperty->getId() )
 			->withSubject( $itemId )
 			->withSomeGuid()
@@ -727,7 +727,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$noValueSomeValueProperty = $this->createProperty( 'string' );
+		$noValueSomeValueProperty = self::createProperty( 'string' );
 		$statementWithSomeValue = NewStatement::someValueFor( $noValueSomeValueProperty->getId() )
 			->withSubject( $itemId )
 			->withSomeGuid()
@@ -763,7 +763,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$unknownTypeProperty = $this->createProperty( 'unknown-type', 'unknown type property' );
+		$unknownTypeProperty = self::createProperty( 'unknown-type', 'unknown type property' );
 		$unknownValueData = [ 'some' => 'data' ];
 		$statementWithUnknownType = NewStatement::forProperty( $unknownTypeProperty->getId() )
 			->withSubject( $itemId )
@@ -887,10 +887,8 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$customEntityTypeProperty = $this->createProperty( self::CUSTOM_ENTITY_DATA_TYPE );
-		$customEntityId = $this->createMock( EntityId::class );
-		$customEntityId->method( 'getSerialization' )
-			->willReturn( 'T3' );
+		$customEntityTypeProperty = self::createProperty( self::CUSTOM_ENTITY_DATA_TYPE );
+		$customEntityId = new CustomEntityId( 'T3' );
 		$entityIdValue = new EntityIdValue( $customEntityId );
 		$statementWithCustomEntityIdValue = NewStatement::forProperty( $customEntityTypeProperty->getId() )
 			->withSubject( $itemId )
@@ -915,7 +913,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
-		$otherItem = $this->createItem( NewItem::withLabel( 'en', 'another item' ) );
+		$otherItem = self::createItem( NewItem::withLabel( 'en', 'another item' ) );
 		yield 'multiple items at once' => [
 			"{
 				item1: item(id: \"$itemId\") { label(languageCode: \"en\") }
@@ -1117,17 +1115,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 		];
 	}
 
-	/**
-	 * @dataProvider redirectProvider
-	 */
-	public function testRedirect( string $query, array $expectedResult, EntityLookup $lookup ): void {
-		$this->assertEquals(
-			$expectedResult,
-			$this->newGraphQLService( $lookup )->query( $query )
-		);
-	}
-
-	public function redirectProvider(): Generator {
+	public function testRedirectSingle(): void {
 		$redirectSourceId = new ItemId( 'Q99' );
 		$redirectTargetId = new ItemId( 'Q100' );
 		$redirectTarget = new Item( $redirectTargetId );
@@ -1138,18 +1126,21 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			->with( $redirectSourceId )
 			->willReturn( $redirectTarget );
 
-		yield 'single redirected item' => [
-			"{ item(id: \"{$redirectSourceId}\") { id } }",
-			[
-				'data' => [ 'item' => [ 'id' => $redirectTargetId ] ],
-				'extensions' => [
-					QueryContext::KEY_MESSAGE => QueryContext::MESSAGE_REDIRECTS,
-					QueryContext::KEY_REDIRECTS => [ "$redirectSourceId" => "$redirectTargetId" ],
-				],
+		$query = "{ item(id: \"{$redirectSourceId}\") { id } }";
+		$expectedResult = [
+			'data' => [ 'item' => [ 'id' => $redirectTargetId ] ],
+			'extensions' => [
+				QueryContext::KEY_MESSAGE => QueryContext::MESSAGE_REDIRECTS,
+				QueryContext::KEY_REDIRECTS => [ "$redirectSourceId" => "$redirectTargetId" ],
 			],
-			$lookupMock,
 		];
+		$this->assertEquals(
+			$expectedResult,
+			$this->newGraphQLService( $lookupMock )->query( $query )
+		);
+	}
 
+	public function testRedirect(): void {
 		$itemId = new ItemId( 'Q97' );
 		$item = new Item( $itemId );
 		$redirectSource1 = new ItemId( 'Q98' );
@@ -1165,31 +1156,32 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			->withConsecutive( [ $itemId ], [ $redirectSource1 ], [ $redirectSource2 ] )
 			->willReturnOnConsecutiveCalls( $item, $redirectTarget1, $redirectTarget2 );
 
-		yield 'redirects in itemsById' => [
-			"{ itemsById(ids: [ \"$itemId\", \"$redirectSource1\", \"$redirectSource2\" ] ) { id } }",
-			[
-				'data' => [
-					'itemsById' => [
-						[ 'id' => "$itemId" ],
-						[ 'id' => "$redirectTargetId1" ],
-						[ 'id' => "$redirectTargetId2" ],
-					],
-				],
-				'extensions' => [
-					QueryContext::KEY_MESSAGE => QueryContext::MESSAGE_REDIRECTS,
-					QueryContext::KEY_REDIRECTS => [
-						"$redirectSource1" => "$redirectTargetId1",
-						"$redirectSource2" => "$redirectTargetId2",
-					],
+		$query = "{ itemsById(ids: [ \"$itemId\", \"$redirectSource1\", \"$redirectSource2\" ] ) { id } }";
+		$expectedResult = [
+			'data' => [
+				'itemsById' => [
+					[ 'id' => "$itemId" ],
+					[ 'id' => "$redirectTargetId1" ],
+					[ 'id' => "$redirectTargetId2" ],
 				],
 			],
-			$lookupMock,
+			'extensions' => [
+				QueryContext::KEY_MESSAGE => QueryContext::MESSAGE_REDIRECTS,
+				QueryContext::KEY_REDIRECTS => [
+					"$redirectSource1" => "$redirectTargetId1",
+					"$redirectSource2" => "$redirectTargetId2",
+				],
+			],
 		];
+		$this->assertEquals(
+			$expectedResult,
+			$this->newGraphQLService( $lookupMock )->query( $query )
+		);
 	}
 
-	private function createProperty( string $dataType, ?string $enLabel = null ): Property {
+	private static function createProperty( string $dataType, ?string $enLabel = null ): Property {
 		// assign the ID here so that we don't have to worry about collisions
-		$nextId = empty( self::$properties ) ? 'P1' : 'P' . $this->getNextNumericId( self::$properties );
+		$nextId = empty( self::$properties ) ? 'P1' : 'P' . self::getNextNumericId( self::$properties );
 		$property = new Property( new NumericPropertyId( $nextId ), null, $dataType );
 		if ( $enLabel ) {
 			$property->setLabel( 'en', $enLabel );
@@ -1199,16 +1191,16 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 		return $property;
 	}
 
-	private function createItem( NewItem $newItem ): Item {
+	private static function createItem( NewItem $newItem ): Item {
 		// assign the ID here so that we don't have to worry about collisions
-		$nextId = empty( self::$items ) ? 'Q1' : 'Q' . $this->getNextNumericId( self::$items );
+		$nextId = empty( self::$items ) ? 'Q1' : 'Q' . self::getNextNumericId( self::$items );
 		$item = $newItem->andId( $nextId )->build();
 		self::$items[] = $item;
 
 		return $item;
 	}
 
-	private function getNextNumericId( array $entities ): int {
+	private static function getNextNumericId( array $entities ): int {
 		$latestEntity = $entities[array_key_last( $entities )];
 		return (int)substr( $latestEntity->getId()->getSerialization(), 1 ) + 1;
 	}
