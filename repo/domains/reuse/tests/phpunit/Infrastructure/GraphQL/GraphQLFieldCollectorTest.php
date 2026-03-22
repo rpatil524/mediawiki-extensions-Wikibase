@@ -28,7 +28,7 @@ class GraphQLFieldCollectorTest extends TestCase {
 		);
 	}
 
-	public function queryProvider(): Generator {
+	public static function queryProvider(): Generator {
 		yield 'simple query' => [
 			'{ item(id: "Q1") {
 				id

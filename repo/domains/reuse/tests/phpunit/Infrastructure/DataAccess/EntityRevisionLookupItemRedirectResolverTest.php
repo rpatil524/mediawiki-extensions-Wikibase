@@ -29,7 +29,7 @@ class EntityRevisionLookupItemRedirectResolverTest extends TestCase {
 		$this->assertEquals( $expectedId, $resolver->resolveRedirect( $requestedId ) );
 	}
 
-	public function revisionLookupResultProvider(): Generator {
+	public static function revisionLookupResultProvider(): Generator {
 		yield 'no redirect' => [
 			new ItemId( 'Q123' ),
 			LatestRevisionIdResult::concreteRevision( 123, '20260101001122' ),

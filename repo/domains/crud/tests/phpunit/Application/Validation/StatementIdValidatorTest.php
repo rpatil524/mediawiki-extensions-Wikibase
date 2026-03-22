@@ -68,7 +68,7 @@ class StatementIdValidatorTest extends TestCase {
 	 * Valid data provider for StatementIdValidators that can parse StatementIds
 	 */
 	public static function validPropertyStatementIdDataProvider(): Generator {
-		yield 'valid with ItemId' => [ 'P123$AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE' ];
+		yield 'valid with PropertyId' => [ 'P123$AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE' ];
 	}
 
 	/**

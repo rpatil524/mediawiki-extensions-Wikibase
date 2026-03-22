@@ -58,7 +58,7 @@ class ClientEntityLinkFormatterTest extends TestCase {
 		);
 	}
 
-	public function getTitleAttributeProvider(): \Generator {
+	public static function getTitleAttributeProvider(): \Generator {
 		$labelData = [ 'language' => 'en', 'value' => 'label text' ];
 
 		$descriptionData = [ 'language' => 'en', 'value' => 'description text' ];

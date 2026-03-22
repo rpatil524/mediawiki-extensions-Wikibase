@@ -41,7 +41,7 @@ class TrackingTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 1, $statsHelper->count( 'wikibase_graphql_hit_total' ) );
 	}
 
-	public function queryProvider(): Generator {
+	public static function queryProvider(): Generator {
 		yield 'success' => [
 			'{ item(id: "' . self::EXISTING_ITEM_ID . '") { id } }',
 			'success',
@@ -96,7 +96,7 @@ class TrackingTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function errorQueryProvider(): Generator {
+	public static function errorQueryProvider(): Generator {
 		yield 'no errors' => [
 			'{ item(id: "' . self::EXISTING_ITEM_ID . '") { id } }',
 			[],
@@ -165,7 +165,7 @@ class TrackingTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function fieldUsageQueryProvider(): Generator {
+	public static function fieldUsageQueryProvider(): Generator {
 		yield 'only errors, no field usage tracked' => [
 			'{ fieldDoesNotExist }',
 			[],
