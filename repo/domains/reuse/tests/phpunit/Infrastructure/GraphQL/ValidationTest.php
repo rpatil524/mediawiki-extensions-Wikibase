@@ -28,7 +28,7 @@ class ValidationTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function queryProvider(): Generator {
+	public static function queryProvider(): Generator {
 		yield 'invalid query - syntactically invalid: missing closing brace' => [
 			'{ Item(id: "Q1" ) { id }',
 			'Invalid query - Syntax Error: Expected Name, found <EOF>',

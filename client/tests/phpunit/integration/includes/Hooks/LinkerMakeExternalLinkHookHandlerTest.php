@@ -76,7 +76,7 @@ class LinkerMakeExternalLinkHookHandlerTest extends TestCase {
 		);
 	}
 
-	public function onLinkerMakeExternalLinkFailuresProvider(): \Generator {
+	public static function onLinkerMakeExternalLinkFailuresProvider(): \Generator {
 		yield "Non-Wikibase Url" => [
 			"https://en.wikipedia.org/wiki/Berlin",
 			"Berlin",
@@ -202,7 +202,7 @@ class LinkerMakeExternalLinkHookHandlerTest extends TestCase {
 		$this->testOnLinkerMakeExternalLink_success( $url, $originalText, $expected, $attribs, $expectedTitleAttribs );
 	}
 
-	public function onLinkerMakeExternalLinkSuccessProvider(): \Generator {
+	public static function onLinkerMakeExternalLinkSuccessProvider(): \Generator {
 		yield "Item: Label and description both exist" => [
 			"https://www.wikidata.org/wiki/Item:Q64",
 			'Item:Q64',

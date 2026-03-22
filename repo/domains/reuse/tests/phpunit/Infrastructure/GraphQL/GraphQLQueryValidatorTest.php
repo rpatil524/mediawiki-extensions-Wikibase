@@ -27,7 +27,7 @@ class GraphQLQueryValidatorTest extends TestCase {
 		$this->assertInstanceOf( DocumentNode::class, $result->documentNode );
 	}
 
-	public function validQueryProvider(): Generator {
+	public static function validQueryProvider(): Generator {
 		yield 'simple field query' => [ '{ item(id: "Q1") { id } }' ];
 		yield 'named operation' => [ 'query GetItem { item(id: "Q42") { id } }' ];
 	}
@@ -41,7 +41,7 @@ class GraphQLQueryValidatorTest extends TestCase {
 		$this->assertSame( "The 'query' field is required and must not be empty", $result->errorResponse['errors'][0]['message'] );
 	}
 
-	public function missingQueryProvider(): Generator {
+	public static function missingQueryProvider(): Generator {
 		yield 'empty string' => [ '' ];
 		yield 'whitespace only' => [ '   ' ];
 		yield 'newline only' => [ "\n" ];
@@ -56,7 +56,7 @@ class GraphQLQueryValidatorTest extends TestCase {
 		$this->assertStringStartsWith( 'Invalid query - ', $result->errorResponse['errors'][0]['message'] );
 	}
 
-	public function syntaxErrorQueryProvider(): Generator {
+	public static function syntaxErrorQueryProvider(): Generator {
 		yield 'missing closing brace' => [ '{ item(id: "Q1") { id }' ];
 		yield 'missing opening brace' => [ 'item(id: "Q1") { id } }' ];
 	}
