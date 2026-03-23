@@ -33,6 +33,7 @@ use Wikibase\Repo\Api\EntitySearchException;
 use Wikibase\Repo\Api\EntitySearchHelper;
 use Wikibase\Repo\Api\PropertyDataTypeSearchHelper;
 use Wikibase\Repo\Api\SearchEntities;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
 use Wikibase\Repo\WikibaseRepo;
 
 /**
@@ -130,13 +131,18 @@ class SearchEntitiesTest extends \PHPUnit\Framework\TestCase {
 			),
 		], new SubEntityTypesMapper( [] ) );
 
+		$entitySourceLookup = new EntitySourceLookup( $entitySourceDefinitions, new SubEntityTypesMapper( [] ) );
 		$module = new SearchEntities(
 			$this->getApiMain( $params ),
 			'wbsearchentities',
 			$this->createMock( LinkBatchFactory::class ),
-			$entitySearchHelper ?: $this->getMockEntitySearchHelper( $params ),
+			new DispatchingWbSearchEntitiesController(
+				[],
+				$entitySearchHelper ?: $this->getMockEntitySearchHelper( $params ),
+				$entitySourceLookup
+			),
 			$this->getContentLanguages(),
-			new EntitySourceLookup( $entitySourceDefinitions, new SubEntityTypesMapper( [] ) ),
+			$entitySourceLookup,
 			$this->createMock( EntityTitleLookup::class ),
 			$this->newMockTitleTextLookup(),
 			$this->newMockUrlLookup(),
@@ -441,13 +447,14 @@ class SearchEntitiesTest extends \PHPUnit\Framework\TestCase {
 			],
 			new SubEntityTypesMapper( [] )
 		);
+		$entitySourceLookup = new EntitySourceLookup( $entitySourceDefinitions, new SubEntityTypesMapper( [] ) );
 		$module = new SearchEntities(
 			$this->getApiMain( $params ),
 			'wbsearchentities',
 			$this->createMock( LinkBatchFactory::class ),
-			$searchHelper,
+			new DispatchingWbSearchEntitiesController( [], $searchHelper, $entitySourceLookup ),
 			$this->getContentLanguages(),
-			new EntitySourceLookup( $entitySourceDefinitions, new SubEntityTypesMapper( [] ) ),
+			$entitySourceLookup,
 			$this->createMock( EntityTitleLookup::class ),
 			$this->newMockTitleTextLookup(),
 			$this->newMockUrlLookup(),

@@ -21,6 +21,7 @@ use Wikibase\Lib\Store\EntityArticleIdLookup;
 use Wikibase\Lib\Store\EntityTitleLookup;
 use Wikibase\Lib\Store\EntityTitleTextLookup;
 use Wikibase\Lib\Store\EntityUrlLookup;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
 use Wikibase\Repo\FederatedProperties\FederatedPropertiesException;
 use Wikibase\Repo\WikibaseRepo;
 use Wikimedia\Assert\InvariantException;
@@ -52,7 +53,7 @@ class SearchEntities extends ApiBase {
 
 	private LinkBatchFactory $linkBatchFactory;
 
-	private EntitySearchHelper $entitySearchHelper;
+	private DispatchingWbSearchEntitiesController $searchController;
 
 	private ContentLanguages $termsLanguages;
 
@@ -80,7 +81,7 @@ class SearchEntities extends ApiBase {
 		ApiMain $mainModule,
 		string $moduleName,
 		LinkBatchFactory $linkBatchFactory,
-		EntitySearchHelper $entitySearchHelper,
+		DispatchingWbSearchEntitiesController $searchController,
 		ContentLanguages $termLanguages,
 		EntitySourceLookup $entitySourceLookup,
 		EntityTitleLookup $entityTitleLookup,
@@ -93,8 +94,7 @@ class SearchEntities extends ApiBase {
 	) {
 		parent::__construct( $mainModule, $moduleName, '' );
 
-		// Always try to add a conceptUri to results if not already set
-		$this->entitySearchHelper = new ConceptUriSearchHelper( $entitySearchHelper, $entitySourceLookup );
+		$this->searchController = $searchController;
 
 		$this->linkBatchFactory = $linkBatchFactory;
 		$this->termsLanguages = $termLanguages;
@@ -128,7 +128,7 @@ class SearchEntities extends ApiBase {
 			$mainModule,
 			$moduleName,
 			$linkBatchFactory,
-			$entitySearchHelper,
+			new DispatchingWbSearchEntitiesController( [], $entitySearchHelper, $entitySourceLookup ),
 			$termsLanguages,
 			$entitySourceLookup,
 			$entityTitleLookup,
@@ -154,14 +154,15 @@ class SearchEntities extends ApiBase {
 	 */
 	private function getSearchResults( array $params ): array {
 		try {
-			return $this->entitySearchHelper->getRankedSearchResults(
-				$params['search'],
-				$params['language'],
-				$params['type'],
-				$params['continue'] + $params['limit'] + 1,
-				$params['strictlanguage'],
-				$this->searchProfiles[$params['profile']]
-			);
+			return $this->searchController
+				->getControllerForEntityType( $params['type'] )
+				->search(
+					$params['search'],
+					$params['language'],
+					$params['continue'] + $params['limit'] + 1,
+					$params['strictlanguage'],
+					$this->searchProfiles[$params['profile']]
+				);
 		} catch ( EntitySearchException $ese ) {
 			$this->dieStatus( $ese->getStatus() );
 
