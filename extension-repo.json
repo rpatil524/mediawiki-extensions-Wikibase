@@ -184,10 +184,10 @@
 			"factory": "\\Wikibase\\Repo\\Api\\SearchEntities::factory",
 			"services": [
 				"LinkBatchFactory",
+				"WbSearch.DispatchingWbSearchEntitiesController",
 				"WikibaseRepo.ApiHelperFactory",
 				"WikibaseRepo.EnabledEntityTypesForSearch",
 				"WikibaseRepo.EntityArticleIdLookup",
-				"WikibaseRepo.EntitySearchHelper",
 				"WikibaseRepo.EntitySourceLookup",
 				"WikibaseRepo.EntityTitleLookup",
 				"WikibaseRepo.EntityTitleTextLookup",

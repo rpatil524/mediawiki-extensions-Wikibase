@@ -14,6 +14,7 @@ use Wikibase\Repo\Domains\Search\Application\UseCases\SimpleItemSearch\SimpleIte
 use Wikibase\Repo\Domains\Search\Application\UseCases\SimplePropertySearch\SimplePropertySearch;
 use Wikibase\Repo\Domains\Search\Application\UseCases\SimplePropertySearch\SimplePropertySearchValidator;
 use Wikibase\Repo\Domains\Search\Application\Validation\SearchLanguageValidator;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
 use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\EntitySearchHelperPrefixSearchEngine;
 use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\InLabelSearchEngine;
 use Wikibase\Repo\Domains\Search\Infrastructure\LanguageCodeValidator;
@@ -32,6 +33,14 @@ use Wikibase\Search\Elastic\InLabelSearch;
 
 /** @phpcs-require-sorted-array */
 return [
+	'WbSearch.DispatchingWbSearchEntitiesController' => function( MediaWikiServices $services ): DispatchingWbSearchEntitiesController {
+		return new DispatchingWbSearchEntitiesController(
+			[],
+			WikibaseRepo::getEntitySearchHelper( $services ),
+			WikibaseRepo::getEntitySourceLookup( $services )
+		);
+	},
+
 	'WbSearch.ErrorReporter' => function( MediaWikiServices $services ): ErrorReporter {
 		return new MWErrorReporter();
 	},
