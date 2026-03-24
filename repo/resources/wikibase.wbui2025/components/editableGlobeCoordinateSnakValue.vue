@@ -279,10 +279,6 @@ module.exports = exports = defineComponent( {
 	}
 }
 
-.wikibase-coordinate-popover {
-	width: 327px;
-}
-
 .wikibase-coordinate-popover__title {
 	color: @color-subtle;
 }
@@ -302,7 +298,7 @@ module.exports = exports = defineComponent( {
 	min-height: 180px;
 	border: 1px solid @border-color-subtle;
 	background: @background-color-interactive-subtle;
-	width: 100%;
+	width: 99%;
 
 	.mw-parser-output {
 		margin: 0;
@@ -316,7 +312,6 @@ module.exports = exports = defineComponent( {
 	.mw-kartographer-map,
 	a.mw-kartographer-map {
 		display: block;
-		width: 100% !important;
 		max-width: 100%;
 	}
 }
