@@ -159,13 +159,15 @@ describe( 'wikibase.wbui2025.editableGlobeCoordinateSnakValue', () => {
 					options: '{"precision":0.016666666666666666}',
 					property: testPropertyId
 				} );
-				expect( precisionSelect.wrapperElement.value ).toEqual( '0.016666666666666666' );
+				expect( wrapper.vm.parsedPrecision ).toEqual( 0.0002777777777777778 );
 				expect( wrapper.vm.precision ).toEqual( '0.016666666666666666' );
+				expect( precisionSelect.wrapperElement.value ).toEqual( '0.016666666666666666' );
 			} );
 
 			it( 'auto precision omits precision arguments from the parseValue call', async () => {
 				await wrapper.setData( { selectedPrecision: 'auto' } );
 				expect( mockParseValue ).toHaveBeenLastCalledWith( rawValue, { property: testPropertyId } );
+				expect( wrapper.vm.parsedPrecision ).toEqual( 0.0002777777777777778 );
 			} );
 
 			it( 'changing the text input triggers a parsevalue call', async () => {
@@ -179,6 +181,7 @@ describe( 'wikibase.wbui2025.editableGlobeCoordinateSnakValue', () => {
 				mockParseValue.mockResolvedValueOnce( null );
 				await textInput.setValue( 'not a coordinate' );
 				await flushPromises();
+				expect( wrapper.vm.parsedPrecision ).toEqual( null );
 				expect( wrapper.find( '.wikibase-coordinate-popover__malformed' ).exists() ).toBe( true );
 			} );
 		} );
