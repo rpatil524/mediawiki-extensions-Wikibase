@@ -29,6 +29,7 @@ class WikibaseRepoHookRunner implements
 	WikibaseChangeNotificationHook,
 	WikibaseContentModelMappingHook,
 	WikibaseEditFilterMergedContentHook,
+	WikibaseRepoControllersHook,
 	WikibaseRepoDataTypesHook,
 	WikibaseRepoEntityNamespacesHook,
 	WikibaseRepoEntitySearchHelperCallbacksHook,
@@ -97,6 +98,14 @@ class WikibaseRepoHookRunner implements
 				'abortable' => false,
 				'noServices' => true, // early initialization
 			]
+		);
+	}
+
+	public function onWikibaseRepoControllers( array &$controllerDefinitions ): void {
+		$this->hookContainer->run(
+			'WikibaseRepoControllers',
+			[ &$controllerDefinitions ],
+			[ 'abortable' => false ],
 		);
 	}
 

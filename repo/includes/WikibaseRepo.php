@@ -213,6 +213,16 @@ class WikibaseRepo {
 			->get( 'WikibaseRepo.EntityContentFactory' );
 	}
 
+	public static function getControllersArray( ?ContainerInterface $services = null ): array {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'WikibaseRepo.ControllersArray' );
+	}
+
+	public static function getControllerRegistry( ?ContainerInterface $services = null ): ControllerRegistry {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'WikibaseRepo.ControllerRegistry' );
+	}
+
 	public static function getEntityTypeDefinitionsArray( ?ContainerInterface $services = null ): array {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'WikibaseRepo.EntityTypeDefinitionsArray' );

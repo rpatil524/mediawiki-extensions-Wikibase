@@ -164,6 +164,7 @@ use Wikibase\Repo\Content\ContentHandlerEntityTitleLookup;
 use Wikibase\Repo\Content\EntityContentFactory;
 use Wikibase\Repo\Content\ItemHandler;
 use Wikibase\Repo\Content\PropertyHandler;
+use Wikibase\Repo\ControllerRegistry;
 use Wikibase\Repo\DataTypeValidatorFactory;
 use Wikibase\Repo\Diff\ClaimDiffer;
 use Wikibase\Repo\Diff\EntityDiffVisualizerFactory;
@@ -459,6 +460,18 @@ return [
 			->onWikibaseContentModelMapping( $map );
 
 		return $map;
+	},
+
+	'WikibaseRepo.ControllerRegistry' => function ( MediaWikiServices $services ): ControllerRegistry {
+		return new ControllerRegistry( WikibaseRepo::getControllersArray( $services ) );
+	},
+
+	'WikibaseRepo.ControllersArray' => function ( MediaWikiServices $services ): array {
+		$controllerDefinitions = require __DIR__ . '/WikibaseRepo.controllers.php';
+		WikibaseRepo::getHookRunner( $services )
+			->onWikibaseRepoControllers( $controllerDefinitions );
+
+		return $controllerDefinitions;
 	},
 
 	'WikibaseRepo.DataAccessSettings' => function ( MediaWikiServices $services ): DataAccessSettings {

@@ -5,6 +5,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Rest\Reporter\ErrorReporter;
 use MediaWiki\Rest\Reporter\MWErrorReporter;
+use Wikibase\Repo\ControllerRegistry;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearch;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearchValidator;
 use Wikibase\Repo\Domains\Search\Application\UseCases\PropertyPrefixSearch\PropertyPrefixSearch;
@@ -35,7 +36,8 @@ use Wikibase\Search\Elastic\InLabelSearch;
 return [
 	'WbSearch.DispatchingWbSearchEntitiesController' => function( MediaWikiServices $services ): DispatchingWbSearchEntitiesController {
 		return new DispatchingWbSearchEntitiesController(
-			[],
+			WikibaseRepo::getControllerRegistry( $services )
+				->get( ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER ),
 			WikibaseRepo::getEntitySearchHelper( $services ),
 			WikibaseRepo::getEntitySourceLookup( $services )
 		);
