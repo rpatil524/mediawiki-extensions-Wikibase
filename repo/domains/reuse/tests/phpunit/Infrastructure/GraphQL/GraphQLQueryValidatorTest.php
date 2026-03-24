@@ -5,9 +5,9 @@ namespace Wikibase\Repo\Tests\Domains\Reuse\Infrastructure\GraphQL;
 use Generator;
 use GraphQL\Language\AST\DocumentNode;
 use PHPUnit\Framework\TestCase;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLErrorType;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLQueryValidator;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\InvalidResult;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Validation\ValidResult;
 
 /**
@@ -24,7 +24,7 @@ class GraphQLQueryValidatorTest extends TestCase {
 		$result = GraphQLQueryValidator::validate( $query );
 
 		$this->assertInstanceOf( ValidResult::class, $result );
-		$this->assertInstanceOf( DocumentNode::class, $result->documentNode );
+		$this->assertInstanceOf( DocumentNode::class, $result->parsedQuery );
 	}
 
 	public static function validQueryProvider(): Generator {
@@ -36,9 +36,9 @@ class GraphQLQueryValidatorTest extends TestCase {
 	public function testMissingQueryIsInvalid( string $query ): void {
 		$result = GraphQLQueryValidator::validate( $query );
 
-		$this->assertInstanceOf( InvalidResult::class, $result );
-		$this->assertSame( GraphQLErrorType::MISSING_QUERY->name, $result->errorType );
-		$this->assertSame( "The 'query' field is required and must not be empty", $result->errorResponse['errors'][0]['message'] );
+		$this->assertInstanceOf( GraphQLError::class, $result );
+		$this->assertSame( GraphQLErrorType::MISSING_QUERY, $result->type );
+		$this->assertSame( "The 'query' field is required and must not be empty", $result->getMessage() );
 	}
 
 	public static function missingQueryProvider(): Generator {
@@ -51,9 +51,9 @@ class GraphQLQueryValidatorTest extends TestCase {
 	public function testSyntacticallyInvalidQueryIsInvalid( string $query ): void {
 		$result = GraphQLQueryValidator::validate( $query );
 
-		$this->assertInstanceOf( InvalidResult::class, $result );
-		$this->assertSame( GraphQLErrorType::INVALID_QUERY->name, $result->errorType );
-		$this->assertStringStartsWith( 'Invalid query - ', $result->errorResponse['errors'][0]['message'] );
+		$this->assertInstanceOf( GraphQLError::class, $result );
+		$this->assertSame( GraphQLErrorType::INVALID_QUERY, $result->type );
+		$this->assertStringStartsWith( 'Invalid query - ', $result->getMessage() );
 	}
 
 	public static function syntaxErrorQueryProvider(): Generator {

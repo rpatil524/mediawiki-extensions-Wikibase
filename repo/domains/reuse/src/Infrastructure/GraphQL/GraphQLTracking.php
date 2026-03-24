@@ -3,6 +3,7 @@
 namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL;
 
 use GraphQL\Error\Error;
+use GraphQL\Executor\ExecutionResult;
 use GraphQL\Language\AST\DocumentNode;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLErrorType;
@@ -21,12 +22,13 @@ class GraphQLTracking {
 	) {
 	}
 
-	public function trackUsage( array $output, DocumentNode $doc, ?string $operationName ): void {
-		if ( !( isset( $output[ 'data' ] ) ) ) {
+	public function trackUsage( ExecutionResult $result, ?DocumentNode $doc, ?string $operationName ): void {
+		if ( !$result->data ) {
 			$this->incrementHitMetric( 'error' );
 			return;
 		}
 
+		'@phan-var DocumentNode $doc'; // guaranteed non-null here because there is data
 		$usedFields = $this->graphQLFieldCollector->getRequestedFieldPaths( $doc, $operationName );
 		$isIntrospectionQuery = !array_intersect( $this->schema->fieldNames, $usedFields );
 		if ( $isIntrospectionQuery ) {
@@ -37,7 +39,7 @@ class GraphQLTracking {
 		// field usage is tracked for (partial) success, but not introspection-only or error-only
 		$this->trackFieldUsage( $usedFields );
 
-		if ( isset( $output[ 'errors' ] ) ) {
+		if ( $result->errors ) {
 			$this->incrementHitMetric( 'partial_success' );
 		} else {
 			$this->incrementHitMetric( 'success' );

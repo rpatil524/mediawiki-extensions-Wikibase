@@ -39,6 +39,14 @@ class GraphQLError extends Error {
 		return new self( GraphQLErrorType::SEARCH_NOT_AVAILABLE, 'Search is not available due to insufficient server configuration' );
 	}
 
+	public static function missingQuery(): self {
+		return new self( GraphQLErrorType::MISSING_QUERY, "The 'query' field is required and must not be empty" );
+	}
+
+	public static function invalidQuery( string $reason ): self {
+		return new self( GraphQLErrorType::INVALID_QUERY, "Invalid query - $reason" );
+	}
+
 	public function isClientSafe(): bool {
 		return true;
 	}

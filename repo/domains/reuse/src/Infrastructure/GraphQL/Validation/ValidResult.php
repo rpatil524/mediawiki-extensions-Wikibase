@@ -9,9 +9,7 @@ use GraphQL\Language\AST\DocumentNode;
  */
 class ValidResult {
 
-	public function __construct(
-		public readonly DocumentNode $documentNode,
-	) {
+	public function __construct( public readonly DocumentNode $parsedQuery ) {
 	}
 
 }
