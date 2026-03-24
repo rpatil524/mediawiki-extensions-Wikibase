@@ -7,7 +7,7 @@
 		<template #content>
 			<div class="wikibase-wbui2025-add-reference-form">
 				<cdx-button
-					action="progressive"
+					action="default"
 					:disabled="addButtonDisabled"
 					@click="submitSnakData"
 				>
