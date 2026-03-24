@@ -109,6 +109,7 @@
 	"wikibase-validator-no-validators": "ਪਾਬੰਦੀਸ਼ੁਦਾ",
 	"wikibase-validator-page-not-exists": "ਇਹ ਸਫ਼ਾ \"$1\" ਮੌਜੂਦ ਨਹੀਂ ਹੈ।",
 	"wikibase-validator-not-a-language": "\"$1\" ਇੱਕ ਜਾਣਿਆ-ਪਛਾਣਿਆ ਭਾਸ਼ਾ ਕੋਡ ਨਹੀਂ ਹੈ।",
+	"wikibase-wbui2025-globecoordinateinput-precision-automatic": "ਆਪਣੇ-ਆਪ",
 	"wikibase-wbui2025-timeinput-precision-automatic": "ਆਪਣੇ-ਆਪ",
 	"wikibase-wikibaserepopage-unresolved-redirect": "$1 ਇੱਕ ਰੀਡਾਇਰੈਕਟ ਹੈ।",
 	"wikibase-itembytitle-lookup-site": "ਸਾਈਟ:",

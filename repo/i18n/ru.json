@@ -48,6 +48,7 @@
 			"Winston Sung",
 			"Zolo",
 			"Александр Сигачёв",
+			"Маринад",
 			"Умар",
 			"Чаховіч Уладзіслаў",
 			"Ядерный Трамвай"
@@ -74,8 +75,10 @@
 	"wikibase-addreference": "добавить источник",
 	"wikibase-save-inprogress": "Сохранение…",
 	"wikibase-publish-inprogress": "Записывается...",
+	"wikibase-publishing-error": "Произошла ошибка при сохранении ваших изменений. Подождите немного и попробуйте снова.",
 	"wikibase-remove-inprogress": "Удаление…",
 	"wikibase-statementlistview-add": "добавить значение",
+	"wikibase-addvalue": "Добавить значение",
 	"wikibase-statementlistview-add-tooltip": "Добавить новое значение",
 	"wikibase-statementgrouplistview-add": "добавить утверждение",
 	"wikibase-statementgrouplistview-add-tooltip": "Добавить новое утверждение",
@@ -236,6 +239,9 @@
 	"wikibase-item-reference-edit-placeholder": "Введите идентификатор элемента, например Q10",
 	"wikibase-item-reference-edit-invalid-format": "Введённый идентификатор элемента имеет недопустимый формат",
 	"wikibase-item-reference-edit-nonexistent-item": "Элемент с таким идентификатором не существует",
+	"wikibase-wbui2025-editable-snak-value-preview-label": "будет отображаться как:",
+	"wikibase-wbui2025-globecoordinateinput-precision-automatic": "Автоматически",
+	"wikibase-wbui2025-timeinput-precision-automatic": "автоматически",
 	"wikibase-wikibaserepopage-not-itemid": "«$1» — некорректный идентификатор элемента.",
 	"wikibase-wikibaserepopage-invalid-langcode": "Неизвестный код языка «$1». Пожалуйста, используйте один из известных системе языковых кодов, например «ru».",
 	"wikibase-wikibaserepopage-pipe-in-alias": "Синонимы, содержащие вертикальную черту, можно редактировать только на странице самой сущности (с включённым JavaScript) или через API",
@@ -560,5 +566,6 @@
 	"special-setlabeldescriptionaliases-parameterized": "Задать метку, описание и синонимы для $1",
 	"wikibase-scoped-search-search-entities": "Поиск сущностей",
 	"wikibase-scoped-search-item-scope-name": "Элементы",
-	"wikibase-scoped-search-property-scope-name": "Свойства"
+	"wikibase-scoped-search-property-scope-name": "Свойства",
+	"wikibase-stepper-progress": "$1 из $2"
 }
