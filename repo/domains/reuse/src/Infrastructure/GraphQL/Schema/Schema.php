@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema as GraphQLSchema;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchRequest;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemByExternalIdResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemBySitelinkResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\SearchItemsResolver;
@@ -21,6 +22,7 @@ class Schema extends GraphQLSchema {
 		ItemResolver $itemResolver,
 		SearchItemsResolver $searchItemsResolver,
 		ItemBySitelinkResolver $itemBySitelinkResolver,
+		ItemByExternalIdResolver $itemByExternalIdResolver,
 		private readonly Types $types,
 	) {
 		$fieldDefinitions = [
@@ -45,6 +47,24 @@ class Schema extends GraphQLSchema {
 					->resolveItems( $args['ids'], $context ),
 				'complexity' => fn( int $childrenComplexity, array $args ) => count( $args['ids'] ) *
 					GraphQLService::LOAD_ITEM_COMPLEXITY,
+			],
+			'itemByExternalId' => [
+				'type' => $this->types->getItemByExternalIdResultType(),
+				// phpcs:ignore Generic.Files.LineLength.TooLong
+				'description' => 'Fetch an item by external ID property and value. Returns the item if it was uniquely identified, a list of item IDs if multiple were found, or null if no match is found.',
+				'args' => [
+					'property' => [
+						'type' => Type::nonNull( $this->types->getPropertyIdType() ),
+						'description' => 'The property ID of the external identifier.',
+					],
+					'externalId' => [
+						'type' => Type::nonNull( Type::string() ),
+						'description' => 'The external identifier value to search for.',
+					],
+				],
+				'resolve' => fn( $rootValue, array $args, $context ) => $itemByExternalIdResolver
+					->resolve( $args['property'], $args['externalId'], $context ),
+				'complexity' => fn() => GraphQLService::LOOKUP_ITEM_COMPLEXITY,
 			],
 			'searchItems' => [
 				'type' => Type::nonNull( $this->types->getItemSearchResultConnectionType() ),

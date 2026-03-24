@@ -5,6 +5,15 @@ type Query {
   "Fetch multiple items by their IDs, including labels, descriptions, aliases, sitelinks, and statements."
   itemsById(ids: [ItemId!]!): [Item]!
 
+  "Fetch an item by external ID property and value. Returns the item if it was uniquely identified, a list of item IDs if multiple were found, or null if no match is found."
+  itemByExternalId(
+    "The property ID of the external identifier."
+    property: PropertyId!
+
+    "The external identifier value to search for."
+    externalId: String!
+  ): ItemByExternalIdResult
+
   "Search for items that match one or more statements-based filters"
   searchItems(
     "Filter describing which statement properties and values must match."
@@ -193,6 +202,15 @@ type ReferencePart implements PropertyValuePair {
   property: PredicateProperty!
   value: Value
   valueType: ValueType!
+}
+
+"The result of looking up an item by an external identifier."
+union ItemByExternalIdResult = Item | ExternalIdNonUnique
+
+"Indicates that multiple items match the given external identifier."
+type ExternalIdNonUnique {
+  "IDs of the items that match the given external identifier."
+  items: [ItemId!]!
 }
 
 "Filter used to match items by their statements. Supports simple property/value matching or combining multiple filters with an operator."

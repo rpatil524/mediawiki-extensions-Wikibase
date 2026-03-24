@@ -7,8 +7,10 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItems\BatchGetItems
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabels\BatchGetPropertyLabels;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearch;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchValidator;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalId;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemBySitelink\LookUpItemBySitelink;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\StatementReadModelConverter;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityLookupItemsBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityRevisionLookupItemRedirectResolver;
@@ -18,6 +20,7 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLErrorLogger;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLFieldCollector;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLTracking;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemByExternalIdResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemBySitelinkResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
@@ -27,6 +30,7 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\SearchItemsReso
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Schema;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Types;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\Search\CirrusSearchFacetedSearchEngine;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\Search\SearchEngineItemByExternalIdLookup;
 use Wikibase\Repo\Domains\Reuse\WbReuse;
 use Wikibase\Repo\WikibaseRepo;
 
@@ -70,6 +74,10 @@ return [
 				),
 				$itemResolver
 			),
+			new ItemByExternalIdResolver(
+				new LookUpItemByExternalId( WbReuse::getItemByExternalIdLookup( $services ) ),
+				$itemResolver
+			),
 			WbReuse::getGraphQLTypes( $services ),
 		);
 	},
@@ -94,6 +102,12 @@ return [
 			WbReuse::getItemLabelsResolver( $services ),
 			WikibaseRepo::getPropertyInfoLookup( $services ),
 			WikibaseRepo::getSettings( $services ),
+		);
+	},
+	'WbReuse.ItemByExternalIdLookup' => function( MediaWikiServices $services ): ItemByExternalIdLookup {
+		return new SearchEngineItemByExternalIdLookup(
+			$services->getSearchEngineFactory(),
+			WikibaseRepo::getEntityNamespaceLookup( $services )
 		);
 	},
 	'WbReuse.ItemDescriptionsResolver' => function( MediaWikiServices $services ): ItemDescriptionsResolver {
