@@ -53,27 +53,31 @@
 				</div>
 
 				<div class="wikibase-coordinate-popover__precision">
-					<div class="wikibase-coordinate-popover__precision-left">
-						<div class="wikibase-coordinate-popover__precision-label">
-							{{ $i18n( 'valueview-expert-globecoordinateinput-precision' ) }}
+					<div>
+						<div class="wikibase-coordinate-popover__precision-left">
+							<div class="wikibase-coordinate-popover__precision-label">
+								{{ $i18n( 'valueview-expert-globecoordinateinput-precision' ) }}
+							</div>
 						</div>
-						<div class="wikibase-coordinate-popover__precision-display">
-							{{ precisionDisplayText }}
+
+						<div class="wikibase-coordinate-popover__precision-right">
+							<select
+								v-model="selectedPrecision"
+								class="wikibase-coordinate-popover__precision-select"
+							>
+								<option
+									v-for="opt in precisionOptionsI18n"
+									:key="opt.value"
+									:value="opt.value"
+								>
+									{{ opt.label }}
+								</option>
+							</select>
 						</div>
 					</div>
-
-					<select
-						v-model="selectedPrecision"
-						class="wikibase-coordinate-popover__precision-select"
-					>
-						<option
-							v-for="opt in precisionOptionsI18n"
-							:key="opt.value"
-							:value="opt.value"
-						>
-							{{ opt.label }}
-						</option>
-					</select>
+					<div class="wikibase-coordinate-popover__precision-display">
+						{{ precisionDisplayText }}
+					</div>
 				</div>
 			</div>
 		</cdx-popover>
@@ -117,12 +121,16 @@ module.exports = exports = defineComponent( {
 			'textvalue',
 			'precision'
 		] );
+		const parsedPrecision = ref( null );
 		const inputElement = ref();
 		const formatValue = () => {
 			editSnakStoreGetter().valueStrategy.getParsedValue().then( ( value ) => {
 				if ( value === null ) {
 					parseError.value = true;
+					parsedPrecision.value = null;
 					return;
+				} else {
+					parsedPrecision.value = value.value.precision;
 				}
 				wbui2025.api.renderSnakValueHtml( value, editSnakStoreGetter().property ).then( ( formatValueOutput ) => {
 					parseError.value = false;
@@ -135,6 +143,7 @@ module.exports = exports = defineComponent( {
 			inputElement,
 			formattedValue,
 			parseError,
+			parsedPrecision,
 			textvalue: computed( computedProperties.textvalue ),
 			precision: computed( computedProperties.precision ),
 			debouncedTriggerFormatAndParse: mw.util.debounce( formatValue, 300 )
@@ -189,10 +198,13 @@ module.exports = exports = defineComponent( {
 			];
 		},
 
-		// TODO: display the derived precision when automatic (T419586)
 		precisionDisplayText() {
+			let targetPrecision = this.precision;
+			if ( this.precision === undefined || this.precision === 'auto' ) {
+				targetPrecision = this.parsedPrecision;
+			}
 			const selected = this.precisionOptionsI18n.find(
-				( o ) => o.value === this.precision
+				( o ) => o.value === targetPrecision
 			);
 			if ( !selected ) {
 				return '';
@@ -311,9 +323,16 @@ module.exports = exports = defineComponent( {
 
 .wikibase-coordinate-popover__precision {
 	margin-top: 12px;
-	display: flex;
+	display: grid;
 	align-items: center;
-	gap: 8px;
+
+	.wikibase-coordinate-popover__precision-left {
+		float: left;
+	}
+
+	.wikibase-coordinate-popover__precision-right {
+		float: right;
+	}
 }
 
 .wikibase-coordinate-popover__precision-label {
