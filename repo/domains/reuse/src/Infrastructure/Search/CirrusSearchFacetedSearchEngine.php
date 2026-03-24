@@ -53,7 +53,7 @@ class CirrusSearchFacetedSearchEngine implements FacetedItemSearchEngine {
 		if ( $criteria instanceof PropertyValueFilter ) {
 			return $criteria->value === null
 				? "haswbstatement:{$criteria->propertyId}"
-				: "haswbstatement:{$criteria->propertyId}={$criteria->value}";
+				: "haswbstatement:\"{$criteria->propertyId}={$criteria->value}\"";
 		} elseif ( $criteria instanceof OrOperation ) {
 			return 'haswbstatement:' . implode(
 				'|',

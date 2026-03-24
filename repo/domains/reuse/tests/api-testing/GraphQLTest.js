@@ -35,10 +35,12 @@ describe( 'Wikibase GraphQL', () => {
 	let item2;
 	let property1;
 	let property2;
+	let property3;
 	const item1label = `vegetable ${ utils.uniq() }`;
 	const item2label = `potato ${ utils.uniq() }`;
 	const property1label = `isType ${ utils.uniq() }`;
 	const property2label = `hasRelationship ${ utils.uniq() }`;
+	const item2Property3StatementValue = 'sweet potato';
 
 	before( async () => {
 		property1 = await createProperty( {
@@ -49,6 +51,11 @@ describe( 'Wikibase GraphQL', () => {
 		property2 = await createProperty( {
 			data_type: 'wikibase-item',
 			labels: { en: property2label }
+		} );
+
+		property3 = await createProperty( {
+			data_type: 'string',
+			labels: { en: `string property ${ utils.uniq() }` }
 		} );
 
 		// item with label "vegetable", and one statement: hasRelationship->somevalue
@@ -78,6 +85,12 @@ describe( 'Wikibase GraphQL', () => {
 					{
 						property: { id: property2.id },
 						value: { type: 'value', content: item1.id }
+					}
+				],
+				[ property3.id ]: [
+					{
+						property: { id: property3.id },
+						value: { type: 'value', content: item2Property3StatementValue }
 					}
 				]
 			}
@@ -211,6 +224,34 @@ describe( 'Wikibase GraphQL', () => {
 										label: item2label
 									}
 								}
+							]
+						}
+					}
+				}
+			);
+		} );
+
+		it( 'property value pair match when value contains a space', async function () {
+			const response = await queryGraphQL( { query: `
+				{
+					searchItems(
+						query: {
+							property: "${ property3.id }", value: "${ item2Property3StatementValue }"
+						}
+					) {
+						edges {
+							node { id }
+						}
+					}
+				}` } );
+
+			assert.deepEqual(
+				response.body,
+				{
+					data: {
+						searchItems: {
+							edges: [
+								{ node: { id: item2.id } }
 							]
 						}
 					}
