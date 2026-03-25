@@ -8,6 +8,7 @@ const ITEM_EN_ALIAS = 'e2e-item-alias-' + utils.uniq();
 const ITEM_DE_LABEL = 'e2e-item-de-' + utils.uniq();
 const PROP_EN_LABEL = 'e2e-prop-en-' + utils.uniq();
 const LIMIT_LABEL_PREFIX = 'e2e-limit-' + utils.uniq();
+const FALLBACK_LABEL = 'e2e-fallback-' + utils.uniq();
 
 async function createItem( payload ) {
 	const response = await api.action( 'wbeditentity', {
@@ -42,6 +43,14 @@ async function getConceptUri( itemId ) {
 	} );
 	const conceptBaseUri = response.query.general[ 'wikibase-conceptbaseuri' ];
 	return conceptBaseUri + itemId;
+}
+
+async function isMulLanguageEnabled() {
+	const response = await api.action( 'query', {
+		meta: 'siteinfo',
+		siprop: 'languages',
+	} );
+	return response.query.languages.some( ( l ) => l.code === 'mul' );
 }
 
 describe( 'wbsearchentities', () => {
@@ -242,6 +251,133 @@ describe( 'wbsearchentities', () => {
 			const firstPageIds = firstPageResponse.search.map( ( r ) => r.id );
 			const secondPageId = secondPageResponse.search[ 0 ].id;
 			assert.notInclude( firstPageIds, secondPageId );
+		} );
+	} );
+
+	describe( 'language parameters', () => {
+		let enItemId;
+		let deItemId;
+		let mulItemId;
+		let mulEnabled;
+		before( async () => {
+			mulEnabled = await isMulLanguageEnabled();
+			enItemId = await createItem( {
+				labels: {
+					en: { language: 'en', value: FALLBACK_LABEL },
+				},
+			} );
+			deItemId = await createItem( {
+				labels: {
+					de: { language: 'de', value: FALLBACK_LABEL },
+				},
+			} );
+			if ( mulEnabled ) {
+				mulItemId = await createItem( {
+					labels: {
+						mul: { language: 'mul', value: FALLBACK_LABEL },
+					},
+				} );
+			}
+			await flushJobs();
+		} );
+
+		it( 'returns items via language fallback when strictlanguage is not set', async () => {
+			const response = await api.action( 'wbsearchentities', {
+				search: FALLBACK_LABEL,
+				language: 'fr',
+				type: 'item',
+			} );
+
+			const result = response.search.find( ( r ) => r.id === enItemId );
+			assert.isOk( result, 'item should appear via language fallback' );
+			assert.equal( result.match.language, 'en' );
+		} );
+
+		// Disabled: Pending T421912
+		// eslint-disable-next-line mocha/no-skipped-tests
+		it.skip( 'does not return items via language fallback when strictlanguage is set', async () => {
+			const response = await api.action( 'wbsearchentities', {
+				search: FALLBACK_LABEL,
+				language: 'fr',
+				type: 'item',
+				strictlanguage: true,
+			} );
+
+			const result = response.search.find( ( r ) => r.id === enItemId );
+			assert.isNotOk( result, 'item should not appear when strictlanguage prevents fallback' );
+		} );
+
+		it( 'returns items with mul language even when strictlanguage is set', async function () {
+			if ( !mulEnabled ) {
+				this.skip();
+			}
+			const response = await api.action( 'wbsearchentities', {
+				search: FALLBACK_LABEL,
+				language: 'fr',
+				type: 'item',
+				strictlanguage: true,
+			} );
+
+			const result = response.search.find( ( r ) => r.id === mulItemId );
+			assert.isOk( result, 'item should appear via language fallback' );
+			assert.equal( result.match.language, 'mul' );
+		} );
+
+		it( 'returns both items via language fallback when strictlanguage is not set', async () => {
+			const response = await api.action( 'wbsearchentities', {
+				search: FALLBACK_LABEL,
+				language: 'de',
+				type: 'item',
+			} );
+
+			const result = response.search.map( ( r ) => r.id );
+			assert.include(
+				result,
+				deItemId,
+				'German label should appear as it matches the search language'
+			);
+			assert.include(
+				result,
+				enItemId,
+				'English label should appear via language fallback'
+			);
+		} );
+
+		// Disabled: Pending T421912
+		// eslint-disable-next-line mocha/no-skipped-tests
+		it.skip( 'return only the requested language when strictlanguage is set', async () => {
+			const response = await api.action( 'wbsearchentities', {
+				search: FALLBACK_LABEL,
+				language: 'de',
+				type: 'item',
+				strictlanguage: true,
+			} );
+
+			const result = response.search.map( ( r ) => r.id );
+			assert.include(
+				result,
+				deItemId,
+				'German label should appear as it matches the search language'
+			);
+			assert.notInclude(
+				result,
+				enItemId,
+				'English label should not appear'
+			);
+		} );
+
+		it( 'uselang controls the language of displayed labels independently of the search language', async () => {
+			const response = await api.action( 'wbsearchentities', {
+				search: ITEM_EN_LABEL,
+				language: 'en',
+				type: 'item',
+				uselang: 'de',
+			} );
+
+			const result = response.search.find( ( r ) => r.id === testItemId );
+			assert.isOk( result, 'item should appear in search results' );
+			assert.equal( result.display.label.language, 'de' );
+			assert.equal( result.display.label.value, ITEM_DE_LABEL );
 		} );
 	} );
 } );
