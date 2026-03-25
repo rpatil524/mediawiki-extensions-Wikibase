@@ -337,11 +337,13 @@ class ViewFactory {
 		$statementGroupListView = $this->newStatementGroupListView(
 			$language->getCode(),
 			$termFallbackChain,
-			$editSectionGenerator
+			$editSectionGenerator,
+			$viewOptions
 		);
 		$snakFormatter = $this->htmlSnakFormatterFactory->getSnakFormatter(
 			$language->getCode(),
-			$termFallbackChain
+			$termFallbackChain,
+			$viewOptions,
 		);
 		$vueNoScriptRendering = new VueNoScriptRendering(
 			$this->htmlIdFormatterFactory,
@@ -368,19 +370,22 @@ class ViewFactory {
 	 * @param string $languageCode
 	 * @param TermLanguageFallbackChain $termFallbackChain
 	 * @param EditSectionGenerator $editSectionGenerator
+	 * @param array $viewOptions
 	 *
 	 * @return StatementGroupListView
 	 */
 	public function newStatementGroupListView(
 		$languageCode,
 		TermLanguageFallbackChain $termFallbackChain,
-		EditSectionGenerator $editSectionGenerator
+		EditSectionGenerator $editSectionGenerator,
+		array $viewOptions = [],
 	) {
 		$textProvider = $this->textProviderFactory->getForLanguageCode( $languageCode );
 		$numberLocalizer = $this->numberLocalizerFactory->getForLanguageCode( $languageCode );
 		$snakFormatter = $this->htmlSnakFormatterFactory->getSnakFormatter(
 			$languageCode,
-			$termFallbackChain
+			$termFallbackChain,
+			$viewOptions,
 		);
 		$propertyIdFormatter = $this->htmlIdFormatterFactory->getEntityIdFormatter(
 			$this->languageFactory->getLanguage( $languageCode )

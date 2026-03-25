@@ -9,6 +9,7 @@ use Wikibase\DataModel\Snak\PropertyValueSnak;
 use Wikibase\DataModel\Snak\Snak;
 use Wikibase\DataModel\Statement\Statement;
 use Wikibase\Lib\Formatters\CachingKartographerEmbeddingHandler;
+use Wikibase\View\Wbui2025FeatureFlag;
 
 /**
  * Add required data for Kartographer to the ParserOutput.
@@ -68,7 +69,8 @@ class GlobeCoordinateKartographerDataUpdater implements StatementDataUpdater {
 
 		$kartographerParserOutput = $this->kartographerHandler->getParserOutput(
 			$this->globeCoordinateValues,
-			$language
+			$language,
+			Wbui2025FeatureFlag::wbui2025EnabledForParserOutput( $parserOutput ),
 		);
 		// Transfer kartographer-related metadata (jsconfigvars, modules,
 		// modulestyles, extensiondata, page properties) to our own

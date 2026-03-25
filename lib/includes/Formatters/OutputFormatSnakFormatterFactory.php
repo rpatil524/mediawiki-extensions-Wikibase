@@ -83,12 +83,13 @@ class OutputFormatSnakFormatterFactory {
 	 *
 	 * @param string $format Use the SnakFormatter::FORMAT_XXX constants.
 	 * @param FormatterOptions $options
+	 * @param array $viewOptions
 	 *
 	 * @throws RuntimeException
 	 * @throws InvalidArgumentException
 	 * @return SnakFormatter
 	 */
-	public function getSnakFormatter( $format, FormatterOptions $options ) {
+	public function getSnakFormatter( $format, FormatterOptions $options, array $viewOptions = [] ) {
 		$options = $options->withDefaultOption( SnakFormatter::OPT_ON_ERROR, SnakFormatter::ON_ERROR_WARN );
 
 		$options = $this->valueFormatterFactory->applyLanguageDefaults( $options );

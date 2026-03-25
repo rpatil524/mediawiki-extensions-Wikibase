@@ -86,9 +86,9 @@ class GlobeCoordinateKartographerFormatter implements ValueFormatter {
 		$lang = $this->languageFactory->getLanguage( $this->options->getOption( ValueFormatter::OPT_LANG ) );
 
 		if ( !$this->emitPreviewHtml ) {
-			$kartographerHtml = $this->cachingKartographerEmbeddingHandler->getHtml( $value, $lang );
+			$kartographerHtml = $this->cachingKartographerEmbeddingHandler->getHtml( $value, $lang, $this->options );
 		} else {
-			$kartographerHtml = $this->cachingKartographerEmbeddingHandler->getPreviewHtml( $value, $lang );
+			$kartographerHtml = $this->cachingKartographerEmbeddingHandler->getPreviewHtml( $value, $lang, $this->options );
 		}
 		if ( $kartographerHtml !== false ) {
 			$html = $kartographerHtml;
