@@ -43,7 +43,7 @@
 			</wbui2025-editable-qualifiers>
 			<div class="wikibase-wbui2025-button-holder">
 				<cdx-button
-					action="progressive"
+					action="default"
 					class="wikibase-wbui2025-add-qualifier-button"
 					@click="showAddQualifierModal = true"
 				>
@@ -60,7 +60,7 @@
 			></wbui2025-editable-references-section>
 			<div class="wikibase-wbui2025-button-holder">
 				<cdx-button
-					action="progressive"
+					action="default"
 					class="wikibase-wbui2025-add-reference-button"
 					@click="showAddReferenceModal = true">
 					<cdx-icon :icon="cdxIconAdd"></cdx-icon>

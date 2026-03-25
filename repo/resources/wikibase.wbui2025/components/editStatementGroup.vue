@@ -29,7 +29,10 @@
 				>
 				</div>
 				<div class="wikibase-wbui2025-add-value">
-					<cdx-button @click="startAddValue">
+					<cdx-button
+						action="progressive"
+						@click="startAddValue"
+					>
 						<cdx-icon :icon="cdxIconAdd"></cdx-icon>
 						{{ $i18n( 'wikibase-statementlistview-add' ) }}
 					</cdx-button>
@@ -322,10 +325,7 @@ module.exports = exports = defineComponent( {
 
 			button.cdx-button {
 				width: 100%;
-				cursor: pointer;
 				justify-content: flex-start;
-				border-color: @border-color-interactive;
-				background: @background-color-interactive-subtle;
 			}
 		}
 	}

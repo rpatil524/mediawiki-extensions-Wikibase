@@ -8,7 +8,7 @@
 		<template #content>
 			<div class="wikibase-wbui2025-add-qualifier-form">
 				<cdx-button
-					action="progressive"
+					action="default"
 					:disabled="addButtonDisabled"
 					@click="submitSnakData"
 				>
