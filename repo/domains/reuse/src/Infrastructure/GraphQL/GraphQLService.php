@@ -17,6 +17,7 @@ class GraphQLService {
 	public const LOAD_ITEM_COMPLEXITY = 10;
 	public const MAX_QUERY_COMPLEXITY = self::LOAD_ITEM_COMPLEXITY * 50;
 	public const SEARCH_ITEMS_COMPLEXITY = self::MAX_QUERY_COMPLEXITY;
+	public const LOOKUP_ITEM_COMPLEXITY = 10;
 
 	private QueryComplexityRule $queryComplexityRule;
 

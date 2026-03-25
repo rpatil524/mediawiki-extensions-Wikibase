@@ -7,15 +7,18 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItems\BatchGetItems
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabels\BatchGetPropertyLabels;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearch;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchValidator;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemBySitelink\LookUpItemBySitelink;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\StatementReadModelConverter;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityLookupItemsBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityRevisionLookupItemRedirectResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\PrefetchingTermLookupBatchLabelsDescriptionsRetriever;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\SiteLinkLookupItemBySitelinkLookup;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLErrorLogger;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLFieldCollector;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLTracking;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemBySitelinkResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
@@ -37,17 +40,18 @@ return [
 	},
 	'WbReuse.GraphQLSchema' => function( MediaWikiServices $services ): Schema {
 		$dataTypeLookup = WikibaseRepo::getPropertyDataTypeLookup( $services );
+		$itemResolver = new ItemResolver(
+			new BatchGetItems( new EntityLookupItemsBatchRetriever(
+				WikibaseRepo::getEntityLookup( $services ),
+				$services->getSiteLookup(),
+				new StatementReadModelConverter(
+					WikibaseRepo::getStatementGuidParser( $services ),
+					$dataTypeLookup
+				)
+			) )
+		);
 		return new Schema(
-			new ItemResolver(
-				new BatchGetItems( new EntityLookupItemsBatchRetriever(
-					WikibaseRepo::getEntityLookup( $services ),
-					$services->getSiteLookup(),
-					new StatementReadModelConverter(
-						WikibaseRepo::getStatementGuidParser( $services ),
-						$dataTypeLookup
-					)
-				) )
-			),
+			$itemResolver,
 			new SearchItemsResolver(
 				new FacetedItemSearch(
 					new FacetedItemSearchValidator(
@@ -57,6 +61,14 @@ return [
 					WbReuse::getFacetedItemSearchEngine( $services ),
 				),
 				$services->getExtensionRegistry()
+			),
+			new ItemBySitelinkResolver(
+				new LookUpItemBySitelink(
+					new SiteLinkLookupItemBySitelinkLookup(
+						WikibaseRepo::getStore()->newSiteLinkStore()
+					)
+				),
+				$itemResolver
 			),
 			WbReuse::getGraphQLTypes( $services ),
 		);

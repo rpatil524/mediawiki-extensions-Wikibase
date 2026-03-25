@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema as GraphQLSchema;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchRequest;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemBySitelinkResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\SearchItemsResolver;
 
@@ -19,6 +20,7 @@ class Schema extends GraphQLSchema {
 	public function __construct(
 		ItemResolver $itemResolver,
 		SearchItemsResolver $searchItemsResolver,
+		ItemBySitelinkResolver $itemBySitelinkResolver,
 		private readonly Types $types,
 	) {
 		$fieldDefinitions = [
@@ -70,6 +72,23 @@ class Schema extends GraphQLSchema {
 					$args['after'] ?? null,
 				),
 				'complexity' => fn() => GraphQLService::SEARCH_ITEMS_COMPLEXITY,
+			],
+			'itemBySitelink' => [
+				'type' => $this->types->getItemType(),
+				'description' => 'Look up a single item by a sitelink',
+				'args' => [
+					'siteId' => [
+						'type' => Type::nonNull( $this->types->getSiteIdType() ),
+						'description' => 'The sitelink\'s siteId',
+					],
+					'title' => [
+						'type' => Type::nonNull( Type::string() ),
+						'description' => 'The sitelink\'s title',
+					],
+				],
+				'resolve' => fn( $rootValue, array $args, $context ) => $itemBySitelinkResolver
+					->resolve( $args['siteId'], $args['title'], $context, ),
+				'complexity' => fn() => GraphQLService::LOOKUP_ITEM_COMPLEXITY,
 			],
 		];
 		$this->fieldNames = array_keys( $fieldDefinitions );

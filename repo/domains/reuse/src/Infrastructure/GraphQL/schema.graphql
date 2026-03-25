@@ -16,6 +16,15 @@ type Query {
     "Cursor that defines the position after which results should be returned. Usually the value of endCursor from the previous request"
     after: String
   ): ItemSearchResultConnection!
+
+  "Look up a single item by a sitelink"
+  itemBySitelink(
+    "The sitelink's siteId"
+    siteId: SiteId!
+
+    "The sitelink's title"
+    title: String!
+  ): Item
 }
 
 scalar ItemId

@@ -1,6 +1,6 @@
 'use strict';
 
-const { assert, clientFactory, utils, wiki } = require( 'api-testing' );
+const { action, assert, clientFactory, utils, wiki } = require( 'api-testing' );
 const { expect } = require( 'chai' );
 const config = require( 'api-testing/lib/config' );
 const { RequestBuilder } = require( '../../../../rest-api/tests/mocha/helpers/RequestBuilder.js' );
@@ -36,6 +36,8 @@ describe( 'Wikibase GraphQL', () => {
 	let property1;
 	let property2;
 	let property3;
+	let siteId;
+	const linkedArticle = utils.title( 'Article-linked-to-test-item' );
 	const item1label = `vegetable ${ utils.uniq() }`;
 	const item2label = `potato ${ utils.uniq() }`;
 	const property1label = `isType ${ utils.uniq() }`;
@@ -43,6 +45,12 @@ describe( 'Wikibase GraphQL', () => {
 	const item2Property3StatementValue = 'sweet potato';
 
 	before( async () => {
+		await action.getAnon().edit( linkedArticle, { text: 'sitelink test page' } );
+		siteId = ( await action.getAnon().meta(
+			'wikibase',
+			{ wbprop: 'siteid' }
+		) ).siteid;
+
 		property1 = await createProperty( {
 			data_type: 'wikibase-item',
 			labels: { en: property1label }
@@ -68,7 +76,8 @@ describe( 'Wikibase GraphQL', () => {
 						value: { type: 'somevalue' }
 					}
 				]
-			}
+			},
+			sitelinks: { [ siteId ]: { title: linkedArticle } }
 		} );
 
 		// Create item with two statements, potato: isType -> vegetable, hasRelationship->vegetable
@@ -285,6 +294,23 @@ describe( 'Wikibase GraphQL', () => {
 		} );
 	} );
 
+	it( 'can look up items by sitelink', async () => {
+		const sitelinkTitle = item1.sitelinks[ siteId ].title;
+		const response = await queryGraphQL( { query: `
+			{
+				itemBySitelink(title: "${ sitelinkTitle }", siteId: "${ siteId }") { id }
+			}` } );
+
+		assert.deepEqual(
+			response.body,
+			{
+				data: {
+					itemBySitelink: { id: item1.id }
+				}
+			}
+		);
+	} );
+
 	it( 'supports introspection', async () => {
 		const response = await queryGraphQL( { query: `
 			{
@@ -304,7 +330,8 @@ describe( 'Wikibase GraphQL', () => {
 							fields: [
 								{ name: 'item' },
 								{ name: 'itemsById' },
-								{ name: 'searchItems' }
+								{ name: 'searchItems' },
+								{ name: 'itemBySitelink' }
 							]
 						}
 					}
