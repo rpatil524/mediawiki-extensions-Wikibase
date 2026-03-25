@@ -235,7 +235,7 @@ class EntityDataRequestHandlerTest extends MediaWikiIntegrationTestCase {
 	protected function makeOutputPage( array $params, array $headers ): OutputPage {
 		// construct request
 		$request = new FauxRequest( $params );
-		$request->setRequestURL( 'https://repo.example/wiki/Special:EntityData/Q1.ttl' );
+		$request->setRequestURL( '//repo.example/wiki/Special:EntityData/Q1.ttl' );
 		$request->response()->header( 'Status: 200 OK', true, 200 ); // init/reset
 
 		foreach ( $headers as $name => $value ) {
