@@ -4,6 +4,7 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Repo\Tests\Unit;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
@@ -52,6 +53,17 @@ class ControllerRegistryTest extends TestCase {
 			[],
 			( new ControllerRegistry( [] ) )->get( 'undefined-controller' )
 		);
+	}
+
+	public static function provideInvalidDefinitions(): iterable {
+		yield 'non-array definition' => [ [ Item::ENTITY_TYPE => 'not-an-array' ] ];
+		yield 'non-callable callback' => [ [ Item::ENTITY_TYPE => [ 'some-controller' => 'not-a-callable' ] ] ];
+	}
+
+	/** @dataProvider provideInvalidDefinitions */
+	public function testConstructorRejectsInvalidDefinitions( array $definitions ): void {
+		$this->expectException( InvalidArgumentException::class );
+		new ControllerRegistry( $definitions );
 	}
 
 }

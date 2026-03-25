@@ -4,6 +4,8 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Repo;
 
+use InvalidArgumentException;
+
 /**
  * Registry of controller callbacks per entity type.
  *
@@ -15,6 +17,20 @@ class ControllerRegistry {
 
 	/** @param array<string, array<string, callable>> $controllerDefinitions */
 	public function __construct( private readonly array $controllerDefinitions ) {
+		foreach ( $controllerDefinitions as $entityType => $controllers ) {
+			if ( !is_array( $controllers ) ) {
+				throw new InvalidArgumentException(
+					"Expected an array of controller callbacks for entity type '$entityType'"
+				);
+			}
+			foreach ( $controllers as $controllerName => $callback ) {
+				if ( !is_callable( $callback ) ) {
+					throw new InvalidArgumentException(
+						"Expected a callable for controller '$controllerName' of entity type '$entityType'"
+					);
+				}
+			}
+		}
 	}
 
 	/**
