@@ -7,34 +7,22 @@ const ITEM_EN_LABEL = 'e2e-item-en-' + utils.uniq();
 const ITEM_EN_ALIAS = 'e2e-item-alias-' + utils.uniq();
 const ITEM_DE_LABEL = 'e2e-item-de-' + utils.uniq();
 const PROP_EN_LABEL = 'e2e-prop-en-' + utils.uniq();
+const LIMIT_LABEL_PREFIX = 'e2e-limit-' + utils.uniq();
 
-async function createItem() {
+async function createItem( payload ) {
 	const response = await api.action( 'wbeditentity', {
 		new: 'item',
 		token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
-		data: JSON.stringify( {
-			labels: {
-				en: { language: 'en', value: ITEM_EN_LABEL },
-				de: { language: 'de', value: ITEM_DE_LABEL },
-			},
-			aliases: {
-				en: [ { language: 'en', value: ITEM_EN_ALIAS } ],
-			},
-		} ),
+		data: JSON.stringify( payload ),
 	}, 'POST' );
 	return response.entity.id;
 }
 
-async function createProperty() {
+async function createProperty( payload ) {
 	const response = await api.action( 'wbeditentity', {
 		new: 'property',
 		token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
-		data: JSON.stringify( {
-			datatype: 'string',
-			labels: {
-				en: { language: 'en', value: PROP_EN_LABEL },
-			},
-		} ),
+		data: JSON.stringify( payload ),
 	}, 'POST' );
 	return response.entity.id;
 }
@@ -62,8 +50,21 @@ describe( 'wbsearchentities', () => {
 	let testItemConceptUri;
 
 	before( async () => {
-		testItemId = await createItem();
-		testPropertyId = await createProperty();
+		testItemId = await createItem( {
+			labels: {
+				en: { language: 'en', value: ITEM_EN_LABEL },
+				de: { language: 'de', value: ITEM_DE_LABEL },
+			},
+			aliases: {
+				en: [ { language: 'en', value: ITEM_EN_ALIAS } ],
+			},
+		} );
+		testPropertyId = await createProperty( {
+			datatype: 'string',
+			labels: {
+				en: { language: 'en', value: PROP_EN_LABEL },
+			},
+		} );
 
 		await flushJobs();
 
@@ -196,4 +197,51 @@ describe( 'wbsearchentities', () => {
 		assert.equal( result.match.text, ITEM_DE_LABEL );
 	} );
 
+	describe( 'pagination', () => {
+		before( async () => {
+			await Promise.all( [ 1, 2, 3 ].map( async ( i ) => {
+				await createItem( {
+					labels: {
+						en: { language: 'en', value: LIMIT_LABEL_PREFIX + i },
+					},
+				} );
+			} ) );
+			await flushJobs();
+		} );
+
+		it( 'limit controls the number of results', async () => {
+			const response = await api.action( 'wbsearchentities', {
+				search: LIMIT_LABEL_PREFIX,
+				language: 'en',
+				type: 'item',
+				limit: 2,
+			} );
+
+			assert.lengthOf( response.search, 2 );
+			assert.equal( response[ 'search-continue' ], 2 );
+		} );
+
+		it( 'continue offsets the results', async () => {
+			const firstPageResponse = await api.action( 'wbsearchentities', {
+				search: LIMIT_LABEL_PREFIX,
+				language: 'en',
+				type: 'item',
+				limit: 2,
+			} );
+			const secondPageResponse = await api.action( 'wbsearchentities', {
+				search: LIMIT_LABEL_PREFIX,
+				language: 'en',
+				type: 'item',
+				limit: 2,
+				continue: 2,
+			} );
+
+			assert.lengthOf( secondPageResponse.search, 1 );
+			assert.notProperty( secondPageResponse, 'search-continue' );
+
+			const firstPageIds = firstPageResponse.search.map( ( r ) => r.id );
+			const secondPageId = secondPageResponse.search[ 0 ].id;
+			assert.notInclude( firstPageIds, secondPageId );
+		} );
+	} );
 } );
