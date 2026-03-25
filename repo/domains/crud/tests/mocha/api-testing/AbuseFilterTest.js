@@ -50,7 +50,7 @@ async function createAbuseFilter( description, rules ) {
 		wpFilterTags: ''
 	} );
 
-	return new URL( createFilterResponse.headers.location ).searchParams.get( 'changedfilter' );
+	return new URL( createFilterResponse.headers.location, config.base_uri ).searchParams.get( 'changedfilter' );
 }
 
 describe( 'Abuse Filter', () => {
