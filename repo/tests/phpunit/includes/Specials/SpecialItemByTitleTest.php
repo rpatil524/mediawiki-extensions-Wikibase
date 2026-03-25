@@ -135,17 +135,14 @@ class SpecialItemByTitleTest extends SpecialPageTestBase {
 	}
 
 	public function testRedirectsToCorrespondingItem_WhenGivenSubPageReferencesExistingPage() {
-
 		$itemId = self::EXISTING_ITEM_ID;
 		$subPage = self::EXISTING_WIKI . '/' . self::EXISTING_PAGE;
 
 		/** @var WebResponse $response */
 		[ , $response ] = $this->executeSpecialPage( $subPage );
 
-		$itemUrl = Title::newFromTextThrow( $itemId )->getFullURL();
-		$urlUtils = $this->getServiceContainer()->getUrlUtils();
-		$expectedUrl = $urlUtils->expand( $itemUrl, PROTO_CURRENT );
-		$this->assertEquals( $expectedUrl, $response->getHeader( 'Location' ), 'Redirect' );
+		$expectedUrl = Title::newFromTextThrow( $itemId )->getFullURL();
+		$this->assertSame( $expectedUrl, $response->getHeader( 'Location' ), 'Redirect' );
 	}
 
 }
