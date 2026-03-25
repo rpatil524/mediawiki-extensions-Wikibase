@@ -7,6 +7,7 @@ namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors;
  */
 enum GraphQLErrorType {
 	case ITEM_NOT_FOUND;
+	case INVALID_EXTERNAL_ID_PROPERTY;
 	case INVALID_SEARCH_CURSOR;
 	case INVALID_SEARCH_LIMIT;
 	case INVALID_SEARCH_QUERY;

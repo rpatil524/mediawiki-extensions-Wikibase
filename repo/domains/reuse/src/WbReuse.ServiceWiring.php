@@ -8,6 +8,7 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabels\Batc
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearch;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchValidator;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalId;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalIdValidator;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemBySitelink\LookUpItemBySitelink;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
@@ -74,7 +75,10 @@ return [
 				$itemResolver
 			),
 			new ItemByExternalIdResolver(
-				new LookUpItemByExternalId( WbReuse::getItemByExternalIdLookup( $services ) ),
+				new LookUpItemByExternalId(
+					new LookUpItemByExternalIdValidator( WikibaseRepo::getPropertyDataTypeLookup( $services ) ),
+					WbReuse::getItemByExternalIdLookup( $services )
+				),
 				$itemResolver
 			),
 			WbReuse::getGraphQLTypes( $services ),

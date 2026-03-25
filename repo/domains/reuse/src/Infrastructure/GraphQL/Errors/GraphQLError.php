@@ -13,6 +13,10 @@ class GraphQLError extends Error {
 		parent::__construct( $message );
 	}
 
+	public static function invalidExternalIdProperty( string $reason ): self {
+		return new self( GraphQLErrorType::INVALID_EXTERNAL_ID_PROPERTY, $reason );
+	}
+
 	public static function itemNotFound( string $itemId ): self {
 		return new self(
 			GraphQLErrorType::ITEM_NOT_FOUND,
