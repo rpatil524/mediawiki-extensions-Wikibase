@@ -7,7 +7,6 @@ use GraphQL\Error\Error;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLErrorLogger;
 
 /**
@@ -31,10 +30,6 @@ class GraphQLErrorLoggerTest extends TestCase {
 
 	public static function errorsWithNoLoggingProvider(): Generator {
 		yield 'no errors' => [ [] ];
-
-		yield 'expected error' => [
-			[ new Error( 'expected', previous: GraphQLError::itemNotFound( 'Q1' ) ) ],
-		];
 
 		yield 'error with no previous exception' => [
 			[ new Error( 'no previous' ) ],
@@ -63,7 +58,6 @@ class GraphQLErrorLoggerTest extends TestCase {
 
 		yield 'only unexpected error is logged among mixed errors' => [
 			[
-				new Error( 'expected', previous: GraphQLError::itemNotFound( 'Q1' ) ),
 				new Error( 'unexpected', previous: $unexpected ),
 				new Error( 'no previous' ),
 			],

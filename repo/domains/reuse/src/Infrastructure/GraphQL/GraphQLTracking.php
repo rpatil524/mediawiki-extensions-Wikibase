@@ -22,7 +22,8 @@ class GraphQLTracking {
 	) {
 	}
 
-	public function trackUsage( ExecutionResult $result, ?DocumentNode $doc, ?string $operationName ): void {
+	public function recordQueryMetrics( ExecutionResult $result, ?DocumentNode $doc, ?string $operationName ): void {
+		$this->trackErrors( $result->errors );
 		if ( !$result->data ) {
 			$this->incrementHitMetric( 'error' );
 			return;
@@ -60,9 +61,9 @@ class GraphQLTracking {
 		}
 	}
 
-	public function trackErrors( QueryComplexityRule $complexityRule, array $errors ): void {
+	private function trackErrors( array $errors ): void {
 		$errorTypes = array_unique( array_map(
-			fn( Error $e ) => $this->getErrorType( $complexityRule, $e )->name,
+			fn( Error $e ) => $this->getErrorType( $e )->name,
 			$errors,
 		) );
 
@@ -73,20 +74,14 @@ class GraphQLTracking {
 		}
 	}
 
-	private function getErrorType( QueryComplexityRule $queryComplexityRule, Error $error ): GraphQLErrorType {
-		if ( $queryComplexityRule->wasChecked()
-			 && $queryComplexityRule->getQueryComplexity() > $queryComplexityRule->getMaxQueryComplexity() ) {
-			return GraphQLErrorType::QUERY_TOO_COMPLEX;
-		}
-
-		$previousError = $error->getPrevious();
-		if ( $previousError instanceof GraphQLError ) {
-			return $previousError->type;
+	private function getErrorType( Error $error ): GraphQLErrorType {
+		if ( $error instanceof GraphQLError ) {
+			return $error->type;
 		}
 
 		// If there is no previous error, it means that the GraphQL engine itself rejected the query
 		// e.g. because the query was malformed, or an invalid field or operation name.
-		if ( $previousError === null ) {
+		if ( $error->getPrevious() === null ) {
 			return GraphQLErrorType::INVALID_QUERY;
 		}
 
