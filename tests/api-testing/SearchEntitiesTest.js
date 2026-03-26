@@ -3,6 +3,7 @@
 const { action, assert, utils, wiki } = require( 'api-testing' );
 
 const ITEM_EN_LABEL = 'e2e-item-en-' + utils.uniq();
+const ITEM_EN_ALIAS = 'e2e-item-alias-' + utils.uniq();
 const ITEM_DE_LABEL = 'e2e-item-de-' + utils.uniq();
 const PROP_EN_LABEL = 'e2e-prop-en-' + utils.uniq();
 
@@ -24,6 +25,9 @@ describe( 'wbsearchentities', () => {
 				labels: {
 					en: { language: 'en', value: ITEM_EN_LABEL },
 					de: { language: 'de', value: ITEM_DE_LABEL },
+				},
+				aliases: {
+					en: [ { language: 'en', value: ITEM_EN_ALIAS } ],
 				},
 			} ),
 		}, 'POST' );
@@ -61,6 +65,40 @@ describe( 'wbsearchentities', () => {
 		testItemConceptUri = conceptBaseUri + testItemId;
 	} );
 
+	it( 'returns empty results when no matches are found', async () => {
+		const response = await mindy.action( 'wbsearchentities', {
+			search: 'nonexistent',
+			language: 'en',
+			type: 'item',
+		} );
+
+		assert.isEmpty( response.search );
+	} );
+
+	it( 'response contains the expected fields and result shape', async () => {
+		const response = await mindy.action( 'wbsearchentities', {
+			search: testItemId,
+			language: 'en',
+			type: 'item',
+		} );
+
+		assert.equal( response.searchinfo.search, testItemId );
+		assert.equal( response.success, 1 );
+
+		const result = response.search[ 0 ];
+		assert.containsAllKeys( result, [
+			'id',
+			'title',
+			'pageid',
+			'concepturi',
+			'url',
+			'display',
+			'match',
+			'label',
+			'aliases',
+		] );
+	} );
+
 	it( 'finds item by English label', async () => {
 		const response = await mindy.action( 'wbsearchentities', {
 			search: ITEM_EN_LABEL,
@@ -75,6 +113,21 @@ describe( 'wbsearchentities', () => {
 		assert.equal( result.match.text, ITEM_EN_LABEL );
 		assert.equal( result.display.label.value, ITEM_EN_LABEL );
 		assert.equal( result.display.label.language, 'en' );
+	} );
+
+	it( 'finds items by English alias', async () => {
+		const response = await mindy.action( 'wbsearchentities', {
+			search: ITEM_EN_ALIAS,
+			language: 'en',
+			type: 'item',
+		} );
+
+		const result = response.search.find( ( r ) => r.id === testItemId );
+		assert.isOk( result, 'item should appear in search results' );
+		assert.equal( result.match.type, 'alias' );
+		assert.equal( result.match.text, ITEM_EN_ALIAS );
+		assert.equal( result.display.label.value, ITEM_EN_LABEL );
+		assert.include( result.aliases, ITEM_EN_ALIAS );
 	} );
 
 	it( 'finds property by English label', async () => {
