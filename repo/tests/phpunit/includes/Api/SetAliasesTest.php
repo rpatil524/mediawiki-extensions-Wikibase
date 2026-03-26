@@ -106,51 +106,49 @@ class SetAliasesTest extends ModifyTermTestCase {
 
 	public static function provideData() {
 		return [
-			// p => params, e => expected
-
 			// -- Test valid sequence -----------------------------
 			[ //0
-				'p' => [ 'language' => 'en', 'set' => '' ],
-				'e' => [ 'edit-no-change'  => true ] ],
+				'params' => [ 'language' => 'en', 'set' => '' ],
+				'expected' => [ 'edit-no-change'  => true ] ],
 			[ //1
-				'p' => [ 'language' => 'en', 'set' => 'Foo' ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo' ] ] ] ],
+				'params' => [ 'language' => 'en', 'set' => 'Foo' ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo' ] ] ] ],
 			[ //2
-				'p' => [ 'language' => 'en', 'add' => 'Foo|Bax' ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo', 'Bax' ] ] ] ],
+				'params' => [ 'language' => 'en', 'add' => 'Foo|Bax' ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo', 'Bax' ] ] ] ],
 			[ //3
-				'p' => [ 'language' => 'en', 'set' => 'Foo|Bar|Baz' ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz' ] ] ] ],
+				'params' => [ 'language' => 'en', 'set' => 'Foo|Bar|Baz' ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz' ] ] ] ],
 			[ //4
-				'p' => [ 'language' => 'en', 'set' => 'Foo|Bar|Baz' ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz' ] ], 'edit-no-change'  => true ] ],
+				'params' => [ 'language' => 'en', 'set' => 'Foo|Bar|Baz' ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz' ] ], 'edit-no-change'  => true ] ],
 			[ //5
-				'p' => [ 'language' => 'en', 'add' => 'Foo|Spam' ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz', 'Spam' ] ] ] ],
+				'params' => [ 'language' => 'en', 'add' => 'Foo|Spam' ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz', 'Spam' ] ] ] ],
 			[ //6
-				'p' => [ 'language' => 'en', 'add' => 'ohi' ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz', 'Spam', 'ohi' ] ] ] ],
+				'params' => [ 'language' => 'en', 'add' => 'ohi' ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo', 'Bar', 'Baz', 'Spam', 'ohi' ] ] ] ],
 			[ //7
-				'p' => [ 'language' => 'en', 'set' => 'ohi' ],
-				'e' => [ 'value' => [ 'en' => [ 'ohi' ] ] ] ],
+				'params' => [ 'language' => 'en', 'set' => 'ohi' ],
+				'expected' => [ 'value' => [ 'en' => [ 'ohi' ] ] ] ],
 			[ //8
-				'p' => [ 'language' => 'de', 'set' => '' ],
-				'e' => [ 'value' => [ 'en' => [ 'ohi' ] ], 'edit-no-change'  => true ] ],
+				'params' => [ 'language' => 'de', 'set' => '' ],
+				'expected' => [ 'value' => [ 'en' => [ 'ohi' ] ], 'edit-no-change'  => true ] ],
 			[ //9
-				'p' => [ 'language' => 'de', 'set' => 'hiya' ],
-				'e' => [ 'value' => [ 'en' => [ 'ohi' ], 'de' => [ 'hiya' ] ] ] ],
+				'params' => [ 'language' => 'de', 'set' => 'hiya' ],
+				'expected' => [ 'value' => [ 'en' => [ 'ohi' ], 'de' => [ 'hiya' ] ] ] ],
 			[ //10
-				'p' => [ 'language' => 'de', 'add' => '||||||opps||||opps||||' ],
-				'e' => [ 'value' => [ 'en' => [ 'ohi' ], 'de' => [ 'hiya', 'opps' ] ] ] ],
+				'params' => [ 'language' => 'de', 'add' => '||||||opps||||opps||||' ],
+				'expected' => [ 'value' => [ 'en' => [ 'ohi' ], 'de' => [ 'hiya', 'opps' ] ] ] ],
 			[ //11
-				'p' => [ 'language' => 'de', 'remove' => 'opps|hiya' ],
-				'e' => [ 'value' => [ 'en' => [ 'ohi' ] ] ] ],
+				'params' => [ 'language' => 'de', 'remove' => 'opps|hiya' ],
+				'expected' => [ 'value' => [ 'en' => [ 'ohi' ] ] ] ],
 			[ //12
-				'p' => [ 'language' => 'en', 'remove' => 'ohi' ],
-				'e' => [] ],
+				'params' => [ 'language' => 'en', 'remove' => 'ohi' ],
+				'expected' => [] ],
 			[ //13
-				'p' => [ 'language' => 'en', 'set' => "  Foo\nBar  " ],
-				'e' => [ 'value' => [ 'en' => [ 'Foo Bar' ] ] ] ],
+				'params' => [ 'language' => 'en', 'set' => "  Foo\nBar  " ],
+				'expected' => [ 'value' => [ 'en' => [ 'Foo Bar' ] ] ] ],
 		];
 	}
 
@@ -203,12 +201,10 @@ class SetAliasesTest extends ModifyTermTestCase {
 
 	public static function provideExceptionData() {
 		return [
-			// p => params, e => expected
-
 			// -- Test Exceptions -----------------------------
 			[ //0
-				'p' => [ 'language' => 'xx', 'add' => 'Foo' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'xx', 'add' => 'Foo' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => self::logicalOr(
 						self::equalTo( 'unknown_language' ),
@@ -217,15 +213,15 @@ class SetAliasesTest extends ModifyTermTestCase {
 				] ],
 			],
 			[ //1
-				'p' => [ 'language' => 'nl', 'set' => TermTestHelper::makeOverlyLongString() ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'nl', 'set' => TermTestHelper::makeOverlyLongString() ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'modification-failed',
 				] ],
 			],
 			[ //2
-				'p' => [ 'language' => 'pt', 'remove' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'pt', 'remove' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => self::logicalOr(
 						self::equalTo( 'notoken' ),
@@ -236,8 +232,8 @@ class SetAliasesTest extends ModifyTermTestCase {
 				'token' => false,
 			],
 			[ //3
-				'p' => [ 'language' => 'pt', 'value' => 'normalValue', 'token' => '88888888888888888888888888888888+\\' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'pt', 'value' => 'normalValue', 'token' => '88888888888888888888888888888888+\\' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'badtoken',
 					'message' => 'Invalid CSRF token.',
@@ -245,16 +241,16 @@ class SetAliasesTest extends ModifyTermTestCase {
 				'token' => false,
 			],
 			[ //4
-				'p' => [ 'id' => 'noANid', 'language' => 'fr', 'add' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'id' => 'noANid', 'language' => 'fr', 'add' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'invalid-entity-id',
 					'message' => 'Invalid entity ID.',
 				] ],
 			],
 			[ //5
-				'p' => [ 'site' => 'qwerty', 'language' => 'pl', 'set' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'site' => 'qwerty', 'language' => 'pl', 'set' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => self::logicalOr(
 						self::equalTo( 'unknown_site' ),
@@ -264,22 +260,22 @@ class SetAliasesTest extends ModifyTermTestCase {
 				] ],
 			],
 			[ //6
-				'p' => [ 'site' => 'enwiki', 'title' => 'GhskiDYiu2nUd', 'language' => 'en', 'remove' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'site' => 'enwiki', 'title' => 'GhskiDYiu2nUd', 'language' => 'en', 'remove' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'no-such-entity-link',
 				] ],
 			],
 			[ //7
-				'p' => [ 'title' => 'Blub', 'language' => 'en', 'add' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'title' => 'Blub', 'language' => 'en', 'add' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'param-missing',
 				] ],
 			],
 			[ //8
-				'p' => [ 'site' => 'enwiki', 'language' => 'en', 'set' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'site' => 'enwiki', 'language' => 'en', 'set' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'param-missing',
 				] ],
