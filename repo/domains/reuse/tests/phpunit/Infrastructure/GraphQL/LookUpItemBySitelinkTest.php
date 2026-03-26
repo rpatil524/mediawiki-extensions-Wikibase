@@ -42,9 +42,9 @@ class LookUpItemBySitelinkTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function lookupProvider(): Generator {
+	public static function lookupProvider(): Generator {
 		$sitelinkTitle = 'Potato';
-		$item = $this->createItem(
+		$item = self::createItem(
 			NewItem::withLabel( 'en', 'potato' )
 				->andSiteLink( self::SITE_ID, $sitelinkTitle )
 		);
@@ -72,16 +72,16 @@ class LookUpItemBySitelinkTest extends MediaWikiIntegrationTestCase {
 		];
 	}
 
-	private function createItem( NewItem $newItem ): Item {
+	private static function createItem( NewItem $newItem ): Item {
 		// assign the ID here so that we don't have to worry about collisions
-		$nextId = empty( self::$items ) ? 'Q1' : 'Q' . $this->getNextNumericId( self::$items );
+		$nextId = empty( self::$items ) ? 'Q1' : 'Q' . self::getNextNumericId( self::$items );
 		$item = $newItem->andId( $nextId )->build();
 		self::$items[] = $item;
 
 		return $item;
 	}
 
-	private function getNextNumericId( array $entities ): int {
+	private static function getNextNumericId( array $entities ): int {
 		$latestEntity = $entities[array_key_last( $entities )];
 		return (int)substr( $latestEntity->getId()->getSerialization(), 1 ) + 1;
 	}
