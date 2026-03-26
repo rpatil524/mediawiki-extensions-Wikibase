@@ -155,13 +155,13 @@ class DataValuesValueDeserializerTest extends TestCase {
 
 		yield 'missing content field' => [
 			'string',
-			'value' => [ 'type' => 'value' ],
+			[ 'value' => [ 'type' => 'value' ] ],
 			new MissingFieldException( 'content', '' ),
 		];
 
 		yield 'missing content field with path' => [
 			'string',
-			'value' => [ 'type' => 'value' ],
+			[ 'value' => [ 'type' => 'value' ] ],
 			new MissingFieldException( 'content', 'qualifiers/1/value' ),
 			'qualifiers/1/value',
 		];

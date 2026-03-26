@@ -362,24 +362,24 @@ class SpecialMergeItemsTest extends SpecialPageTestBase {
 
 	public static function provideExceptionParamsData(): iterable {
 		return [
-			[ //3 toid bad
-				'p' => [ 'fromid' => 'Q1', 'toid' => 'ABCDE' ],
-				'e' => 'Wikibase\Lib\UserInputException:wikibase-wikibaserepopage-invalid-id' ],
-			[ //4 fromid bad
-				'p' => [ 'fromid' => 'ABCDE', 'toid' => 'Q1' ],
-				'e' => 'Wikibase\Lib\UserInputException:wikibase-wikibaserepopage-invalid-id' ],
-			[ //5 both same id
-				'p' => [ 'fromid' => 'Q1', 'toid' => 'Q1' ],
-				'e' => 'Wikibase\Repo\Interactors\ItemMergeException:wikibase-itemmerge-cant-merge-self' ],
-			[ //6 from id is property
-				'p' => [ 'fromid' => 'P1', 'toid' => 'Q1' ],
-				'e' => 'Wikibase\Lib\UserInputException:wikibase-itemmerge-not-item' ],
-			[ //7 to id is property
-				'p' => [ 'fromid' => 'Q1', 'toid' => 'P1' ],
-				'e' => 'Wikibase\Lib\UserInputException:wikibase-itemmerge-not-item' ],
-			[ //10 bad token
-				'p' => [ 'fromid' => 'Q1', 'toid' => 'Q2', 'wpEditToken' => 'BAD' ],
-				'e' => 'Wikibase\Repo\Interactors\TokenCheckException:wikibase-tokencheck-badtoken' ],
+			'3 toid bad' => [
+				'params' => [ 'fromid' => 'Q1', 'toid' => 'ABCDE' ],
+				'expected' => 'Wikibase\Lib\UserInputException:wikibase-wikibaserepopage-invalid-id' ],
+			'4 fromid bad' => [
+				'params' => [ 'fromid' => 'ABCDE', 'toid' => 'Q1' ],
+				'expected' => 'Wikibase\Lib\UserInputException:wikibase-wikibaserepopage-invalid-id' ],
+			'5 both same id' => [
+				'params' => [ 'fromid' => 'Q1', 'toid' => 'Q1' ],
+				'expected' => 'Wikibase\Repo\Interactors\ItemMergeException:wikibase-itemmerge-cant-merge-self' ],
+			'6 from id is property' => [
+				'params' => [ 'fromid' => 'P1', 'toid' => 'Q1' ],
+				'expected' => 'Wikibase\Lib\UserInputException:wikibase-itemmerge-not-item' ],
+			'7 to id is property' => [
+				'params' => [ 'fromid' => 'Q1', 'toid' => 'P1' ],
+				'expected' => 'Wikibase\Lib\UserInputException:wikibase-itemmerge-not-item' ],
+			'10 bad token' => [
+				'params' => [ 'fromid' => 'Q1', 'toid' => 'Q2', 'wpEditToken' => 'BAD' ],
+				'expected' => 'Wikibase\Repo\Interactors\TokenCheckException:wikibase-tokencheck-badtoken' ],
 		];
 	}
 

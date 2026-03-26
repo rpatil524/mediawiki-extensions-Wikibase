@@ -75,12 +75,12 @@ class EntityDiffVisualizerFactoryTest extends \PHPUnit\Framework\TestCase {
 
 	public static function provideInvalidConstructorArgs(): iterable {
 		return [
-			[ 'non-string key' => [
+			'non-string key' => [ [
 				123 => function () {
 					throw new \Exception( 'this should never be called' );
 				},
 			] ],
-			[ 'not a callable' => [ 'item' => 'WOOO' ] ],
+			'not a callable' => [ [ 'item' => 'WOOO' ] ],
 		];
 	}
 

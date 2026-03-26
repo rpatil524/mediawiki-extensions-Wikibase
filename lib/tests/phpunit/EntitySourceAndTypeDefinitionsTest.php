@@ -65,8 +65,8 @@ class EntitySourceAndTypeDefinitionsTest extends TestCase {
 	/**
 	 * @dataProvider invalidConstructorArgsProvider
 	 */
-	public function testConstructionWithInvalidArgs( callable $definitionsByTypeFactory, array $sources ): void {
-		$definitionsByType = $definitionsByTypeFactory( $this );
+	public function testConstructionWithInvalidArgs( callable $definitionsByType, array $sources ): void {
+		$definitionsByType = $definitionsByType( $this );
 		$this->expectException( InvalidArgumentException::class );
 
 		new EntitySourceAndTypeDefinitions(

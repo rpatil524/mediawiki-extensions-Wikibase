@@ -274,14 +274,14 @@ class WikiPageEntityStoreTest extends MediaWikiIntegrationTestCase {
 			'not fresh' => [
 				'entity' => $firstItem,
 				'flags' => EDIT_NEW,
-				'baseRevid' => false,
+				'baseRevId' => false,
 				'error' => StorageException::class,
 			],
 
 			'not exists' => [
 				'entity' => $secondItem,
 				'flags' => EDIT_UPDATE,
-				'baseRevid' => false,
+				'baseRevId' => false,
 				'error' => StorageException::class,
 			],
 		];

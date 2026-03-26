@@ -138,16 +138,16 @@ class WikiPageActionEntityChangeFactoryTest extends \MediaWikiIntegrationTestCas
 	 * @dataProvider redirectContentsWithActionProvider
 	 */
 	public function testNewForPageModified_determinesChangeAction(
-		callable $currentRevisionContentFunction,
-		callable $parentRevisionContentFunction,
-		string $expectedAction
+		callable $currentRevisionContent,
+		callable $parentRevisionContent,
+		string $expectedEntityAction
 	) {
 		$change = $this->newFactory()->newForPageModified(
-			$this->newMinimalRevisionRecordWithContent( $currentRevisionContentFunction( $this ) ),
-			$parentRevisionContentFunction( $this )
+			$this->newMinimalRevisionRecordWithContent( $currentRevisionContent( $this ) ),
+			$parentRevisionContent( $this )
 		);
 
-		$this->assertChangeAction( $expectedAction, $change );
+		$this->assertChangeAction( $expectedEntityAction, $change );
 	}
 
 	public static function redirectContentsWithActionProvider(): iterable {

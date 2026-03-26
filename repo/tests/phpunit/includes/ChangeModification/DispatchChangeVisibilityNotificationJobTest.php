@@ -170,7 +170,7 @@ class DispatchChangeVisibilityNotificationJobTest extends MediaWikiIntegrationTe
 	 * @dataProvider parameterProvider
 	 */
 	public function testHandle(
-		array $expectedJobParams,
+		array $expectedJobs,
 		array $revisionIds,
 		array $visibilityChangeMap,
 		int $batchSize = 3
@@ -201,7 +201,7 @@ class DispatchChangeVisibilityNotificationJobTest extends MediaWikiIntegrationTe
 
 		foreach ( $wikiIds as $wikiId ) {
 			$this->assertArrayContains(
-				$expectedJobParams,
+				$expectedJobs,
 				$actualJobs[$wikiId] ?? [],
 				"jobs for $wikiId"
 			);

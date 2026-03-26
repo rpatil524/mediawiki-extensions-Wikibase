@@ -158,16 +158,16 @@ class UnexpectedUnconnectedPagePrimerTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider insertPagePropProvider
 	 */
 	public function testInsertPageProp(
-		callable $expectedPagePropsFactory,
-		callable $priorPagePropsFactory,
+		callable $expectedPageProps,
+		callable $priorPageProps,
 		int $batchSize = 1000,
 		?int $batchSizeSelectMultiplicator = null
 	): void {
 		$namespaceString = strval( -$this->getDefaultWikitextNS() );
 		$namespaceFloat = -$this->getDefaultWikitextNS() + 0.0;
 
-		$expectedPageProps = $expectedPagePropsFactory( $namespaceString, $namespaceFloat );
-		$priorPageProps = $priorPagePropsFactory( $namespaceString, $namespaceFloat );
+		$expectedPageProps = $expectedPageProps( $namespaceString, $namespaceFloat );
+		$priorPageProps = $priorPageProps( $namespaceString, $namespaceFloat );
 
 		$this->insertPageProps( $priorPageProps );
 

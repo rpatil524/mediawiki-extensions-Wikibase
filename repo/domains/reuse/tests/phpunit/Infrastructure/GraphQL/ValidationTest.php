@@ -36,7 +36,7 @@ class ValidationTest extends MediaWikiIntegrationTestCase {
 
 		yield 'invalid query - empty query' => [
 			'',
-			'message' => "The 'query' field is required and must not be empty",
+			"The 'query' field is required and must not be empty",
 		];
 
 		yield 'invalid query - unknown field' => [
