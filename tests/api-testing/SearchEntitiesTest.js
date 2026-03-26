@@ -2,25 +2,21 @@
 
 const { action, assert, utils, wiki } = require( 'api-testing' );
 
+const api = action.getAnon();
 const ITEM_EN_LABEL = 'e2e-item-en-' + utils.uniq();
 const ITEM_EN_ALIAS = 'e2e-item-alias-' + utils.uniq();
 const ITEM_DE_LABEL = 'e2e-item-de-' + utils.uniq();
 const PROP_EN_LABEL = 'e2e-prop-en-' + utils.uniq();
 
 describe( 'wbsearchentities', () => {
-	let mindy;
 	let testItemId;
 	let testPropertyId;
 	let testItemConceptUri;
 
-	before( 'set up admin', async () => {
-		mindy = await action.mindy();
-	} );
-
 	before( 'create test item', async () => {
-		const response = await mindy.action( 'wbeditentity', {
+		const response = await api.action( 'wbeditentity', {
 			new: 'item',
-			token: await mindy.token( 'csrf' ),
+			token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
 			data: JSON.stringify( {
 				labels: {
 					en: { language: 'en', value: ITEM_EN_LABEL },
@@ -35,9 +31,9 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	before( 'create test property', async () => {
-		const response = await mindy.action( 'wbeditentity', {
+		const response = await api.action( 'wbeditentity', {
 			new: 'property',
-			token: await mindy.token( 'csrf' ),
+			token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
 			data: JSON.stringify( {
 				datatype: 'string',
 				labels: {
@@ -57,7 +53,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	before( 'look up concept URI', async () => {
-		const response = await mindy.action( 'query', {
+		const response = await api.action( 'query', {
 			meta: 'siteinfo',
 			siprop: 'general',
 		} );
@@ -66,7 +62,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'returns empty results when no matches are found', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: 'nonexistent',
 			language: 'en',
 			type: 'item',
@@ -76,7 +72,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'response contains the expected fields and result shape', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: testItemId,
 			language: 'en',
 			type: 'item',
@@ -100,7 +96,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds item by English label', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: ITEM_EN_LABEL,
 			language: 'en',
 			type: 'item',
@@ -116,7 +112,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds items by English alias', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: ITEM_EN_ALIAS,
 			language: 'en',
 			type: 'item',
@@ -131,7 +127,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds property by English label', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: PROP_EN_LABEL,
 			language: 'en',
 			type: 'property',
@@ -145,7 +141,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds item by entity ID', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: testItemId,
 			language: 'en',
 			type: 'item',
@@ -157,7 +153,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds item by concept URI', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: testItemConceptUri,
 			language: 'en',
 			type: 'item',
@@ -168,7 +164,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds items when no type is specified (defaults to item)', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: ITEM_EN_LABEL,
 			language: 'en',
 			// no 'type' param – the API defaults to 'item'
@@ -179,7 +175,7 @@ describe( 'wbsearchentities', () => {
 	} );
 
 	it( 'finds item by label in other languages', async () => {
-		const response = await mindy.action( 'wbsearchentities', {
+		const response = await api.action( 'wbsearchentities', {
 			search: ITEM_DE_LABEL,
 			language: 'de',
 			type: 'item',
