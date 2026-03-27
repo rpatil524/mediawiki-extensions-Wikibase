@@ -3,7 +3,6 @@
 namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers;
 
 use LogicException;
-use MediaWiki\Registration\ExtensionRegistry;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearch;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchRequest;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\UseCaseError;
@@ -18,10 +17,10 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\PaginationCursorCodec;
  */
 class SearchItemsResolver {
 	use PaginationCursorCodec;
+	use CirrusSearchEnabledTrait;
 
 	public function __construct(
 		private readonly FacetedItemSearch $searchUseCase,
-		private readonly ExtensionRegistry $extensionRegistry,
 	) {
 	}
 
@@ -29,7 +28,7 @@ class SearchItemsResolver {
 	 * @throws GraphQLError
 	 */
 	public function resolve( array $query, int $limit, ?string $cursor ): array {
-		if ( !$this->isSearchEnabled() ) {
+		if ( !self::isCirrusSearchEnabled() ) {
 			throw GraphQLError::searchNotAvailable();
 		}
 
@@ -50,15 +49,6 @@ class SearchItemsResolver {
 			'edges' => $this->resolveEdges( $searchResults->results, $offset ),
 			'pageInfo' => $this->resolvePageInfo( $searchResults, $offset ),
 		];
-	}
-
-	private function isSearchEnabled(): bool {
-		global $wgSearchType, $wgWBCSUseCirrus;
-
-		$isWikibaseCirrusSearchEnabled = $this->extensionRegistry->isLoaded( 'WikibaseCirrusSearch' );
-		$isCirrusSearchEnabled = $wgSearchType === 'CirrusSearch' || $wgWBCSUseCirrus;
-
-		return $isCirrusSearchEnabled && $isWikibaseCirrusSearchEnabled;
 	}
 
 	private function resolveEdges( array $searchResults, int $offset ): array {

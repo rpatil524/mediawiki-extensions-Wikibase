@@ -64,7 +64,6 @@ return [
 					),
 					WbReuse::getFacetedItemSearchEngine( $services ),
 				),
-				$services->getExtensionRegistry()
 			),
 			new ItemBySitelinkResolver(
 				new LookUpItemBySitelink(

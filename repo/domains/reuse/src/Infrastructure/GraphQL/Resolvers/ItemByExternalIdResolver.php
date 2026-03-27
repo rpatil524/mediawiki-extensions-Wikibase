@@ -6,12 +6,14 @@ use GraphQL\Deferred;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalId;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalIdRequest;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\QueryContext;
 
 /**
  * @license GPL-2.0-or-later
  */
 class ItemByExternalIdResolver {
+	use CirrusSearchEnabledTrait;
 
 	public function __construct(
 		private readonly LookUpItemByExternalId $useCase,
@@ -19,7 +21,14 @@ class ItemByExternalIdResolver {
 	) {
 	}
 
+	/**
+	 * @throws GraphQLError
+	 */
 	public function resolve( string $propertyId, string $externalId, QueryContext $context ): Deferred|array|null {
+		if ( !self::isCirrusSearchEnabled() ) {
+			throw GraphQLError::searchNotAvailable();
+		}
+
 		$itemIds = $this->useCase->execute(
 			new LookUpItemByExternalIdRequest( new NumericPropertyId( $propertyId ), $externalId )
 		)->itemIds;

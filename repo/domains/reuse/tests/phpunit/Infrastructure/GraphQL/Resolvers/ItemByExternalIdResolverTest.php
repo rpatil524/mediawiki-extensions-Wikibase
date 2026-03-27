@@ -3,7 +3,7 @@
 namespace Wikibase\Repo\Tests\Domains\Reuse\Infrastructure\GraphQL\Resolvers;
 
 use GraphQL\Executor\Promise\Adapter\SyncPromiseQueue;
-use PHPUnit\Framework\TestCase;
+use MediaWikiIntegrationTestCase;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItems\BatchGetItems;
@@ -18,9 +18,11 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\ItemsBatch;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Labels;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Sitelinks;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statements;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\QueryContext;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemByExternalIdResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
+use Wikibase\Repo\Tests\Domains\Reuse\Infrastructure\GraphQL\SearchEnabledTestTrait;
 
 /**
  * @covers \Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemByExternalIdResolver
@@ -29,9 +31,12 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
  *
  * @license GPL-2.0-or-later
  */
-class ItemByExternalIdResolverTest extends TestCase {
+class ItemByExternalIdResolverTest extends MediaWikiIntegrationTestCase {
+
+	use SearchEnabledTestTrait;
 
 	public function testGivenOneMatchingItem_returnsItem(): void {
+		$this->simulateSearchEnabled();
 		$propertyId = 'P31';
 		$externalId = 'some-external-id';
 		$itemId = 'Q42';
@@ -65,6 +70,8 @@ class ItemByExternalIdResolverTest extends TestCase {
 	}
 
 	public function testGivenNoMatchingItem_returnsNull(): void {
+		$this->simulateSearchEnabled();
+
 		$useCase = $this->createMock( LookUpItemByExternalId::class );
 		$useCase->expects( $this->once() )
 			->method( 'execute' )
@@ -80,6 +87,8 @@ class ItemByExternalIdResolverTest extends TestCase {
 	}
 
 	public function testGivenMultipleMatchingItems_returnsExternalIdNonUnique(): void {
+		$this->simulateSearchEnabled();
+
 		$itemIds = [ new ItemId( 'Q1' ), new ItemId( 'Q2' ) ];
 
 		$useCase = $this->createMock( LookUpItemByExternalId::class );
@@ -94,6 +103,22 @@ class ItemByExternalIdResolverTest extends TestCase {
 			->resolve( 'P31', 'shared-id', new QueryContext() );
 
 		$this->assertEquals( $itemIds, $result );
+	}
+
+	public function testGivenSearchNotAvailable_throwsGraphQLError(): void {
+		$this->simulateSearchEnabled( false );
+
+		$lookUpItemByExternalId = $this->createStub( LookUpItemByExternalId::class );
+		$lookUpItemByExternalId->expects( $this->never() )
+			->method( 'execute' )->willReturn( $this->createStub( LookUpItemByExternalIdResponse::class ) );
+
+		$this->expectException( GraphQLError::class );
+		$this->expectExceptionMessage( 'Search is not available due to insufficient server configuration' );
+
+		( new ItemByExternalIdResolver(
+			$lookUpItemByExternalId,
+			$this->createStub( ItemResolver::class ),
+		) )->resolve( 'P31', 'some-id', new QueryContext() );
 	}
 
 }
