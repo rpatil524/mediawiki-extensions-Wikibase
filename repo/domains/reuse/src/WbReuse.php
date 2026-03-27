@@ -5,6 +5,7 @@ namespace Wikibase\Repo\Domains\Reuse;
 use MediaWiki\MediaWikiServices;
 use Psr\Container\ContainerInterface;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLTracking;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
@@ -55,5 +56,10 @@ class WbReuse {
 	public static function getFacetedItemSearchEngine( ?ContainerInterface $services = null ): FacetedItemSearchEngine {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'WbReuse.FacetedItemSearchEngine' );
+	}
+
+	public static function getItemByExternalIdLookup( ?ContainerInterface $services = null ): ItemByExternalIdLookup {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'WbReuse.ItemByExternalIdLookup' );
 	}
 }

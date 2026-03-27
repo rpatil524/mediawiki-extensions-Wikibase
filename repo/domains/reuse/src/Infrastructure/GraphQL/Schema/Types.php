@@ -7,9 +7,12 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\UnionType;
+use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\Lib\DataTypeDefinitions;
 use Wikibase\Lib\SettingsArray;
 use Wikibase\Lib\Store\PropertyInfoLookup;
+use Wikibase\Repo\Domains\Reuse\Domain\Model\Item;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\ItemSearchResult;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyValuePair;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
@@ -49,6 +52,8 @@ class Types {
 	private ?ObjectType $itemSearchResultNodeType = null;
 	private ?ObjectType $itemSearchResultEdgeType = null;
 	private ?ObjectType $pageInfoType = null;
+	private ?UnionType $itemByExternalIdResultType = null;
+	private ?ObjectType $externalIdNonUniqueType = null;
 
 	public function __construct(
 		private readonly array $validLanguageCodes,
@@ -278,6 +283,31 @@ class Types {
 				$descriptionField,
 			],
 			'interfaces' => [ $labelProviderType, $descriptionProviderType ],
+		] );
+	}
+
+	public function getItemByExternalIdResultType(): UnionType {
+		return $this->itemByExternalIdResultType ??= new UnionType( [
+			'name' => 'ItemByExternalIdResult',
+			'description' => 'The result of looking up an item by an external identifier.',
+			'types' => [ $this->getItemType(), $this->getExternalIdNonUniqueType() ],
+			'resolveType' => fn( $value ) => $value instanceof Item
+				? $this->getItemType()
+				: $this->getExternalIdNonUniqueType(),
+		] );
+	}
+
+	public function getExternalIdNonUniqueType(): ObjectType {
+		return $this->externalIdNonUniqueType ??= new ObjectType( [
+			'name' => 'ExternalIdNonUnique',
+			'description' => 'Indicates that multiple items match the given external identifier.',
+			'fields' => [
+				'items' => [
+					'type' => Type::nonNull( Type::listOf( Type::nonNull( $this->getItemIdType() ) ) ),
+					'description' => 'IDs of the items that match the given external identifier.',
+					'resolve' => fn( array $result ) => array_map( fn( ItemId $itemId ) => $itemId->getSerialization(), $result ),
+				],
+			],
 		] );
 	}
 

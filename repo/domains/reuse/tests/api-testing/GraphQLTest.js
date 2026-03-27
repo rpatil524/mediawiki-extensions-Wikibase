@@ -33,9 +33,11 @@ function queryGraphQL( requestBody ) {
 describe( 'Wikibase GraphQL', () => {
 	let item1;
 	let item2;
+	let item3;
 	let property1;
 	let property2;
 	let property3;
+	let property4;
 	let siteId;
 	const linkedArticle = utils.title( 'Article-linked-to-test-item' );
 	const item1label = `vegetable ${ utils.uniq() }`;
@@ -43,6 +45,7 @@ describe( 'Wikibase GraphQL', () => {
 	const property1label = `isType ${ utils.uniq() }`;
 	const property2label = `hasRelationship ${ utils.uniq() }`;
 	const item2Property3StatementValue = 'sweet potato';
+	const item1ExternalId = 'external-id';
 
 	before( async () => {
 		await action.getAnon().edit( linkedArticle, { text: 'sitelink test page' } );
@@ -66,7 +69,12 @@ describe( 'Wikibase GraphQL', () => {
 			labels: { en: `string property ${ utils.uniq() }` }
 		} );
 
-		// item with label "vegetable", and one statement: hasRelationship->somevalue
+		property4 = await createProperty( {
+			data_type: 'external-id',
+			labels: { en: `external id property ${ utils.uniq() }` }
+		} );
+
+		// item with label "vegetable", statements: hasRelationship->somevalue, external-id
 		item1 = await createItem( {
 			labels: { en: item1label },
 			statements: {
@@ -100,6 +108,17 @@ describe( 'Wikibase GraphQL', () => {
 					{
 						property: { id: property3.id },
 						value: { type: 'value', content: item2Property3StatementValue }
+					}
+				]
+			}
+		} );
+
+		item3 = await createItem( {
+			statements: {
+				[ property4.id ]: [
+					{
+						property: { id: property4.id },
+						value: { type: 'value', content: item1ExternalId }
 					}
 				]
 			}
@@ -311,6 +330,28 @@ describe( 'Wikibase GraphQL', () => {
 		);
 	} );
 
+	it( 'can look up items by externalId', async function () {
+		if ( process.env.QUIBBLE_OPENSEARCH && process.env.QUIBBLE_OPENSEARCH !== 'true' ) {
+			this.skip();
+		}
+
+		const response = await queryGraphQL( { query: `
+			{
+				itemByExternalId(property: "${ property4.id }", externalId: "${ item1ExternalId }") {
+					... on Item { id }
+				}
+			}` } );
+
+		assert.deepEqual(
+			response.body,
+			{
+				data: {
+					itemByExternalId: { id: item3.id }
+				}
+			}
+		);
+	} );
+
 	it( 'supports introspection', async () => {
 		const response = await queryGraphQL( { query: `
 			{
@@ -330,6 +371,7 @@ describe( 'Wikibase GraphQL', () => {
 							fields: [
 								{ name: 'item' },
 								{ name: 'itemsById' },
+								{ name: 'itemByExternalId' },
 								{ name: 'searchItems' },
 								{ name: 'itemBySitelink' }
 							]
