@@ -57,6 +57,7 @@ use Wikibase\Repo\Diff\BasicEntityDiffVisualizer;
 use Wikibase\Repo\Diff\ClaimDiffer;
 use Wikibase\Repo\Diff\ClaimDifferenceVisualizer;
 use Wikibase\Repo\Diff\ItemDiffVisualizer;
+use Wikibase\Repo\Domains\Search\WbSearch;
 use Wikibase\Repo\EntityReferenceExtractors\EntityReferenceExtractorCollection;
 use Wikibase\Repo\EntityReferenceExtractors\SiteLinkBadgeItemReferenceExtractor;
 use Wikibase\Repo\EntityReferenceExtractors\StatementEntityReferenceExtractor;
@@ -215,35 +216,7 @@ return [
 			);
 		},
 		Def::ENTITY_SEARCH_CALLBACK => function ( WebRequest $request ) {
-			$itemSource = WikibaseRepo::getEntitySourceDefinitions()
-				->getDatabaseSourceForEntityType( Item::ENTITY_TYPE );
-			if ( $itemSource === null ) {
-				throw new LogicException( 'No source providing Items configured!' );
-			}
-
-			$languageFallbackChainFactory = WikibaseRepo::getLanguageFallbackChainFactory();
-			$context = new RequestContext();
-			$context->setRequest( $request );
-			$language = $context->getLanguage();
-			return new CombinedEntitySearchHelper(
-					[
-						new EntityIdSearchHelper(
-							WikibaseRepo::getEntityLookup(),
-							WikibaseRepo::getEntityIdParser(),
-							WikibaseRepo::getFallbackLabelDescriptionLookupFactory()
-								->newLabelDescriptionLookup( $language ),
-							WikibaseRepo::getEnabledEntityTypes()
-						),
-						new EntityTermSearchHelper(
-							new MatchingTermsLookupSearchInteractor(
-								WikibaseRepo::getMatchingTermsLookupFactory()->getLookupForSource( $itemSource ),
-								$languageFallbackChainFactory,
-								WikibaseRepo::getPrefetchingTermLookup(),
-								$language->getCode()
-							)
-						),
-					]
-			);
+			return WbSearch::getItemSearchHelper();
 		},
 		Def::LINK_FORMATTER_CALLBACK => function( Language $language ) {
 			$services = MediaWikiServices::getInstance();
