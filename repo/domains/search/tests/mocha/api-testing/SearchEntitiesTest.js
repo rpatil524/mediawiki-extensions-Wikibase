@@ -8,57 +8,66 @@ const ITEM_EN_ALIAS = 'e2e-item-alias-' + utils.uniq();
 const ITEM_DE_LABEL = 'e2e-item-de-' + utils.uniq();
 const PROP_EN_LABEL = 'e2e-prop-en-' + utils.uniq();
 
+async function createItem() {
+	const response = await api.action( 'wbeditentity', {
+		new: 'item',
+		token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
+		data: JSON.stringify( {
+			labels: {
+				en: { language: 'en', value: ITEM_EN_LABEL },
+				de: { language: 'de', value: ITEM_DE_LABEL },
+			},
+			aliases: {
+				en: [ { language: 'en', value: ITEM_EN_ALIAS } ],
+			},
+		} ),
+	}, 'POST' );
+	return response.entity.id;
+}
+
+async function createProperty() {
+	const response = await api.action( 'wbeditentity', {
+		new: 'property',
+		token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
+		data: JSON.stringify( {
+			datatype: 'string',
+			labels: {
+				en: { language: 'en', value: PROP_EN_LABEL },
+			},
+		} ),
+	}, 'POST' );
+	return response.entity.id;
+}
+
+async function flushJobs() {
+	await wiki.runAllJobs();
+	// Wait for OpenSearch to finish applying the index update after the jobs have run
+	await new Promise( ( resolve ) => {
+		setTimeout( resolve, 1000 );
+	} );
+}
+
+async function getConceptUri( itemId ) {
+	const response = await api.action( 'query', {
+		meta: 'siteinfo',
+		siprop: 'general',
+	} );
+	const conceptBaseUri = response.query.general[ 'wikibase-conceptbaseuri' ];
+	return conceptBaseUri + itemId;
+}
+
 describe( 'wbsearchentities', () => {
 	let testItemId;
 	let testPropertyId;
 	let testItemConceptUri;
 
-	before( 'create test item', async () => {
-		const response = await api.action( 'wbeditentity', {
-			new: 'item',
-			token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
-			data: JSON.stringify( {
-				labels: {
-					en: { language: 'en', value: ITEM_EN_LABEL },
-					de: { language: 'de', value: ITEM_DE_LABEL },
-				},
-				aliases: {
-					en: [ { language: 'en', value: ITEM_EN_ALIAS } ],
-				},
-			} ),
-		}, 'POST' );
-		testItemId = response.entity.id;
-	} );
+	before( async () => {
+		testItemId = await createItem();
+		testPropertyId = await createProperty();
 
-	before( 'create test property', async () => {
-		const response = await api.action( 'wbeditentity', {
-			new: 'property',
-			token: ( await api.loadTokens( [ 'csrf' ] ) ).csrftoken,
-			data: JSON.stringify( {
-				datatype: 'string',
-				labels: {
-					en: { language: 'en', value: PROP_EN_LABEL },
-				},
-			} ),
-		}, 'POST' );
-		testPropertyId = response.entity.id;
-	} );
+		await flushJobs();
 
-	before( 'flush jobs', async () => {
-		await wiki.runAllJobs();
-		// Wait for OpenSearch to finish applying the index update after the jobs have run
-		await new Promise( ( resolve ) => {
-			setTimeout( resolve, 1000 );
-		} );
-	} );
-
-	before( 'look up concept URI', async () => {
-		const response = await api.action( 'query', {
-			meta: 'siteinfo',
-			siprop: 'general',
-		} );
-		const conceptBaseUri = response.query.general[ 'wikibase-conceptbaseuri' ];
-		testItemConceptUri = conceptBaseUri + testItemId;
+		testItemConceptUri = await getConceptUri( testItemId );
 	} );
 
 	it( 'returns empty results when no matches are found', async () => {
