@@ -476,9 +476,16 @@
 			]
 		},
 		"wikibase.client.vector-2022": {
-			"skinScripts": {
-				"vector-2022": "wikibase.client.vector-2022.js"
-			},
+			"packageFiles": [
+				"wikibase.client.vector-2022.js",
+				{
+					"name": "icons.json",
+					"callback": "MediaWiki\\ResourceLoader\\CodexModule::getIcons",
+					"callbackParam": [
+						"cdxIconEdit"
+					]
+				}
+			],
 			"messages": [
 				"wikibase-editlinkstitle"
 			]
