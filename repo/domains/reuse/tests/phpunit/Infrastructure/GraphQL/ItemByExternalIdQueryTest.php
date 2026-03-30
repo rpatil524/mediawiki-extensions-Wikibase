@@ -6,6 +6,8 @@ use Generator;
 use MediaWikiIntegrationTestCase;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
+use Wikibase\DataModel\Entity\NumericPropertyId;
+use Wikibase\DataModel\Services\Lookup\InMemoryDataTypeLookup;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;
 use Wikibase\DataModel\Tests\NewItem;
 use Wikibase\Lib\Store\EntityRevisionLookup;
@@ -42,7 +44,7 @@ class ItemByExternalIdQueryTest extends MediaWikiIntegrationTestCase {
 
 		yield 'one matching item' => [
 			[ $item->getId() ],
-			'{ itemByExternalId(property: "P31", externalId: "some external id") { 
+			'{ itemByExternalId(property: "P31", externalId: "some external id") {
 				... on Item { id label(languageCode: "en") }
 			 } }',
 			[ 'data' => [ 'itemByExternalId' => [
@@ -67,12 +69,36 @@ class ItemByExternalIdQueryTest extends MediaWikiIntegrationTestCase {
 		];
 	}
 
-	private function newGraphQLService( ItemByExternalIdLookup $lookup, ?Item $item = null ): GraphQLService {
+	/** @dataProvider errorsProvider */
+	public function testErrors( ?string $propertyDataType, string $expectedMessage ): void {
+		$lookup = $this->createStub( ItemByExternalIdLookup::class );
+
+		$query = '{ itemByExternalId(property: "P31", externalId: "some-value") { ... on Item { id } } }';
+		$result = $this->newGraphQLService( $lookup, propertyDataType: $propertyDataType )->query( $query );
+
+		$this->assertStringContainsString( $expectedMessage, $result['errors'][0]['message'] );
+	}
+
+	public static function errorsProvider(): Generator {
+		yield 'non-existent property' => [ null, "Property 'P31' does not exist." ];
+		yield 'wrong data type' => [ 'string', "Property 'P31' is not of type 'external-id'." ];
+	}
+
+	private function newGraphQLService(
+		ItemByExternalIdLookup $lookup,
+		?Item $item = null,
+		?string $propertyDataType = 'external-id',
+	): GraphQLService {
 		$this->simulateSearchEnabled();
 
 		$entityLookup = new InMemoryEntityLookup();
 		if ( $item ) {
 			$entityLookup->addEntity( $item );
+		}
+
+		$dataTypeLookup = new InMemoryDataTypeLookup();
+		if ( $propertyDataType !== null ) {
+			$dataTypeLookup->setDataTypeForProperty( new NumericPropertyId( 'P31' ), $propertyDataType );
 		}
 
 		$revisionLookup = $this->createStub( EntityRevisionLookup::class );
@@ -83,6 +109,7 @@ class ItemByExternalIdQueryTest extends MediaWikiIntegrationTestCase {
 		$this->setService( 'WbReuse.ItemByExternalIdLookup', $lookup );
 		$this->setService( 'WikibaseRepo.EntityLookup', $entityLookup );
 		$this->setService( 'WikibaseRepo.EntityRevisionLookup', $revisionLookup );
+		$this->setService( 'WikibaseRepo.PropertyDataTypeLookup', $dataTypeLookup );
 
 		return WbReuse::getGraphQLService();
 	}

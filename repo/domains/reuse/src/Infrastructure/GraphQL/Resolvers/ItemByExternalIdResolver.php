@@ -3,9 +3,12 @@
 namespace Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers;
 
 use GraphQL\Deferred;
+use LogicException;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalId;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalIdRequest;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\UseCaseError;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\UseCaseErrorType;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Errors\GraphQLError;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\QueryContext;
 
@@ -29,9 +32,16 @@ class ItemByExternalIdResolver {
 			throw GraphQLError::searchNotAvailable();
 		}
 
-		$itemIds = $this->useCase->execute(
-			new LookUpItemByExternalIdRequest( new NumericPropertyId( $propertyId ), $externalId )
-		)->itemIds;
+		try {
+			$itemIds = $this->useCase->execute(
+				new LookUpItemByExternalIdRequest( new NumericPropertyId( $propertyId ), $externalId )
+			)->itemIds;
+		} catch ( UseCaseError $e ) {
+			throw match ( $e->type ) {
+				UseCaseErrorType::INVALID_EXTERNAL_ID_PROPERTY => GraphQLError::invalidExternalIdProperty( $e->getMessage() ),
+				default => new LogicException( "Unexpected error type: '{$e->type->name}'" ),
+			};
+		}
 
 		if ( count( $itemIds ) === 0 ) {
 			return null;
