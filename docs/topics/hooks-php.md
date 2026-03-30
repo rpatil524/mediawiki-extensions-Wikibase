@@ -39,6 +39,9 @@ See @ref Wikibase::Repo::Hooks::WikibaseRepoOnParserOutputUpdaterConstructionHoo
 #### GetEntityByLinkedTitleLookup {#GetEntityByLinkedTitleLookup}
 See @ref Wikibase::Repo::Hooks::GetEntityByLinkedTitleLookupHook.
 
+#### WikibaseRepoControllers {#WikibaseRepoControllers}
+See @ref Wikibase::Repo::Hooks::WikibaseRepoControllersHook.
+
 Client
 ------------------------------------------------------------
 
