@@ -5,6 +5,12 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Rest\Reporter\ErrorReporter;
 use MediaWiki\Rest\Reporter\MWErrorReporter;
+use Wikibase\DataModel\Entity\Item;
+use Wikibase\Lib\Interactors\MatchingTermsLookupSearchInteractor;
+use Wikibase\Repo\Api\CombinedEntitySearchHelper;
+use Wikibase\Repo\Api\EntityIdSearchHelper;
+use Wikibase\Repo\Api\EntitySearchHelper;
+use Wikibase\Repo\Api\EntityTermSearchHelper;
 use Wikibase\Repo\ControllerRegistry;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearch;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearchValidator;
@@ -29,8 +35,8 @@ use Wikibase\Repo\Validators\MembershipValidator;
 use Wikibase\Repo\Validators\NotMulValidator;
 use Wikibase\Repo\Validators\TypeValidator;
 use Wikibase\Repo\WikibaseRepo;
-use Wikibase\Search\Elastic\EntitySearchHelperFactory;
 use Wikibase\Search\Elastic\InLabelSearch;
+use Wikibase\Search\Elastic\WikibaseCirrusSearch;
 
 /** @phpcs-require-sorted-array */
 return [
@@ -64,12 +70,47 @@ return [
 		return new ItemPrefixSearch(
 			new ItemPrefixSearchValidator( WbSearch::getLanguageCodeValidator( $services ) ),
 			new EntitySearchHelperPrefixSearchEngine(
-			// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
-				EntitySearchHelperFactory::newFromGlobalState(),
+				// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
+				WikibaseCirrusSearch::getEntitySearchHelperFactory( $services ),
 				$services->getLanguageFactory(),
 				RequestContext::getMain()->getRequest()
 			)
 		);
+	},
+
+	'WbSearch.ItemSearchHelper' => function( MediaWikiServices $services ): EntitySearchHelper {
+		if ( $services->getExtensionRegistry()->isLoaded( 'WikibaseCirrusSearch' )
+			&& $services->getMainConfig()->get( 'WBCSUseCirrus' ) ) {
+			$context = RequestContext::getMain();
+			// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
+			return WikibaseCirrusSearch::getEntitySearchHelperFactory( $services )
+				->newItemPropertySearchHelper( $context->getRequest(), $context->getLanguage() );
+		}
+
+		$itemSource = WikibaseRepo::getEntitySourceDefinitions( $services )
+			->getDatabaseSourceForEntityType( Item::ENTITY_TYPE );
+		if ( $itemSource === null ) {
+			throw new LogicException( 'No source providing Items configured!' );
+		}
+
+		$language = RequestContext::getMain()->getLanguage();
+		return new CombinedEntitySearchHelper( [
+			new EntityIdSearchHelper(
+				WikibaseRepo::getEntityLookup( $services ),
+				WikibaseRepo::getEntityIdParser( $services ),
+				WikibaseRepo::getFallbackLabelDescriptionLookupFactory( $services )
+					->newLabelDescriptionLookup( $language ),
+				WikibaseRepo::getEnabledEntityTypes( $services )
+			),
+			new EntityTermSearchHelper(
+				new MatchingTermsLookupSearchInteractor(
+					WikibaseRepo::getMatchingTermsLookupFactory( $services )->getLookupForSource( $itemSource ),
+					WikibaseRepo::getLanguageFallbackChainFactory( $services ),
+					WikibaseRepo::getPrefetchingTermLookup( $services ),
+					$language->getCode()
+				)
+			),
+		] );
 	},
 
 	'WbSearch.LanguageCodeValidator' => function ( MediaWikiServices $services ): SearchLanguageValidator {
@@ -94,8 +135,8 @@ return [
 		return new PropertyPrefixSearch(
 			new PropertyPrefixSearchValidator( WbSearch::getLanguageCodeValidator( $services ) ),
 			new EntitySearchHelperPrefixSearchEngine(
-			// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
-				EntitySearchHelperFactory::newFromGlobalState(),
+				// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
+				WikibaseCirrusSearch::getEntitySearchHelperFactory( $services ),
 				$services->getLanguageFactory(),
 				RequestContext::getMain()->getRequest()
 			)

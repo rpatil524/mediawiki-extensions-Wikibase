@@ -3,6 +3,7 @@
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\Repo\ControllerRegistry;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController;
+use Wikibase\Repo\Domains\Search\WbSearch;
 use Wikibase\Repo\WikibaseRepo;
 
 /**
@@ -19,7 +20,7 @@ return [
 			// This just serves as an example. The fallback implementation should no longer be used once T420683 is done.
 			return new FallbackEntitySearchHelperController(
 				Item::ENTITY_TYPE,
-				WikibaseRepo::getEntitySearchHelper(),
+				WbSearch::getItemSearchHelper(),
 				WikibaseRepo::getEntitySourceLookup()
 			);
 		},
