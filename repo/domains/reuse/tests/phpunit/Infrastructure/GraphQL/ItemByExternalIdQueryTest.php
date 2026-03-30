@@ -23,6 +23,8 @@ use Wikibase\Repo\Domains\Reuse\WbReuse;
  */
 class ItemByExternalIdQueryTest extends MediaWikiIntegrationTestCase {
 
+	use SearchEnabledTestTrait;
+
 	/** @dataProvider queryProvider */
 	public function testQuery( array $lookupReturn, string $query, array $expectedResult, ?Item $item ): void {
 		$lookup = $this->createStub( ItemByExternalIdLookup::class );
@@ -66,6 +68,8 @@ class ItemByExternalIdQueryTest extends MediaWikiIntegrationTestCase {
 	}
 
 	private function newGraphQLService( ItemByExternalIdLookup $lookup, ?Item $item = null ): GraphQLService {
+		$this->simulateSearchEnabled();
+
 		$entityLookup = new InMemoryEntityLookup();
 		if ( $item ) {
 			$entityLookup->addEntity( $item );
