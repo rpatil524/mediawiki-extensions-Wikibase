@@ -633,7 +633,10 @@ return [
 	},
 
 	'WikibaseRepo.EnabledEntityTypesForSearch' => function ( MediaWikiServices $services ): array {
-		return array_keys( WikibaseRepo::getEntitySearchHelperCallbacks( $services ) );
+		return array_merge(
+			array_keys( WikibaseRepo::getEntitySearchHelperCallbacks( $services ) ),
+			array_keys( WikibaseRepo::getControllerRegistry( $services )->get( ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER ) ),
+		);
 	},
 
 	'WikibaseRepo.EntityArticleIdLookup' => function ( MediaWikiServices $services ): EntityArticleIdLookup {
