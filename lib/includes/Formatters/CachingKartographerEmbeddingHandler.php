@@ -13,6 +13,7 @@ use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\ParserOptions;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Title\Title;
+use ValueFormatters\FormatterOptions;
 
 /**
  * Service for embedding Kartographer mapframes for GlobeCoordinateValues.
@@ -26,6 +27,8 @@ use MediaWiki\Title\Title;
  */
 class CachingKartographerEmbeddingHandler {
 
+	public const OPT_KARTOGRAPHER_VARIABLE_WIDTH = 'kartographer-variable-width';
+
 	/**
 	 * @var Parser
 	 */
@@ -36,7 +39,9 @@ class CachingKartographerEmbeddingHandler {
 	 */
 	private $cache;
 
-	public function __construct( Parser $parser ) {
+	public function __construct(
+		Parser $parser
+	) {
 		$this->parser = $parser;
 		$this->cache = new MapCacheLRU( 100 );
 	}
@@ -48,21 +53,24 @@ class CachingKartographerEmbeddingHandler {
 	 * @throws InvalidArgumentException
 	 * @return string|bool Html, false if the given value could not be rendered
 	 */
-	public function getHtml( GlobeCoordinateValue $value, Language $language ) {
+	public function getHtml( GlobeCoordinateValue $value, Language $language, FormatterOptions $formatterOptions ) {
 		if ( $value->getGlobe() !== GlobeCoordinateValue::GLOBE_EARTH ) {
 			return false;
 		}
 
-		$cacheKey = $this->getCacheKey( $value, $language );
+		$variableWidth = $formatterOptions->hasOption( self::OPT_KARTOGRAPHER_VARIABLE_WIDTH );
+		$cacheKey = $this->getCacheKey( $value, $language, $variableWidth );
 		if ( !$this->cache->has( $cacheKey ) ) {
 			$parserOptions = $this->getParserOptions( $language );
 			$parserOutput = $this->parser->parse(
-				$this->getWikiText( $value ),
+				$this->getWikiText( $value, $variableWidth ),
 				RequestContext::getMain()->getTitle() ?? Title::makeTitle( NS_SPECIAL, 'BlankPage' ),
 				$parserOptions
 			);
-			$this->cache->set( $this->getCacheKey( $value, $language ), $parserOutput->runOutputPipeline( $parserOptions, [] )
-				->getContentHolderText() );
+			$this->cache->set(
+				$this->getCacheKey( $value, $language, $variableWidth ),
+				$parserOutput->runOutputPipeline( $parserOptions, [] )->getContentHolderText()
+			);
 		}
 		return $this->cache->get( $cacheKey );
 	}
@@ -77,12 +85,13 @@ class CachingKartographerEmbeddingHandler {
 	 * @throws InvalidArgumentException
 	 * @return string|bool Html, false if the given value could not be rendered
 	 */
-	public function getPreviewHtml( GlobeCoordinateValue $value, Language $language ) {
+	public function getPreviewHtml( GlobeCoordinateValue $value, Language $language, FormatterOptions $formatterOptions ) {
 		if ( $value->getGlobe() !== GlobeCoordinateValue::GLOBE_EARTH ) {
 			return false;
 		}
 
-		$parserOutput = $this->getParserOutput( [ $value ], $language );
+		$variableWidth = $formatterOptions->hasOption( self::OPT_KARTOGRAPHER_VARIABLE_WIDTH );
+		$parserOutput = $this->getParserOutput( [ $value ], $language, $variableWidth );
 
 		$containerDivId = 'wb-globeCoordinateValue-preview-' . base_convert( (string)mt_rand( 1, PHP_INT_MAX ), 10, 36 );
 
@@ -104,16 +113,17 @@ class CachingKartographerEmbeddingHandler {
 	 *
 	 * @param GlobeCoordinateValue[] $values
 	 * @param Language $language
+	 * @param bool $variableWidth
 	 * @return ParserOutput
 	 */
-	public function getParserOutput( array $values, Language $language ) {
+	public function getParserOutput( array $values, Language $language, bool $variableWidth ) {
 		// Parse all mapframes at once, to get metadata for all of them
 		$wikiText = '';
 		foreach ( $values as $value ) {
 			if ( $value->getGlobe() !== GlobeCoordinateValue::GLOBE_EARTH ) {
 				continue;
 			}
-			$wikiText .= $this->getWikiText( $value );
+			$wikiText .= $this->getWikiText( $value, $variableWidth );
 		}
 
 		$parserOptions = $this->getParserOptions( $language );
@@ -137,10 +147,15 @@ class CachingKartographerEmbeddingHandler {
 	/**
 	 * @param GlobeCoordinateValue $value
 	 * @param Language $language
+	 * @param bool $variableWidth
 	 * @return string
 	 */
-	private function getCacheKey( GlobeCoordinateValue $value, Language $language ) {
-		return $value->getHash() . '#' . $language->getCode();
+	private function getCacheKey(
+		GlobeCoordinateValue $value,
+		Language $language,
+		bool $variableWidth
+	) {
+		return $value->getHash() . '#' . $language->getCode() . ( $variableWidth ? '#true' : '' );
 	}
 
 	/**
@@ -196,13 +211,20 @@ class CachingKartographerEmbeddingHandler {
 	 * Get the mapframe wikitext for a given GlobeCoordinateValue.
 	 *
 	 * @param GlobeCoordinateValue $value
+	 * @param bool $variableWidth
 	 * @return string wikitext
 	 */
-	private function getWikiText( GlobeCoordinateValue $value ) {
+	private function getWikiText(
+		GlobeCoordinateValue $value,
+		bool $variableWidth
+	) {
 		$long = $this->formatNumber( $value->getLongitude() );
 		$lat = $this->formatNumber( $value->getLatitude() );
-
-		return '<mapframe width="310" height="180" zoom="13" latitude="' .
+		$width = '310';
+		if ( $variableWidth ) {
+			$width = 'full';
+		}
+		return '<mapframe width="' . $width . '" height="180" zoom="13" latitude="' .
 			$lat . '" longitude="' . $long . '" frameless align="left">
 			{
 			"type": "Feature",
