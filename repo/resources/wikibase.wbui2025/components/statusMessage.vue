@@ -8,7 +8,7 @@
 			>
 				<template
 					v-for="[ messageId, message ] in messageList"
-					:key="message"
+					:key="messageId"
 				>
 					<cdx-message
 						:type="message.type || 'success'"
@@ -18,7 +18,16 @@
 						@user-dismissed="deleteMessage( messageId )"
 						@auto-dismissed="deleteMessage( messageId )"
 					>
-						{{ message.text }}
+						<div
+							v-if="message.html"
+							v-html="message.html"
+						></div>
+						<div v-else-if="message.text">
+							{{ message.text }}
+						</div>
+						<div v-else>
+							{{ $i18n( 'wikibase-publishing-error' ) }}
+						</div>
 					</cdx-message>
 				</template>
 			</div>

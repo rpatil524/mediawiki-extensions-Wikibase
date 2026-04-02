@@ -1,7 +1,7 @@
 const apiOptions = {
 	parameters: {
 		formatversion: 2,
-		errorformat: 'plaintext',
+		errorformat: 'html',
 		uselang: mw.config.get( 'wgUserLanguage' )
 	}
 };
