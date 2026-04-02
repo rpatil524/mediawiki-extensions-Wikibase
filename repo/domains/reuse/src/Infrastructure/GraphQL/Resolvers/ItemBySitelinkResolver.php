@@ -18,12 +18,12 @@ class ItemBySitelinkResolver {
 	) {
 	}
 
-	public function resolve( string $siteId, string $title, QueryContext $context ): Deferred {
+	public function resolve( string $siteId, string $title, QueryContext $context ): ?Deferred {
 		$itemId = $this->lookupBySitelinkUseCase->execute(
 			new LookUpItemBySitelinkRequest( $siteId, $title )
 		)->itemId;
 
-		return $this->itemResolver->resolveItem( "$itemId", $context );
+		return $itemId ? $this->itemResolver->resolveItem( "$itemId", $context ) : null;
 	}
 
 }
