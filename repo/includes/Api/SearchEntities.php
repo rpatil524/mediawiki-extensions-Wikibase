@@ -22,6 +22,7 @@ use Wikibase\Lib\Store\EntityTitleLookup;
 use Wikibase\Lib\Store\EntityTitleTextLookup;
 use Wikibase\Lib\Store\EntityUrlLookup;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\WbSearchEntitiesRequest;
 use Wikibase\Repo\FederatedProperties\FederatedPropertiesException;
 use Wikibase\Repo\WikibaseRepo;
 use Wikimedia\Assert\InvariantException;
@@ -156,13 +157,13 @@ class SearchEntities extends ApiBase {
 		try {
 			return $this->searchController
 				->getControllerForEntityType( $params['type'] )
-				->search(
+				->search( new WbSearchEntitiesRequest(
 					$params['search'],
 					$params['language'],
 					$params['continue'] + $params['limit'] + 1,
 					$params['strictlanguage'],
 					$this->searchProfiles[$params['profile']]
-				);
+				) );
 		} catch ( EntitySearchException $ese ) {
 			$this->dieStatus( $ese->getStatus() );
 

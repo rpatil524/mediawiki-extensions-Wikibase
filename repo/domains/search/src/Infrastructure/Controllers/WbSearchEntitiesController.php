@@ -10,20 +10,8 @@ use Wikibase\Lib\Interactors\TermSearchResult;
 interface WbSearchEntitiesController {
 
 	/**
-	 * @param string $text
-	 * @param string $languageCode
-	 * @param int $limit
-	 * @param bool $strictLanguage
-	 * @param string|null $profileContext
-	 *
 	 * @return TermSearchResult[]
 	 */
-	public function search(
-		string $text,
-		string $languageCode,
-		int $limit,
-		bool $strictLanguage,
-		?string $profileContext
-	): array;
+	public function search( WbSearchEntitiesRequest $request ): array;
 
 }

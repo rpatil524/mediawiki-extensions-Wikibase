@@ -8,6 +8,7 @@ use Wikibase\Repo\Api\EntitySearchHelper;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\WbSearchEntitiesController;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\WbSearchEntitiesRequest;
 
 /**
  * @covers \Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController
@@ -42,7 +43,7 @@ class DispatchingWbSearchEntitiesControllerTest extends TestCase {
 		$dispatcher = $this->newController( [], $fallbackHelper );
 		$controller = $dispatcher->getControllerForEntityType( 'property' );
 
-		$controller->search( 'foo', 'en', 10, false, null );
+		$controller->search( new WbSearchEntitiesRequest( 'foo', 'en', 10, false, null ) );
 	}
 
 	private function newController(
