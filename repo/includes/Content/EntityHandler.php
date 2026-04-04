@@ -23,7 +23,6 @@ use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Status\Status;
-use MediaWiki\StubObject\StubUserLang;
 use MediaWiki\Title\Title;
 use SearchEngine;
 use ValueValidators\Result;
@@ -538,10 +537,7 @@ abstract class EntityHandler extends ContentHandler {
 	 * @return Language The page's language
 	 */
 	public function getPageViewLanguage( Title $title, ?Content $content = null ) {
-		global $wgLang;
-		StubUserLang::unstub( $wgLang );
-
-		return $wgLang;
+		return RequestContext::getMain()->getLanguage();
 	}
 
 	/**

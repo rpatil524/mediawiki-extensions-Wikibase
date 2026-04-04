@@ -248,8 +248,7 @@ abstract class EntityHandlerTestCase extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testGetPageViewLanguage() {
-		global $wgLang;
-
+		$context = RequestContext::getMain();
 		$handler = $this->getHandler();
 		$title = Title::makeTitle( $handler->getEntityNamespace(), "1234567" );
 
@@ -257,17 +256,26 @@ abstract class EntityHandlerTestCase extends MediaWikiIntegrationTestCase {
 		//      are always shown in the user language.
 
 		// test whatever is there
-		$this->assertEquals( $wgLang->getCode(), $handler->getPageViewLanguage( $title )->getCode() );
+		$this->assertEquals(
+			$context->getLanguage()->getCode(),
+			$handler->getPageViewLanguage( $title )->getCode()
+		);
 
 		// test fr
 		$this->setUserLang( 'fr' );
 		$handler = $this->getHandler();
-		$this->assertEquals( $wgLang->getCode(), $handler->getPageViewLanguage( $title )->getCode() );
+		$this->assertEquals(
+			$context->getLanguage()->getCode(),
+			$handler->getPageViewLanguage( $title )->getCode()
+		);
 
 		// test nl
 		$this->setUserLang( 'nl' );
 		$handler = $this->getHandler();
-		$this->assertEquals( $wgLang->getCode(), $handler->getPageViewLanguage( $title )->getCode() );
+		$this->assertEquals(
+			$context->getLanguage()->getCode(),
+			$handler->getPageViewLanguage( $title )->getCode()
+		);
 	}
 
 	public function testLocalizedModelName() {
