@@ -11,6 +11,7 @@ use MediaWiki\Api\Hook\ApiQuery__moduleManagerHook;
 use MediaWiki\Api\Hook\APIQuerySiteInfoGeneralInfoHook;
 use MediaWiki\Content\Content;
 use MediaWiki\Content\Hook\ContentModelCanBeUsedOnHook;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Hook\BeforePageDisplayHook;
 use MediaWiki\Hook\FormatAutocommentsHook;
 use MediaWiki\Hook\ImportHandleRevisionXMLTagHook;
@@ -41,7 +42,6 @@ use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Skin\Skin;
 use MediaWiki\Skins\Hook\SkinPageReadyConfigHook;
-use MediaWiki\StubObject\StubUserLang;
 use MediaWiki\Title\Title;
 use RuntimeException;
 use UnexpectedValueException;
@@ -664,7 +664,7 @@ final class RepoHooks implements
 	 */
 	public function onFormatAutocomments( &$comment, $pre, $auto, $post, $title, $local, $wiki ) {
 		// phpcs:ignore MediaWiki.Usage.DeprecatedGlobalVariables.Deprecated$wgTitle
-		global $wgLang, $wgTitle;
+		global $wgTitle;
 
 		// If it is possible to avoid loading the whole page then the code will be lighter on the server.
 		if ( !( $title instanceof Title ) ) {
@@ -681,13 +681,9 @@ final class RepoHooks implements
 			return;
 		}
 
-		if ( $wgLang instanceof StubUserLang ) {
-			StubUserLang::unstub( $wgLang );
-		}
-
 		$enableWikidataIconsInClientWatchlist = WikibaseRepo::getSettings()->getSetting( 'enableWikidataIconsInClientWatchlist' );
 		$formatter = new AutoCommentFormatter(
-			$wgLang,
+			RequestContext::getMain()->getLanguage(),
 			[ 'wikibase-' . $entityType, 'wikibase-entity' ],
 			$enableWikidataIconsInClientWatchlist
 		);
