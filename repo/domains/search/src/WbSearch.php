@@ -11,6 +11,7 @@ use Wikibase\Repo\Domains\Search\Application\UseCases\PropertyPrefixSearch\Prope
 use Wikibase\Repo\Domains\Search\Application\UseCases\SimpleItemSearch\SimpleItemSearch;
 use Wikibase\Repo\Domains\Search\Application\UseCases\SimplePropertySearch\SimplePropertySearch;
 use Wikibase\Repo\Domains\Search\Application\Validation\SearchLanguageValidator;
+use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\EntitySearchHelperFactory;
 use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\InLabelSearchEngine;
 use Wikibase\Repo\RestApi\Middleware\MiddlewareHandler;
 use Wikibase\Repo\RestApi\Middleware\UnexpectedErrorHandlerMiddleware;
@@ -19,6 +20,10 @@ use Wikibase\Repo\RestApi\Middleware\UnexpectedErrorHandlerMiddleware;
  * @license GPL-2.0-or-later
  */
 class WbSearch {
+
+	public static function getEntitySearchHelperFactory( ?ContainerInterface $services = null ): EntitySearchHelperFactory {
+		return ( $services ?: MediaWikiServices::getInstance() )->get( 'WbSearch.EntitySearchHelperFactory' );
+	}
 
 	public static function getErrorReporter( ?ContainerInterface $services = null ): ErrorReporter {
 		return ( $services ?: MediaWikiServices::getInstance() )->get( 'WbSearch.ErrorReporter' );
@@ -30,6 +35,10 @@ class WbSearch {
 
 	public static function getItemSearchHelper( ?ContainerInterface $services = null ): EntitySearchHelper {
 		return ( $services ?: MediaWikiServices::getInstance() )->get( 'WbSearch.ItemSearchHelper' );
+	}
+
+	public static function getPropertySearchHelper( ?ContainerInterface $services = null ): EntitySearchHelper {
+		return ( $services ?: MediaWikiServices::getInstance() )->get( 'WbSearch.PropertySearchHelper' );
 	}
 
 	public static function getInLabelSearchEngine( ?ContainerInterface $services = null ): InLabelSearchEngine {

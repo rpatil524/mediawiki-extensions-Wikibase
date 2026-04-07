@@ -32,7 +32,6 @@ use Wikibase\Lib\DataTypeDefinitions;
 use Wikibase\Lib\EntityTypeDefinitions as Def;
 use Wikibase\Lib\EntityTypeDefinitions;
 use Wikibase\Lib\Formatters\LabelsProviderEntityIdHtmlLinkFormatter;
-use Wikibase\Lib\Interactors\MatchingTermsLookupSearchInteractor;
 use Wikibase\Lib\SimpleCacheWithBagOStuff;
 use Wikibase\Lib\StaticContentLanguages;
 use Wikibase\Lib\StatslibRecordingSimpleCache;
@@ -45,10 +44,6 @@ use Wikibase\Lib\Store\TitleLookupBasedEntityRedirectChecker;
 use Wikibase\Lib\Store\TitleLookupBasedEntityTitleTextLookup;
 use Wikibase\Lib\Store\TitleLookupBasedEntityUrlLookup;
 use Wikibase\Lib\TermLanguageFallbackChain;
-use Wikibase\Repo\Api\CombinedEntitySearchHelper;
-use Wikibase\Repo\Api\EntityIdSearchHelper;
-use Wikibase\Repo\Api\EntityTermSearchHelper;
-use Wikibase\Repo\Api\PropertyDataTypeSearchHelper;
 use Wikibase\Repo\ChangeOp\Deserialization\ItemChangeOpDeserializer;
 use Wikibase\Repo\ChangeOp\Deserialization\PropertyChangeOpDeserializer;
 use Wikibase\Repo\Content\ItemContent;
@@ -394,39 +389,7 @@ return [
 			);
 		},
 		Def::ENTITY_SEARCH_CALLBACK => function ( WebRequest $request ) {
-			$propertySource = WikibaseRepo::getEntitySourceDefinitions()
-				->getDatabaseSourceForEntityType( Property::ENTITY_TYPE );
-			if ( $propertySource === null ) {
-				throw new LogicException( 'No source providing Properties configured!' );
-			}
-
-			$languageFallbackChainFactory = WikibaseRepo::getLanguageFallbackChainFactory();
-			$context = new RequestContext();
-			$context->setRequest( $request );
-			$language = $context->getLanguage();
-			return new PropertyDataTypeSearchHelper(
-				new CombinedEntitySearchHelper(
-					[
-						new EntityIdSearchHelper(
-							WikibaseRepo::getEntityLookup(),
-							WikibaseRepo::getEntityIdParser(),
-
-							WikibaseRepo::getFallbackLabelDescriptionLookupFactory()
-								->newLabelDescriptionLookup( $language ),
-							WikibaseRepo::getEnabledEntityTypes()
-						),
-						new EntityTermSearchHelper(
-							new MatchingTermsLookupSearchInteractor(
-								WikibaseRepo::getMatchingTermsLookupFactory()->getLookupForSource( $propertySource ),
-								$languageFallbackChainFactory,
-								WikibaseRepo::getPrefetchingTermLookup(),
-								$language->getCode()
-							)
-						),
-					]
-				),
-				WikibaseRepo::getPropertyDataTypeLookup()
-			);
+			return WbSearch::getPropertySearchHelper();
 		},
 		Def::LINK_FORMATTER_CALLBACK => function( Language $language ) {
 			$services = MediaWikiServices::getInstance();
