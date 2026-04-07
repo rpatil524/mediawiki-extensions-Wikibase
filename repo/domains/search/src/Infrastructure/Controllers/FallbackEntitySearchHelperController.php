@@ -21,20 +21,14 @@ class FallbackEntitySearchHelperController implements WbSearchEntitiesController
 		$this->searchHelper = new ConceptUriSearchHelper( $searchHelper, $entitySourceLookup );
 	}
 
-	public function search(
-		string $text,
-		string $languageCode,
-		int $limit,
-		bool $strictLanguage,
-		?string $profileContext
-	): array {
+	public function search( WbSearchEntitiesRequest $request ): array {
 		return $this->searchHelper->getRankedSearchResults(
-			$text,
-			$languageCode,
+			$request->text,
+			$request->searchLanguageCode,
 			$this->entityType,
-			$limit,
-			$strictLanguage,
-			$profileContext
+			$request->limit,
+			$request->strictLanguage,
+			$request->profileContext
 		);
 	}
 

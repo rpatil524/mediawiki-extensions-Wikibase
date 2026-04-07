@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Wikibase\DataAccess\EntitySourceLookup;
 use Wikibase\Repo\Api\EntitySearchHelper;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\WbSearchEntitiesRequest;
 
 /**
  * @covers \Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController
@@ -29,7 +30,7 @@ class FallbackEntitySearchHelperControllerTest extends TestCase {
 			$this->createStub( EntitySourceLookup::class )
 		);
 
-		$controller->search( 'foo', 'en', 5, true, 'default' );
+		$controller->search( new WbSearchEntitiesRequest( 'foo', 'en', 5, true, 'default' ) );
 	}
 
 }
