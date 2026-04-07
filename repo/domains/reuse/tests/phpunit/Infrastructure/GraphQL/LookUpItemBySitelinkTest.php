@@ -53,6 +53,11 @@ class LookUpItemBySitelinkTest extends MediaWikiIntegrationTestCase {
 			'{ itemBySitelink( title: "' . $sitelinkTitle . '", siteId: "' . self::SITE_ID . '" ) { id } }',
 			[ 'data' => [ 'itemBySitelink' => [ 'id' => $item->getId() ] ] ],
 		];
+
+		yield 'no item found - returns null' => [
+			'{ itemBySitelink( title: "Does not exist", siteId: "' . self::SITE_ID . '" ) { id } }',
+			[ 'data' => [ 'itemBySitelink' => null ] ],
+		];
 	}
 
 	/**
