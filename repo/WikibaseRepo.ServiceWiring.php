@@ -1012,9 +1012,6 @@ return [
 		$callbacks = WikibaseRepo::getEntityTypeDefinitions( $services )
 			->get( EntityTypeDefinitions::ENTITY_SEARCH_CALLBACK );
 
-		WikibaseRepo::getHookRunner( $services )
-			->onWikibaseRepoEntitySearchHelperCallbacks( $callbacks );
-
 		return $callbacks;
 	},
 
