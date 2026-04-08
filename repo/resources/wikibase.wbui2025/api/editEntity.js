@@ -123,7 +123,12 @@ const parseValue = async function ( input, parseOptions = {} ) {
 			action: 'wbparsevalue',
 			values: [ input ]
 		}, parseOptions ) );
-		return results.find( ( result ) => result.raw === input );
+		const parsedValue = results.find( ( result ) => result.raw === input );
+		if ( parsedValue !== undefined ) {
+			return parsedValue;
+		} else {
+			return null;
+		}
 	} catch ( e ) {
 		return null;
 	}
