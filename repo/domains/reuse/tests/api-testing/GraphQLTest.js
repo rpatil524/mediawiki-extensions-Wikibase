@@ -287,6 +287,37 @@ describe( 'Wikibase GraphQL', () => {
 			);
 		} );
 
+		it( 'OR search match when value contains a space', async function () {
+			const response = await queryGraphQL( { query: `
+				{
+					searchItems(
+						query: {
+							or: [
+								{ property: "${ property1.id }", value: "${ item1.id }" },
+								{ property: "${ property1.id }", value: "does not exist" },
+							]
+						}
+					) {
+						edges {
+							node { id }
+						}
+					}
+				}` } );
+
+			assert.deepEqual(
+				response.body,
+				{
+					data: {
+						searchItems: {
+							edges: [
+								{ node: { id: item2.id } }
+							]
+						}
+					}
+				}
+			);
+		} );
+
 		it( 'property value pair match with "or"', async function () {
 			const response = await queryGraphQL( { query: `
 				{
