@@ -10,10 +10,12 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\Lib\DataTypeDefinitions;
+use Wikibase\Lib\LanguageFallbackChainFactory;
 use Wikibase\Lib\SettingsArray;
 use Wikibase\Lib\Store\PropertyInfoLookup;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Item;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\ItemSearchResult;
+use Wikibase\Repo\Domains\Reuse\Domain\Model\Label;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyValuePair;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
@@ -54,6 +56,7 @@ class Types {
 	private ?ObjectType $pageInfoType = null;
 	private ?UnionType $itemByExternalIdResultType = null;
 	private ?ObjectType $externalIdNonUniqueType = null;
+	private ?ObjectType $labelWithLanguageType = null;
 
 	public function __construct(
 		private readonly array $validLanguageCodes,
@@ -64,7 +67,7 @@ class Types {
 		private readonly ItemLabelsResolver $itemLabelsResolver,
 		private readonly PropertyInfoLookup $propertyInfoLookup,
 		private readonly SettingsArray $settings,
-
+		private readonly LanguageFallbackChainFactory $languageFallbackChainFactory,
 	) {
 	}
 
@@ -186,7 +189,23 @@ class Types {
 	}
 
 	public function getItemType(): ItemType {
-		return $this->itemType ??= new ItemType( $this );
+		return $this->itemType ??= new ItemType( $this, $this->languageFallbackChainFactory );
+	}
+
+	public function getLabelWithLanguageType(): ObjectType {
+		return $this->labelWithLanguageType ??= new ObjectType( [
+			'name' => 'LabelWithLanguage',
+			'fields' => [
+				'languageCode' => [
+					'type' => Type::nonNull( $this->getLanguageCodeType() ),
+					'resolve' => fn( Label $label ) => $label->languageCode,
+				],
+				'value' => [
+					'type' => Type::nonNull( Type::string() ),
+					'resolve' => fn( Label $label ) => $label->text,
+				],
+			],
+		] );
 	}
 
 	public function getItemSearchFilterType(): ItemSearchFilterType {

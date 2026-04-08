@@ -41,6 +41,7 @@ scalar ItemId
 type Item implements LabelProvider & DescriptionProvider {
   id: ItemId!
   label(languageCode: LanguageCode!): String
+  labelWithLanguageFallback(languageCode: LanguageCode!): LabelWithLanguage
   description(languageCode: LanguageCode!): String
   aliases(languageCode: LanguageCode!): [String]!
   sitelink(siteId: SiteId!): Sitelink
@@ -55,6 +56,11 @@ scalar LanguageCode
 
 interface DescriptionProvider {
   description(languageCode: LanguageCode!): String
+}
+
+type LabelWithLanguage {
+  languageCode: LanguageCode!
+  value: String!
 }
 
 scalar SiteId

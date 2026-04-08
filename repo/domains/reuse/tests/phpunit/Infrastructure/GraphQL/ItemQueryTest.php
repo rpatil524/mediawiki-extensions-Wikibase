@@ -97,6 +97,7 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 
 	public static function queryProvider(): Generator {
 		$enLabel = 'potato';
+		$esLabel = 'patata';
 		$enDescription = 'root vegetable';
 		$enAliases = [ 'spud', 'tater' ];
 		$sitelinkSiteId = self::ALLOWED_SITELINK_SITES[0];
@@ -106,11 +107,14 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 
 		$item = self::createItem(
 			NewItem::withLabel( 'en', $enLabel )
+				->andLabel( 'es', $esLabel )
 				->andDescription( 'en', $enDescription )
 				->andAliases( 'en', $enAliases )
 				->andSiteLink( $sitelinkSiteId, $sitelinkTitle )
 		);
 		$itemId = $item->getId();
+
+		$itemWithNoLabels = self::createItem( NewItem::withDescription( 'en', 'item that has no labels' ) );
 
 		self::$sitelinkSite = new MediaWikiSite();
 		self::$sitelinkSite->setLinkPath( 'https://wiki.example/wiki/$1' );
@@ -141,6 +145,36 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 				deAliases: aliases(languageCode: \"de\")
 			} }",
 			[ 'data' => [ 'item' => [ 'enAliases' => $enAliases, 'deAliases' => [] ] ] ],
+		];
+		yield 'labelWithLanguageFallback - direct hit' => [
+			"{ item(id: \"$itemId\") {
+				labelWithLanguageFallback(languageCode: \"es\") { languageCode value }
+			} }",
+			[ 'data' => [ 'item' => [
+				'labelWithLanguageFallback' => [ 'languageCode' => 'es', 'value' => $esLabel ],
+			] ] ],
+		];
+		yield 'labelWithLanguageFallback - falls back to parent language' => [
+			"{ item(id: \"$itemId\") {
+				labelWithLanguageFallback(languageCode: \"es-formal\") { languageCode value }
+			} }",
+			[ 'data' => [ 'item' => [
+				'labelWithLanguageFallback' => [ 'languageCode' => 'es', 'value' => $esLabel ],
+			] ] ],
+		];
+		yield 'labelWithLanguageFallback - falls back to English' => [
+			"{ item(id: \"$itemId\") {
+				labelWithLanguageFallback(languageCode: \"ko\") { languageCode value }
+			} }",
+			[ 'data' => [ 'item' => [
+				'labelWithLanguageFallback' => [ 'languageCode' => 'en', 'value' => $enLabel ],
+			] ] ],
+		];
+		yield 'labelWithLanguageFallback - returns null when no label in fallback chain' => [
+			"{ item(id: \"{$itemWithNoLabels->getId()}\") {
+				labelWithLanguageFallback(languageCode: \"de\") { languageCode value }
+			} }",
+			[ 'data' => [ 'item' => [ 'labelWithLanguageFallback' => null ] ] ],
 		];
 		yield 'sitelink' => [
 			"{ item(id: \"$itemId\") {

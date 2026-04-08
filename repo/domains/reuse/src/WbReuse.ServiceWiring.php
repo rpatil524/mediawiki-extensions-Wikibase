@@ -105,6 +105,7 @@ return [
 			WbReuse::getItemLabelsResolver( $services ),
 			WikibaseRepo::getPropertyInfoLookup( $services ),
 			WikibaseRepo::getSettings( $services ),
+			WikibaseRepo::getLanguageFallbackChainFactory( $services ),
 		);
 	},
 	'WbReuse.ItemByExternalIdLookup' => function( MediaWikiServices $services ): ItemByExternalIdLookup {
