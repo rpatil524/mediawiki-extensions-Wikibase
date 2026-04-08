@@ -156,4 +156,12 @@ describe( 'parseValue', () => {
 		await expect( editEntity.parseValue( 'input value' ) )
 			.resolves.toBeNull();
 	} );
+
+	it( 'doesn’t call the API if the input is empty', async () => {
+		for ( const input of [ '', null, undefined ] ) {
+			await expect( editEntity.parseValue( input ) )
+				.resolves.toBeNull();
+		}
+		expect( apiSpy ).toHaveBeenCalledTimes( 0 );
+	} );
 } );
