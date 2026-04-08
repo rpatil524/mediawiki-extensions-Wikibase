@@ -34,6 +34,7 @@ use Wikibase\Repo\Api\EntitySearchHelper;
 use Wikibase\Repo\Api\EntityTermSearchHelper;
 use Wikibase\Repo\Api\SearchEntities;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController;
 
 /**
  * @covers \Wikibase\Repo\Api\EntityTermSearchHelper
@@ -150,7 +151,12 @@ class SearchEntitiesIntegrationTest extends MediaWikiIntegrationTestCase {
 			new ApiMain( $context ),
 			'',
 			$this->createMock( LinkBatchFactory::class ),
-			new DispatchingWbSearchEntitiesController( [], $entitySearchTermIndex, $entitySourceLookup ),
+			new DispatchingWbSearchEntitiesController( [
+				'item' => static fn() =>
+					new FallbackEntitySearchHelperController( 'item', $entitySearchTermIndex, $entitySourceLookup ),
+				'property' => static fn() =>
+					new FallbackEntitySearchHelperController( 'property', $entitySearchTermIndex, $entitySourceLookup ),
+			] ),
 			new StaticContentLanguages( [ 'en' ] ),
 			$entitySourceLookup,
 			$this->createMock( EntityTitleLookup::class ),
