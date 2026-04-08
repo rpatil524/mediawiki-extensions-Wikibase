@@ -68,7 +68,7 @@ describe( newCreatePropertyRequestBuilder().getRouteDescription(), () => {
 
 		it( 'can create a property with edit metadata provided', async () => {
 			const user = await getOrCreateBotUser();
-			const tag = await action.makeTag( 'e2e test tag', 'Created during e2e test' );
+			const tag = await action.makeTag( 'e2e test tag', 'Created during e2e test', true );
 			const editSummary = 'omg look i created a property';
 
 			const response = await newCreatePropertyRequestBuilder( { data_type: 'string' } )
