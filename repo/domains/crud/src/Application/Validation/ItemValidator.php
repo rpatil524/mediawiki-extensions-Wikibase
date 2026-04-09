@@ -60,7 +60,7 @@ class ItemValidator {
 
 		$validationError = $this->validateLabelsAndDescriptions( $serialization, $basePath ) ??
 			$this->aliasesValidator->validate( $serialization['aliases'], "$basePath/aliases" ) ??
-			$this->itemStatementsValidator->validate( $serialization['statements'], "$basePath/statements" ) ??
+			$this->itemStatementsValidator->validateNewStatements( $serialization['statements'], "$basePath/statements" ) ??
 			$this->sitelinksValidator->validate( null, $serialization['sitelinks'], null, "$basePath/sitelinks" );
 		if ( $validationError ) {
 			return $validationError;

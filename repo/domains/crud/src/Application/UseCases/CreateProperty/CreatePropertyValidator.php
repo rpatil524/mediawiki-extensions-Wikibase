@@ -223,7 +223,7 @@ class CreatePropertyValidator {
 
 	private function validateStatements( array $property, string $basePath ): void {
 		$statements = $property[ 'statements' ] ?? [];
-		$validationError = $this->statementsValidator->validate( $statements, "$basePath/statements" );
+		$validationError = $this->statementsValidator->validateNewStatements( $statements, "$basePath/statements" );
 
 		if ( $validationError ) {
 			$context = $validationError->getContext();
