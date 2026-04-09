@@ -30,10 +30,16 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 	) {
 	}
 
-	public function suggestItems( string $searchTerm, string $languageCode, int $limit, int $offset ): ItemSearchResults {
+	public function suggestItems(
+		string $searchTerm,
+		string $languageCode,
+		int $limit,
+		int $offset,
+		?string $resultLanguageCode = null
+	): ItemSearchResults {
 		return new ItemSearchResults( ...array_map(
 			$this->convertResult( ItemSearchResult::class ),
-			$this->suggestEntities( Item::ENTITY_TYPE, $searchTerm, $languageCode, $limit, $offset )
+			$this->suggestEntities( Item::ENTITY_TYPE, $searchTerm, $languageCode, $limit, $offset, $resultLanguageCode )
 		) );
 	}
 
@@ -44,12 +50,19 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 		) );
 	}
 
-	private function suggestEntities( string $entityType, string $searchTerm, string $languageCode, int $limit, int $offset ): array {
+	private function suggestEntities(
+		string $entityType,
+		string $searchTerm,
+		string $languageCode,
+		int $limit,
+		int $offset,
+		?string $resultLanguageCode = null
+	): array {
 		return array_slice(
 			// @phan-suppress-next-line PhanUndeclaredClassMethod
 			$this->searchHelperFactory->newItemPropertySearchHelper(
 				$this->request,
-				$this->languageFactory->getLanguage( $languageCode )
+				$this->languageFactory->getLanguage( $resultLanguageCode ?? $languageCode )
 			)->getRankedSearchResults(
 				$searchTerm,
 				$languageCode,
