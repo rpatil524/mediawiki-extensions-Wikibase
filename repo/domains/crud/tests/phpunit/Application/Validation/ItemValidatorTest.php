@@ -125,7 +125,7 @@ class ItemValidatorTest extends TestCase {
 
 		$this->itemStatementsValidator = $this->createMock( StatementsValidator::class );
 		$this->itemStatementsValidator->expects( $this->once() )
-			->method( 'validate' )
+			->method( 'validateNewStatements' )
 			->with( $statementsSerialization )
 			->willReturn( null );
 		$this->itemStatementsValidator->expects( $this->once() )
@@ -232,7 +232,7 @@ class ItemValidatorTest extends TestCase {
 
 		$expectedError = $this->createStub( ValidationError::class );
 		$this->itemStatementsValidator = $this->createMock( StatementsValidator::class );
-		$this->itemStatementsValidator->method( 'validate' )
+		$this->itemStatementsValidator->method( 'validateNewStatements' )
 			->with( $invalidSerialization[ 'statements' ] )
 			->willReturn( $expectedError );
 

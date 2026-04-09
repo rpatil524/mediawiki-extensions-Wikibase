@@ -29,7 +29,7 @@ class StatementsValidator {
 		$this->statementValidator = $statementValidator;
 	}
 
-	public function validate( array $serialization, string $basePath = '' ): ?ValidationError {
+	public function validateNewStatements( array $serialization, string $basePath = '' ): ?ValidationError {
 		return $this->validateModifiedStatements( [], new StatementList(), $this->stripStatementIds( $serialization ), $basePath );
 	}
 

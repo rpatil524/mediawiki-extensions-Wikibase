@@ -42,7 +42,7 @@ class StatementsValidatorTest extends TestCase {
 	public function testValid( array $statementsSerialization, StatementList $deserializedStatements ): void {
 		$validator = $this->newValidator();
 
-		$this->assertNull( $validator->validate( $statementsSerialization ) );
+		$this->assertNull( $validator->validateNewStatements( $statementsSerialization ) );
 		$this->assertEquals( $deserializedStatements, $validator->getValidatedStatements() );
 	}
 
@@ -88,7 +88,7 @@ class StatementsValidatorTest extends TestCase {
 					StatementValidator::CONTEXT_FIELD => 'value',
 				]
 			),
-			$this->newValidator()->validate( [ $predicateId => [ $statementWithMissingValue ] ] )
+			$this->newValidator()->validateNewStatements( [ $predicateId => [ $statementWithMissingValue ] ] )
 		);
 	}
 
@@ -100,7 +100,7 @@ class StatementsValidatorTest extends TestCase {
 		array $invalidStatements,
 		ValidationError $expectedError
 	): void {
-		$this->assertEquals( $expectedError, $this->newValidator()->validate( $invalidStatements, $basePath ) );
+		$this->assertEquals( $expectedError, $this->newValidator()->validateNewStatements( $invalidStatements, $basePath ) );
 	}
 
 	public static function provideInvalidStatements(): Generator {
