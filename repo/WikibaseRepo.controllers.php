@@ -1,6 +1,7 @@
 <?php
 
 use Wikibase\DataModel\Entity\Item;
+use Wikibase\DataModel\Entity\Property;
 use Wikibase\Repo\ControllerRegistry;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController;
 use Wikibase\Repo\Domains\Search\WbSearch;
@@ -21,6 +22,15 @@ return [
 			return new FallbackEntitySearchHelperController(
 				Item::ENTITY_TYPE,
 				WbSearch::getItemSearchHelper(),
+				WikibaseRepo::getEntitySourceLookup()
+			);
+		},
+	],
+	Property::ENTITY_TYPE => [
+		ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER => static function (): FallbackEntitySearchHelperController {
+			return new FallbackEntitySearchHelperController(
+				Property::ENTITY_TYPE,
+				WbSearch::getPropertySearchHelper(),
 				WikibaseRepo::getEntitySourceLookup()
 			);
 		},

@@ -6,11 +6,10 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Rest\Reporter\ErrorReporter;
 use MediaWiki\Rest\Reporter\MWErrorReporter;
 use Wikibase\DataModel\Entity\Item;
-use Wikibase\Lib\Interactors\MatchingTermsLookupSearchInteractor;
+use Wikibase\DataModel\Entity\Property;
 use Wikibase\Repo\Api\CombinedEntitySearchHelper;
-use Wikibase\Repo\Api\EntityIdSearchHelper;
 use Wikibase\Repo\Api\EntitySearchHelper;
-use Wikibase\Repo\Api\EntityTermSearchHelper;
+use Wikibase\Repo\Api\PropertyDataTypeSearchHelper;
 use Wikibase\Repo\ControllerRegistry;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearch;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearchValidator;
@@ -22,6 +21,7 @@ use Wikibase\Repo\Domains\Search\Application\UseCases\SimplePropertySearch\Simpl
 use Wikibase\Repo\Domains\Search\Application\UseCases\SimplePropertySearch\SimplePropertySearchValidator;
 use Wikibase\Repo\Domains\Search\Application\Validation\SearchLanguageValidator;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
+use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\EntitySearchHelperFactory;
 use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\EntitySearchHelperPrefixSearchEngine;
 use Wikibase\Repo\Domains\Search\Infrastructure\DataAccess\InLabelSearchEngine;
 use Wikibase\Repo\Domains\Search\Infrastructure\LanguageCodeValidator;
@@ -49,7 +49,20 @@ return [
 		);
 	},
 
-	'WbSearch.ErrorReporter' => function( MediaWikiServices $services ): ErrorReporter {
+	'WbSearch.EntitySearchHelperFactory' => function ( MediaWikiServices $services ): EntitySearchHelperFactory {
+		return new EntitySearchHelperFactory(
+			WikibaseRepo::getEntityLookup( $services ),
+			WikibaseRepo::getEntityIdParser( $services ),
+			WikibaseRepo::getEntitySourceDefinitions( $services ),
+			WikibaseRepo::getFallbackLabelDescriptionLookupFactory( $services ),
+			WikibaseRepo::getEnabledEntityTypes( $services ),
+			WikibaseRepo::getMatchingTermsLookupFactory( $services ),
+			WikibaseRepo::getLanguageFallbackChainFactory( $services ),
+			WikibaseRepo::getPrefetchingTermLookup( $services )
+		);
+	},
+
+	'WbSearch.ErrorReporter' => function ( MediaWikiServices $services ): ErrorReporter {
 		return new MWErrorReporter();
 	},
 
@@ -79,38 +92,17 @@ return [
 	},
 
 	'WbSearch.ItemSearchHelper' => function( MediaWikiServices $services ): EntitySearchHelper {
+		$context = RequestContext::getMain();
+
 		if ( $services->getExtensionRegistry()->isLoaded( 'WikibaseCirrusSearch' )
 			&& $services->getMainConfig()->get( 'WBCSUseCirrus' ) ) {
-			$context = RequestContext::getMain();
 			// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
 			return WikibaseCirrusSearch::getEntitySearchHelperFactory( $services )
 				->newItemPropertySearchHelper( $context->getRequest(), $context->getLanguage() );
 		}
 
-		$itemSource = WikibaseRepo::getEntitySourceDefinitions( $services )
-			->getDatabaseSourceForEntityType( Item::ENTITY_TYPE );
-		if ( $itemSource === null ) {
-			throw new LogicException( 'No source providing Items configured!' );
-		}
-
-		$language = RequestContext::getMain()->getLanguage();
-		return new CombinedEntitySearchHelper( [
-			new EntityIdSearchHelper(
-				WikibaseRepo::getEntityLookup( $services ),
-				WikibaseRepo::getEntityIdParser( $services ),
-				WikibaseRepo::getFallbackLabelDescriptionLookupFactory( $services )
-					->newLabelDescriptionLookup( $language ),
-				WikibaseRepo::getEnabledEntityTypes( $services )
-			),
-			new EntityTermSearchHelper(
-				new MatchingTermsLookupSearchInteractor(
-					WikibaseRepo::getMatchingTermsLookupFactory( $services )->getLookupForSource( $itemSource ),
-					WikibaseRepo::getLanguageFallbackChainFactory( $services ),
-					WikibaseRepo::getPrefetchingTermLookup( $services ),
-					$language->getCode()
-				)
-			),
-		] );
+		return WbSearch::getEntitySearchHelperFactory( $services )
+			->newEntitySearchHelper( Item::ENTITY_TYPE, $context->getLanguage() );
 	},
 
 	'WbSearch.LanguageCodeValidator' => function ( MediaWikiServices $services ): SearchLanguageValidator {
@@ -141,6 +133,35 @@ return [
 				RequestContext::getMain()->getRequest()
 			)
 		);
+	},
+
+	'WbSearch.PropertySearchHelper' => function( MediaWikiServices $services ): EntitySearchHelper {
+		$context = RequestContext::getMain();
+		$federatedPropertiesEnabled = WikibaseRepo::getSettings( $services )->getSetting( 'federatedPropertiesEnabled' );
+		$cirrusSearchEnabled = $services->getExtensionRegistry()->isLoaded( 'WikibaseCirrusSearch' )
+			&& $services->getMainConfig()->get( 'WBCSUseCirrus' );
+
+		$searchHelper = $cirrusSearchEnabled ?
+			// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
+			WikibaseCirrusSearch::getEntitySearchHelperFactory( $services )->newItemPropertySearchHelper(
+				$context->getRequest(),
+				$context->getLanguage()
+			) :
+			WbSearch::getEntitySearchHelperFactory( $services )->newEntitySearchHelper(
+				Property::ENTITY_TYPE,
+				$context->getLanguage()
+			);
+
+		$localPropertySearch = new PropertyDataTypeSearchHelper( $searchHelper, WikibaseRepo::getPropertyDataTypeLookup( $services ) );
+
+		if ( $federatedPropertiesEnabled ) {
+			return new CombinedEntitySearchHelper( [
+				$localPropertySearch,
+				WikibaseRepo::getFederatedPropertiesServiceFactory( $services )->newApiEntitySearchHelper(),
+			] );
+		}
+
+		return $localPropertySearch;
 	},
 
 	'WbSearch.SimpleItemSearch' => function( MediaWikiServices $services ): SimpleItemSearch {
