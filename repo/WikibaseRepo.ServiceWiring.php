@@ -148,9 +148,7 @@ use Wikibase\Lib\WikibaseContentLanguages;
 use Wikibase\Lib\WikibaseSettings;
 use Wikibase\Repo\AnonymousEditWarningBuilder;
 use Wikibase\Repo\Api\ApiHelperFactory;
-use Wikibase\Repo\Api\CombinedEntitySearchHelper;
 use Wikibase\Repo\Api\EntitySearchHelper;
-use Wikibase\Repo\Api\FedPropertiesTypeDispatchingEntitySearchHelper;
 use Wikibase\Repo\Api\TypeDispatchingEntitySearchHelper;
 use Wikibase\Repo\BuilderBasedDataTypeValidatorFactory;
 use Wikibase\Repo\CachingCommonsMediaFileNameLookup;
@@ -988,24 +986,10 @@ return [
 	},
 
 	'WikibaseRepo.EntitySearchHelper' => function ( MediaWikiServices $services ): EntitySearchHelper {
-		$entitySearchHelperCallbacks = WikibaseRepo::getEntitySearchHelperCallbacks( $services );
-
-		$typeDispatchingEntitySearchHelper = new TypeDispatchingEntitySearchHelper(
-			$entitySearchHelperCallbacks,
+		return new TypeDispatchingEntitySearchHelper(
+			WikibaseRepo::getEntitySearchHelperCallbacks( $services ),
 			RequestContext::getMain()->getRequest()
 		);
-
-		if ( WikibaseRepo::getSettings( $services )->getSetting( 'federatedPropertiesEnabled' ) === true ) {
-			return new FedPropertiesTypeDispatchingEntitySearchHelper(
-				new CombinedEntitySearchHelper( [
-					$typeDispatchingEntitySearchHelper,
-					WikibaseRepo::getFederatedPropertiesServiceFactory( $services )->newApiEntitySearchHelper(),
-				] ),
-				$typeDispatchingEntitySearchHelper
-			);
-		}
-
-		return $typeDispatchingEntitySearchHelper;
 	},
 
 	'WikibaseRepo.EntitySearchHelperCallbacks' => function ( MediaWikiServices $services ): array {
