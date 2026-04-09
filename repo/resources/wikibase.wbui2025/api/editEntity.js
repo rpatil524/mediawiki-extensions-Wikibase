@@ -118,6 +118,9 @@ const renderPropertyLinkHtml = async function ( propertyIds ) {
  * or null if the input could not be parsed successfully.
  */
 const parseValue = async function ( input, parseOptions = {} ) {
+	if ( !input ) {
+		return null;
+	}
 	try {
 		const { results } = await api.get( Object.assign( {
 			action: 'wbparsevalue',
