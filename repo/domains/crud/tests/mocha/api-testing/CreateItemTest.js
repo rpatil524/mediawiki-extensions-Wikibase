@@ -89,6 +89,26 @@ describe( newCreateItemRequestBuilder().getRouteDescription(), () => {
 			);
 			assert.strictEqual( editMetadata.user, user.username );
 		} );
+
+		it( 'ignores IDs of statements that the item is created with', async () => {
+			const someStatementId = 'Q1$F834AC3F-F984-408C-8726-EFB563181709';
+			const response = await newCreateItemRequestBuilder( {
+				statements: {
+					[ predicatePropertyId ]: [ {
+						id: someStatementId, // this should be ignored
+						property: { id: predicatePropertyId },
+						value: { type: 'novalue' }
+					} ]
+				}
+			} )
+				// OpenAPI validation considers this invalid because the ID field is read-only
+				.assertInvalidRequest()
+				.makeRequest();
+
+			const newStatementId = response.body.statements[ predicatePropertyId ][ 0 ].id;
+			assert.notStrictEqual( newStatementId, someStatementId );
+			assert.isTrue( newStatementId.startsWith( response.body.id + '$' ) );
+		} );
 	} );
 
 	describe( '400 error response ', () => {

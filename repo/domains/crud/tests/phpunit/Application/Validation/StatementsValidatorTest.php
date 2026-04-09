@@ -62,6 +62,13 @@ class StatementsValidatorTest extends TestCase {
 			[],
 			new StatementList(),
 		];
+
+		$statementWithId = self::newSomeValueSerialization( 'P567' );
+		$statementWithId['id'] = 'Q1$AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE';
+		yield 'statement with provided ID - ID is ignored' => [
+			[ 'P567' => [ $statementWithId ] ],
+			new StatementList( NewStatement::someValueFor( 'P567' )->build() ),
+		];
 	}
 
 	public function testMissingStatementValue_returnsValidationError(): void {

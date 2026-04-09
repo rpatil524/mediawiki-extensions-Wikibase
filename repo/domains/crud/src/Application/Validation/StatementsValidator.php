@@ -30,7 +30,22 @@ class StatementsValidator {
 	}
 
 	public function validate( array $serialization, string $basePath = '' ): ?ValidationError {
-		return $this->validateModifiedStatements( [], new StatementList(), $serialization, $basePath );
+		return $this->validateModifiedStatements( [], new StatementList(), $this->stripStatementIds( $serialization ), $basePath );
+	}
+
+	private function stripStatementIds( array $serialization ): array {
+		foreach ( $serialization as $propertyId => $statementGroup ) {
+			if ( is_array( $statementGroup ) && array_is_list( $statementGroup ) ) {
+				foreach ( $statementGroup as $i => $statement ) {
+					if ( is_array( $statement ) ) {
+						// ids should be ignored when creating new statements
+						unset( $serialization[$propertyId][$i]['id'] );
+					}
+				}
+			}
+		}
+
+		return $serialization;
 	}
 
 	public function validateModifiedStatements(
