@@ -78,14 +78,16 @@ return [
 	},
 
 	'WbSearch.ItemPrefixSearch' => function( MediaWikiServices $services ): ItemPrefixSearch {
+		$searchProfiles = WikibaseRepo::getSettings( $services )->getSetting( 'searchProfiles' );
 		return new ItemPrefixSearch(
 			new ItemPrefixSearchValidator( WbSearch::getLanguageCodeValidator( $services ) ),
 			new EntitySearchHelperPrefixSearchEngine(
 				// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
 				WikibaseCirrusSearch::getEntitySearchHelperFactory( $services ),
 				$services->getLanguageFactory(),
-				RequestContext::getMain()->getRequest()
-			)
+				RequestContext::getMain()->getRequest(),
+				$searchProfiles
+			),
 		);
 	},
 
@@ -122,13 +124,15 @@ return [
 	},
 
 	'WbSearch.PropertyPrefixSearch' => function( MediaWikiServices $services ): PropertyPrefixSearch {
+		$searchProfiles = WikibaseRepo::getSettings( $services )->getSetting( 'searchProfiles' );
 		return new PropertyPrefixSearch(
 			new PropertyPrefixSearchValidator( WbSearch::getLanguageCodeValidator( $services ) ),
 			new EntitySearchHelperPrefixSearchEngine(
 				// @phan-suppress-next-line PhanUndeclaredClassMethod WikibaseCirrusSearch is ok here
 				WikibaseCirrusSearch::getEntitySearchHelperFactory( $services ),
 				$services->getLanguageFactory(),
-				RequestContext::getMain()->getRequest()
+				RequestContext::getMain()->getRequest(),
+				$searchProfiles
 			)
 		);
 	},

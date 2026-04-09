@@ -28,7 +28,8 @@ class ItemPrefixSearch {
 			$itemRequest->language,
 			$itemRequest->limit,
 			$itemRequest->offset,
-			$itemRequest->resultLanguage
+			$itemRequest->resultLanguage,
+			$itemRequest->profile
 		) );
 	}
 }

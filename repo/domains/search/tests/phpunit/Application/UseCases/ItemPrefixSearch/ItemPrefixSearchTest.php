@@ -30,7 +30,7 @@ class ItemPrefixSearchTest extends TestCase {
 		$searchEngine = $this->createMock( ItemPrefixSearchEngine::class );
 		$searchEngine->expects( $this->once() )
 			->method( 'suggestItems' )
-			->with( $query, $language, $limit, $offset, $resultLanguage )
+			->with( $query, $language, $limit, $offset, $resultLanguage, null )
 			->willReturn( $expectedResults );
 
 		$this->assertEquals(
@@ -39,6 +39,24 @@ class ItemPrefixSearchTest extends TestCase {
 				$this->createStub( ItemPrefixSearchValidator::class ),
 				$searchEngine
 			)->execute( new ItemPrefixSearchRequest( $query, $language, $limit, $offset, $resultLanguage ) )->results
+		);
+	}
+
+	public function testCanExecute_AndForwardsProfileContext(): void {
+		$expectedResults = $this->createStub( ItemSearchResults::class );
+
+		$searchEngine = $this->createMock( ItemPrefixSearchEngine::class );
+		$searchEngine->expects( $this->once() )
+			->method( 'suggestItems' )
+			->with( 'potat', 'en', 10, 0, 'custom' )
+			->willReturn( $expectedResults );
+
+		$this->assertEquals(
+			$expectedResults,
+			$this->newUseCase(
+				$this->createStub( ItemPrefixSearchValidator::class ),
+				$searchEngine,
+			)->execute( new ItemPrefixSearchRequest( 'potat', 'en', 10, 0, 'custom' ) )->results
 		);
 	}
 

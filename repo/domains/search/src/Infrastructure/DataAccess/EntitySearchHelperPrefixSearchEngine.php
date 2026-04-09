@@ -26,7 +26,8 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 		// @phan-suppress-next-line PhanUndeclaredTypeParameter, PhanUndeclaredTypeProperty WikibaseCirrusSearch is ok here
 		private EntitySearchHelperFactory $searchHelperFactory,
 		private LanguageFactory $languageFactory,
-		private WebRequest $request
+		private WebRequest $request,
+		private array $searchProfiles,
 	) {
 	}
 
@@ -35,11 +36,16 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 		string $languageCode,
 		int $limit,
 		int $offset,
-		?string $resultLanguageCode = null
+		?string $resultLanguageCode,
+		?string $profile
 	): ItemSearchResults {
+		$profileName = $profile ?? array_key_first( $this->searchProfiles );
+		// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable searchProfiles always has at least one entry
+		$profileContext = $this->searchProfiles[$profileName] ?? null;
+
 		return new ItemSearchResults( ...array_map(
 			$this->convertResult( ItemSearchResult::class ),
-			$this->suggestEntities( Item::ENTITY_TYPE, $searchTerm, $languageCode, $limit, $offset, $resultLanguageCode )
+			$this->suggestEntities( Item::ENTITY_TYPE, $searchTerm, $languageCode, $limit, $offset, $resultLanguageCode, $profileContext )
 		) );
 	}
 
@@ -56,7 +62,8 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 		string $languageCode,
 		int $limit,
 		int $offset,
-		?string $resultLanguageCode = null
+		?string $resultLanguageCode = null,
+		?string $profileContext = null
 	): array {
 		return array_slice(
 			// @phan-suppress-next-line PhanUndeclaredClassMethod
@@ -69,7 +76,7 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 				$entityType,
 				$limit + $offset + 1,
 				false,
-				null
+				$profileContext
 			),
 			$offset,
 			$limit

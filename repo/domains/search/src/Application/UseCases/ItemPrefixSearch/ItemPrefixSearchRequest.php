@@ -17,6 +17,7 @@ class ItemPrefixSearchRequest {
 		public readonly int $limit = self::DEFAULT_LIMIT,
 		public readonly int $offset = self::DEFAULT_OFFSET,
 		?string $resultLanguage = null,
+		public readonly ?string $profile = null
 	) {
 		$this->resultLanguage = $resultLanguage ?? $language;
 	}
