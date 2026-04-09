@@ -121,3 +121,39 @@ describe( 'updateStatements', () => {
 		} );
 	} );
 } );
+
+describe( 'parseValue', () => {
+	const apiSpy = jest.spyOn( api, 'get' );
+
+	it( 'calls the API and returns the parsed value', async () => {
+		apiSpy.mockResolvedValueOnce( { results: [
+			{
+				raw: 'other value',
+				value: 'other value',
+				type: 'string'
+			},
+			{
+				raw: 'input value',
+				value: 'input value',
+				type: 'string'
+			}
+		] } );
+		await expect( editEntity.parseValue( 'input value', { custom: 'option' } ) )
+			.resolves.toMatchObject( {
+				value: 'input value',
+				type: 'string'
+			} );
+		expect( apiSpy ).toHaveBeenCalledTimes( 1 );
+		expect( apiSpy ).toHaveBeenCalledWith( {
+			action: 'wbparsevalue',
+			values: [ 'input value' ],
+			custom: 'option'
+		} );
+	} );
+
+	it( 'returns null if the API did not return a parsed value', async () => {
+		apiSpy.mockResolvedValueOnce( { results: [] } );
+		await expect( editEntity.parseValue( 'input value' ) )
+			.resolves.toBeNull();
+	} );
+} );
