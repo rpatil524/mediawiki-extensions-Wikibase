@@ -82,6 +82,7 @@
 	"wikibase-statementlistview-add-tooltip": "Добавить новое значение",
 	"wikibase-statementgrouplistview-add": "добавить утверждение",
 	"wikibase-statementgrouplistview-add-tooltip": "Добавить новое утверждение",
+	"wikibase-statementgrouplistview-edit": "редактирование {{PLURAL:$1|утверждения|утверждений}}",
 	"wikibase-entitytermsview-entitytermsforlanguagelistview-toggler": "На других языках",
 	"wikibase-entitytermsview-entitytermsforlanguagelistview-configure-link-label": "Настроить",
 	"wikibase-setting-entitytermsview-showEntitytermslistview": "Показывать метки, синонимы и описания сразу на всех моих языках",
@@ -567,5 +568,7 @@
 	"wikibase-scoped-search-search-entities": "Поиск сущностей",
 	"wikibase-scoped-search-item-scope-name": "Элементы",
 	"wikibase-scoped-search-property-scope-name": "Свойства",
+	"wikibase-mobile-editing-ui-beta-feature-message": "Редактирование элементов Викиданных на мобильных устройствах",
+	"wikibase-mobile-editing-ui-beta-feature-description": "Включите эту функцию для редактирования Викиданных с мобильного устройства! Этот проект, разрабатываемый командой Викиданных, позволяет редактировать элементы со смартфона с использованием интерфейса, оптимизированного для мобильных устройств.",
 	"wikibase-stepper-progress": "$1 из $2"
 }
