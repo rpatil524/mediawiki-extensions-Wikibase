@@ -34,6 +34,7 @@ use Wikibase\Repo\Api\EntitySearchHelper;
 use Wikibase\Repo\Api\PropertyDataTypeSearchHelper;
 use Wikibase\Repo\Api\SearchEntities;
 use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\DispatchingWbSearchEntitiesController;
+use Wikibase\Repo\Domains\Search\Infrastructure\Controllers\FallbackEntitySearchHelperController;
 use Wikibase\Repo\WikibaseRepo;
 
 /**
@@ -132,15 +133,19 @@ class SearchEntitiesTest extends \PHPUnit\Framework\TestCase {
 		], new SubEntityTypesMapper( [] ) );
 
 		$entitySourceLookup = new EntitySourceLookup( $entitySourceDefinitions, new SubEntityTypesMapper( [] ) );
+		$searchHelper = $entitySearchHelper ?: $this->getMockEntitySearchHelper( $params );
+		$entityType = $params['type'] ?? 'item';
 		$module = new SearchEntities(
 			$this->getApiMain( $params ),
 			'wbsearchentities',
 			$this->createMock( LinkBatchFactory::class ),
-			new DispatchingWbSearchEntitiesController(
-				[],
-				$entitySearchHelper ?: $this->getMockEntitySearchHelper( $params ),
-				$entitySourceLookup
-			),
+			new DispatchingWbSearchEntitiesController( [
+				$entityType => static fn() => new FallbackEntitySearchHelperController(
+					$entityType,
+					$searchHelper,
+					$entitySourceLookup
+				),
+			] ),
 			$this->getContentLanguages(),
 			$entitySourceLookup,
 			$this->createMock( EntityTitleLookup::class ),
@@ -452,7 +457,9 @@ class SearchEntitiesTest extends \PHPUnit\Framework\TestCase {
 			$this->getApiMain( $params ),
 			'wbsearchentities',
 			$this->createMock( LinkBatchFactory::class ),
-			new DispatchingWbSearchEntitiesController( [], $searchHelper, $entitySourceLookup ),
+			new DispatchingWbSearchEntitiesController( [
+				'kitten' => static fn() => new FallbackEntitySearchHelperController( 'kitten', $searchHelper, $entitySourceLookup ),
+			] ),
 			$this->getContentLanguages(),
 			$entitySourceLookup,
 			$this->createMock( EntityTitleLookup::class ),

@@ -43,9 +43,7 @@ return [
 	'WbSearch.DispatchingWbSearchEntitiesController' => function( MediaWikiServices $services ): DispatchingWbSearchEntitiesController {
 		return new DispatchingWbSearchEntitiesController(
 			WikibaseRepo::getControllerRegistry( $services )
-				->get( ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER ),
-			WikibaseRepo::getEntitySearchHelper( $services ),
-			WikibaseRepo::getEntitySourceLookup( $services )
+				->get( ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER )
 		);
 	},
 
