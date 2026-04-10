@@ -18,6 +18,7 @@ class ItemPrefixSearch {
 
 	/**
 	 * @throws UseCaseError
+	 * TODO validation of resultLanguage is in SearchEntities not ItemPrefixSearchValidator (see T422899)
 	 */
 	public function execute( ItemPrefixSearchRequest $itemRequest ): ItemPrefixSearchResponse {
 		$this->validator->validate( $itemRequest );
@@ -26,7 +27,8 @@ class ItemPrefixSearch {
 			$itemRequest->query,
 			$itemRequest->language,
 			$itemRequest->limit,
-			$itemRequest->offset
+			$itemRequest->offset,
+			$itemRequest->resultLanguage
 		) );
 	}
 }

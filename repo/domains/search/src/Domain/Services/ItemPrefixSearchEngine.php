@@ -12,6 +12,7 @@ interface ItemPrefixSearchEngine {
 		string $searchTerm,
 		string $languageCode,
 		int $limit,
-		int $offset
+		int $offset,
+		?string $resultLanguageCode = null
 	): ItemSearchResults;
 }

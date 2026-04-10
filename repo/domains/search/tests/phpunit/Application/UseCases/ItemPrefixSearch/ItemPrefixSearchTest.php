@@ -24,12 +24,13 @@ class ItemPrefixSearchTest extends TestCase {
 		$language = 'en';
 		$limit = 10;
 		$offset = 0;
+		$resultLanguage = 'de';
 		$expectedResults = $this->createStub( ItemSearchResults::class );
 
 		$searchEngine = $this->createMock( ItemPrefixSearchEngine::class );
 		$searchEngine->expects( $this->once() )
 			->method( 'suggestItems' )
-			->with( $query, $language, $limit, $offset )
+			->with( $query, $language, $limit, $offset, $resultLanguage )
 			->willReturn( $expectedResults );
 
 		$this->assertEquals(
@@ -37,7 +38,7 @@ class ItemPrefixSearchTest extends TestCase {
 			$this->newUseCase(
 				$this->createStub( ItemPrefixSearchValidator::class ),
 				$searchEngine
-			)->execute( new ItemPrefixSearchRequest( $query, $language, $limit, $offset ) )->results
+			)->execute( new ItemPrefixSearchRequest( $query, $language, $limit, $offset, $resultLanguage ) )->results
 		);
 	}
 
