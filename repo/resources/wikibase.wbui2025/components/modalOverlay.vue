@@ -175,7 +175,7 @@ module.exports = exports = defineComponent( {
 	display: flex;
 	flex-direction: column;
 	width: @size-viewport-width-full;
-	height: 100%;
+	height: @size-viewport-height-full;
 
 	ul {
 		padding-left: 0;
@@ -289,6 +289,9 @@ module.exports = exports = defineComponent( {
 
 body.wikibase-wbui2025-modal-open {
 	overflow: hidden;
+	overscroll-behavior-y: none;
+	position: fixed;
+	height: @size-viewport-height-full;
 
 	.oo-ui-windowManager-modal > .oo-ui-dialog {
 		z-index: @z-index-overlay;
