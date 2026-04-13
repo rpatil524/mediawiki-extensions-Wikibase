@@ -761,6 +761,34 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
+		yield 'labelWithLanguageFallback of property values' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$propertyProperty->getId()}\") {
+					value {
+						... on PropertyValue {
+							labelWithLanguageFallback(languageCode: \"ko\") { languageCode value }
+						}
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'value' => [
+									'labelWithLanguageFallback' => [
+										'languageCode' => 'en',
+										'value' => $propertyUsedAsValue->getLabels()->getByLanguage( 'en' )->getText(),
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+
 		$noValueSomeValueProperty = self::createProperty( 'string' );
 		$statementWithSomeValue = NewStatement::someValueFor( $noValueSomeValueProperty->getId() )
 			->withSubject( $itemId )
