@@ -92,6 +92,7 @@ type PredicateProperty implements LabelProvider {
   id: String!
   dataType: String
   label(languageCode: LanguageCode!): String
+  labelWithLanguageFallback(languageCode: LanguageCode!): LabelWithLanguage
 }
 
 union Value = CommonsMediaValue | GeoShapeValue | TabularValue | UrlValue | ExternalIdValue | ItemValue | PropertyValue | GlobeCoordinateValue | MonolingualTextValue | QuantityValue | StringValue | TimeValue | EntityValue | UnknownValue

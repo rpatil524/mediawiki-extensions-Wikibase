@@ -11,6 +11,7 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLTracking;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsResolver;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsWithLanguageFallbackResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Schema;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Types;
 
@@ -51,6 +52,13 @@ class WbReuse {
 	public static function getPropertyLabelsResolver( ?ContainerInterface $services = null ): PropertyLabelsResolver {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'WbReuse.PropertyLabelsResolver' );
+	}
+
+	public static function getPropertyLabelsWithLanguageFallbackResolver(
+		?ContainerInterface $services = null
+	): PropertyLabelsWithLanguageFallbackResolver {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'WbReuse.PropertyLabelsWithLanguageFallbackResolver' );
 	}
 
 	public static function getFacetedItemSearchEngine( ?ContainerInterface $services = null ): FacetedItemSearchEngine {

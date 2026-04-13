@@ -880,6 +880,76 @@ class ItemQueryTest extends MediaWikiIntegrationTestCase {
 				],
 			],
 		];
+		yield 'statement property labelWithLanguageFallback - direct hit' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$stringProperty->getId()}\") {
+					property {
+						labelWithLanguageFallback(languageCode: \"en\") { languageCode value }
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'property' => [
+									'labelWithLanguageFallback' => [
+										'languageCode' => 'en',
+										'value' => $stringProperty->getLabels()->getByLanguage( 'en' )->getText(),
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+		yield 'statement property labelWithLanguageFallback - falls back to English' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$stringProperty->getId()}\") {
+					property {
+						labelWithLanguageFallback(languageCode: \"ko\") { languageCode value }
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'property' => [
+									'labelWithLanguageFallback' => [
+										'languageCode' => 'en',
+										'value' => $stringProperty->getLabels()->getByLanguage( 'en' )->getText(),
+									],
+								],
+							],
+						],
+					],
+				],
+			],
+		];
+		yield 'statement property labelWithLanguageFallback - null when no label in fallback chain' => [
+			"{ item(id: \"$itemId\") {
+				statements(propertyId: \"{$itemProperty->getId()}\") {
+					property {
+						labelWithLanguageFallback(languageCode: \"de\") { languageCode value }
+					}
+				}
+			} }",
+			[
+				'data' => [
+					'item' => [
+						'statements' => [
+							[
+								'property' => [ 'labelWithLanguageFallback' => null ],
+							],
+						],
+					],
+				],
+			],
+		];
 		yield 'labels and descriptions of item values' => [
 			"{ item(id: \"$itemId\") {
 				statements(propertyId: \"{$itemProperty->getId()}\") {
