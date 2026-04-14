@@ -43,7 +43,6 @@ use ValueParsers\StringParser;
 use ValueParsers\ValueParser;
 use Wikibase\DataModel\Entity\EntityIdParsingException;
 use Wikibase\DataModel\Entity\EntityIdValue;
-use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\Lib\Formatters\EntityIdValueFormatter;
 use Wikibase\Lib\Formatters\SnakFormat;
 use Wikibase\Lib\Formatters\SnakFormatter;
@@ -51,7 +50,6 @@ use Wikibase\Lib\Store\FieldPropertyInfoProvider;
 use Wikibase\Lib\Store\PropertyInfoStore;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyValuePair;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
-use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Types;
 use Wikibase\Repo\Domains\Reuse\WbReuse;
 use Wikibase\Repo\Parsers\EntityIdValueParser;
 use Wikibase\Repo\Parsers\MediaWikiNumberUnlocalizer;
@@ -548,56 +546,7 @@ return call_user_func( function() {
 				return PropertySpecificComponentsRdfBuilder::OBJECT_PROPERTY;
 			},
 			'graphql-value-type' => static function() {
-				$itemLabelsResolver = WbReuse::getItemLabelsResolver();
-				$labelProviderType = WbReuse::getGraphQLTypes()->getLabelProviderType();
-				$labelField = Types::copyFieldDefinition(
-					$labelProviderType->getField( 'label' ),
-					function( Statement|PropertyValuePair $valueProvider, array $args ) use( $itemLabelsResolver ) {
-						/** @var EntityIdValue $idValue */
-						$idValue = $valueProvider->value;
-						'@phan-var EntityIdValue $idValue';
-
-						/** @var ItemId $itemId */
-						$itemId = $idValue->getEntityId();
-						'@phan-var ItemId $itemId';
-
-						return $itemLabelsResolver->resolve( $itemId, $args['languageCode'] );
-					},
-				);
-				$itemDescriptionsResolver = WbReuse::getItemDescriptionsResolver();
-				$descriptionProviderType = WbReuse::getGraphQLTypes()->getDescriptionProviderType();
-				$descriptionField = Types::copyFieldDefinition(
-					$descriptionProviderType->getField( 'description' ),
-					function ( Statement|PropertyValuePair $valueProvider, array $args ) use ( $itemDescriptionsResolver ) {
-						/** @var EntityIdValue $idValue */
-						$idValue = $valueProvider->value;
-						'@phan-var EntityIdValue $idValue';
-						/** @var ItemId $itemId */
-						$itemId = $idValue->getEntityId();
-						'@phan-var ItemId $itemId';
-
-						return $itemDescriptionsResolver->resolve( $itemId, $args['languageCode'] );
-					},
-				);
-
-				return new ObjectType( [
-					'name' => 'ItemValue',
-					'fields' => [
-						'id' => [
-							'type' => Type::nonNull( Type::string() ),
-							'resolve' => function( Statement|PropertyValuePair $valueProvider ) {
-								/** @var EntityIdValue $idValue */
-								$idValue = $valueProvider->value;
-								'@phan-var EntityIdValue $idValue';
-
-								return $idValue->getEntityId()->getSerialization();
-							},
-						],
-						$labelField,
-						$descriptionField,
-					],
-					'interfaces' => [ $labelProviderType, $descriptionProviderType ],
-				] );
+				return WbReuse::getGraphQLTypes()->getItemValueType();
 			},
 		],
 		'PT:wikibase-property' => [

@@ -133,6 +133,7 @@ type ExternalIdValue implements StringContentProvider & UrlProvider {
 type ItemValue implements LabelProvider & DescriptionProvider {
   id: String!
   label(languageCode: LanguageCode!): String
+  labelWithLanguageFallback(languageCode: LanguageCode!): LabelWithLanguage
   description(languageCode: LanguageCode!): String
 }
 

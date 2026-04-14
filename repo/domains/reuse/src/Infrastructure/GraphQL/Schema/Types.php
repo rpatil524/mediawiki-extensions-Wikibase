@@ -20,6 +20,7 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyValuePair;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsWithLanguageFallbackResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsWithLanguageFallbackResolver;
 use Wikibase\Repo\SiteLinkGlobalIdentifiersProvider;
@@ -49,6 +50,7 @@ class Types {
 	private ?UrlValueType $urlValueType = null;
 	private ?ObjectType $entityValueType = null;
 	private ?ItemType $itemType = null;
+	private ?ItemValueType $itemValueType = null;
 	private ?ItemSearchFilterType $itemSearchFilterType = null;
 	private ?ItemSearchConditionType $itemSearchConditionType = null;
 	private ?ObjectType $itemSearchResultConnectionType = null;
@@ -68,6 +70,7 @@ class Types {
 		private readonly DataTypeDefinitions $dataTypeDefinitions,
 		private readonly ItemDescriptionsResolver $itemDescriptionsResolver,
 		private readonly ItemLabelsResolver $itemLabelsResolver,
+		private readonly ItemLabelsWithLanguageFallbackResolver $itemLabelsWithLanguageFallbackResolver,
 		private readonly PropertyInfoLookup $propertyInfoLookup,
 		private readonly SettingsArray $settings,
 		private readonly LanguageFallbackChainFactory $languageFallbackChainFactory,
@@ -205,6 +208,15 @@ class Types {
 
 	public function getItemType(): ItemType {
 		return $this->itemType ??= new ItemType( $this, $this->languageFallbackChainFactory );
+	}
+
+	public function getItemValueType(): ItemValueType {
+		return $this->itemValueType ??= new ItemValueType(
+			$this->itemLabelsResolver,
+			$this->itemLabelsWithLanguageFallbackResolver,
+			$this->itemDescriptionsResolver,
+			$this,
+		);
 	}
 
 	public function getLabelWithLanguageType(): ObjectType {

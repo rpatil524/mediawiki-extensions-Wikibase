@@ -3,6 +3,7 @@
 use MediaWiki\MediaWikiServices;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItemDescriptions\BatchGetItemDescriptions;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItemLabels\BatchGetItemLabels;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItemLabelsWithLanguageFallback\BatchGetItemLabelsWithLanguageFallback;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItems\BatchGetItems;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabels\BatchGetPropertyLabels;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabelsWithLanguageFallback\BatchGetPropertyLabelsWithLanguageFallback;
@@ -13,6 +14,7 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\Look
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemBySitelink\LookUpItemBySitelink;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemLabelsWithLanguageFallbackBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\PropertyLabelsWithLanguageFallbackBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\StatementReadModelConverter;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityLookupItemsBatchRetriever;
@@ -28,6 +30,7 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemByExternalI
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemBySitelinkResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsWithLanguageFallbackResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsWithLanguageFallbackResolver;
@@ -108,6 +111,7 @@ return [
 			WikibaseRepo::getDataTypeDefinitions( $services ),
 			WbReuse::getItemDescriptionsResolver( $services ),
 			WbReuse::getItemLabelsResolver( $services ),
+			WbReuse::getItemLabelsWithLanguageFallbackResolver( $services ),
 			WikibaseRepo::getPropertyInfoLookup( $services ),
 			WikibaseRepo::getSettings( $services ),
 			WikibaseRepo::getLanguageFallbackChainFactory( $services ),
@@ -133,6 +137,16 @@ return [
 				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
 				new EntityRevisionLookupItemRedirectResolver( WikibaseRepo::getEntityRevisionLookup( $services ) ),
 			)
+		);
+	},
+	'WbReuse.ItemLabelsWithLanguageFallbackResolver' => function(
+		MediaWikiServices $services
+	): ItemLabelsWithLanguageFallbackResolver {
+		return new ItemLabelsWithLanguageFallbackResolver(
+			new BatchGetItemLabelsWithLanguageFallback( new ItemLabelsWithLanguageFallbackBatchRetriever(
+				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
+				new LanguageFallbackChainFactoryFallbackLanguagesProvider( WikibaseRepo::getLanguageFallbackChainFactory( $services ) ),
+			) ),
 		);
 	},
 	'WbReuse.PropertyLabelsResolver' => function( MediaWikiServices $services ): PropertyLabelsResolver {
