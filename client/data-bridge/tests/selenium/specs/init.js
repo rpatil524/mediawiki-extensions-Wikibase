@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import LoginPage from 'wdio-mediawiki/LoginPage.js';
 import { getTestString } from 'wdio-mediawiki/Util.js';
 import DataBridgePage from '../pageobjects/dataBridge.page.js';
@@ -31,7 +31,7 @@ describe( 'init', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 
@@ -58,7 +58,7 @@ describe( 'init', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.open( title );
 
@@ -101,7 +101,7 @@ describe( 'init', () => {
 				propertyId,
 				editFlow: 'single-best-value',
 			} ] );
-			browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+			browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 			DataBridgePage.openAppOnPage( title );
 
@@ -167,7 +167,7 @@ describe( 'init', () => {
 				propertyId: stringPropertyId,
 				editFlow: 'single-best-value',
 			} ] );
-			browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+			browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 			DataBridgePage.openAppOnPage( title );
 
@@ -211,7 +211,7 @@ describe( 'init', () => {
 					propertyId,
 					editFlow: 'single-best-value',
 				} ] );
-				browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+				browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 				DataBridgePage.open( title );
 				browser.execute(
@@ -275,7 +275,7 @@ describe( 'init', () => {
 					propertyId,
 					editFlow: 'single-best-value',
 				} ] );
-				browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+				browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 				DataBridgePage.open( title );
 				DataBridgePage.overloadedLink.click();
@@ -308,7 +308,7 @@ describe( 'init', () => {
 					propertyId,
 					editFlow: 'single-best-value',
 				} ] );
-				browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+				browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 				DataBridgePage.open( title );
 				DataBridgePage.overloadedLink.click();
@@ -349,7 +349,7 @@ describe( 'init', () => {
 				propertyId,
 				editFlow: 'single-best-value',
 			} ] );
-			browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+			browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 			DataBridgePage.open( title );
 			DataBridgePage.overloadedLink.click();

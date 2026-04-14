@@ -1,28 +1,28 @@
-import assert from 'assert.js';
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import assert from 'assert';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import DataBridgePage from '../pageobjects/dataBridge.page.js';
 import WikibaseApi from 'wdio-wikibase/wikibase.api.js';
 import LoginPage from 'wdio-mediawiki/LoginPage.js';
 
 function blockUser( username, expiry ) {
-	browser.call( () => mwbot().then( ( bot ) => {
-		return bot.request( {
+	browser.call( () => createApiClient().then( async ( api ) => {
+		return api.request( {
 			action: 'block',
 			user: username || browser.options.capabilities[ 'mw:user' ],
 			reason: 'browser test',
-			token: bot.editToken,
+			token: await api.getEditToken(),
 			expiry,
 		} );
 	} ) );
 }
 
 function unblockUser( username ) {
-	browser.call( () => mwbot().then( ( bot ) => {
-		return bot.request( {
+	browser.call( () => createApiClient().then( async ( api ) => {
+		return api.request( {
 			action: 'unblock',
 			user: username || browser.options.capabilities[ 'mw:user' ],
 			reason: 'browser test done',
-			token: bot.editToken,
+			token: await api.getEditToken(),
 		} );
 	} ) );
 }
@@ -51,7 +51,7 @@ describe( 'permission checks', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 	} );
 
 	describe( 'if the client page is editable for the user', () => {
@@ -65,11 +65,11 @@ describe( 'permission checks', () => {
 		it( 'hide the editlink', () => {
 			// Protect the page
 			browser.call(
-				() => mwbot().then( ( bot ) => {
-					return bot.request( {
+				() => createApiClient().then( async ( api ) => {
+					return api.request( {
 						action: 'protect',
 						title,
-						token: bot.editToken,
+						token: await api.getEditToken(),
 						reason: 'browser test',
 						user: browser.options.capabilities[ 'mw:user' ],
 						protections: 'edit=sysop|move=sysop',

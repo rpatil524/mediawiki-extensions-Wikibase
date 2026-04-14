@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import BailoutActions from '../pageobjects/BailoutActions.js';
 import DataBridgePage from '../pageobjects/dataBridge.page.js';
 import WikibaseApi from 'wdio-wikibase/wikibase.api.js';
@@ -35,7 +35,7 @@ describe( 'bail-out', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 		DataBridgePage.error.waitForDisplayed();
