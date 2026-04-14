@@ -27,7 +27,9 @@ class ItemWbSearchEntitiesController implements WbSearchEntitiesController {
 				$request->searchLanguageCode,
 				$request->limit,
 				0,
+				$request->strictLanguage,
 				$request->resultLanguage,
+				$request->profileContext
 			)
 		);
 		return array_map(
