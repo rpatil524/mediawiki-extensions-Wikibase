@@ -392,8 +392,8 @@ describe( 'wbsearchentities', () => {
 			);
 		} );
 
-		it( 'uselang controls the language of displayed labels independently of the search language', async () => {
-			const response = await api.action( 'wbsearchentities', {
+		withItemController( 'uselang controls the result language independently of the search language', async ( client ) => {
+			const response = await client.action( 'wbsearchentities', {
 				search: ITEM_EN_LABEL,
 				language: 'en',
 				type: 'item',

@@ -10,9 +10,11 @@ class WbSearchEntitiesRequest {
 	public function __construct(
 		public readonly string $text,
 		public readonly string $searchLanguageCode,
+		/** not all controllers take $resultLanguage into account yet, see T423217 */
+		public readonly string $resultLanguage,
 		public readonly int $limit,
 		public readonly bool $strictLanguage,
-		public readonly ?string $profileContext
+		public readonly ?string $profileContext,
 	) {
 	}
 }

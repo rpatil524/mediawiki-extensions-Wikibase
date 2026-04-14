@@ -160,9 +160,10 @@ class SearchEntities extends ApiBase {
 				->search( new WbSearchEntitiesRequest(
 					$params['search'],
 					$params['language'],
+					$this->getLanguageCode()->toBcp47Code(),
 					$params['continue'] + $params['limit'] + 1,
 					$params['strictlanguage'],
-					$this->searchProfiles[$params['profile']]
+					$this->searchProfiles[$params['profile']],
 				) );
 		} catch ( EntitySearchException $ese ) {
 			$this->dieStatus( $ese->getStatus() );

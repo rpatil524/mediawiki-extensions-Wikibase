@@ -41,7 +41,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 		);
 
 		$controller = $this->newController( new ItemSearchResults( $searchResult ) );
-		$results = $controller->search( new WbSearchEntitiesRequest( 'Douglas', 'en', 5, false, null ) );
+		$results = $controller->search( new WbSearchEntitiesRequest( 'Douglas', 'en', 'en', 5, false, null ) );
 
 		$this->assertCount( 1, $results );
 		$this->assertEquals(
@@ -66,7 +66,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 		);
 
 		$controller = $this->newController( new ItemSearchResults( $searchResult ) );
-		$results = $controller->search( new WbSearchEntitiesRequest( 'test', 'en', 5, false, null ) );
+		$results = $controller->search( new WbSearchEntitiesRequest( 'test', 'en', 'en', 5, false, null ) );
 
 		$this->assertCount( 1, $results );
 		$this->assertNull( $results[0]->getDisplayLabel() );
@@ -82,7 +82,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 		);
 
 		$controller = $this->newController( new ItemSearchResults( $searchResult ) );
-		$results = $controller->search( new WbSearchEntitiesRequest( 'Q42', 'en', 5, false, null ) );
+		$results = $controller->search( new WbSearchEntitiesRequest( 'Q42', 'en', 'en', 5, false, null ) );
 
 		$this->assertCount( 1, $results );
 		$this->assertSame( 'qid', $results[0]->getMatchedTerm()->getLanguageCode() );
@@ -91,7 +91,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 
 	public function testEmptyResults(): void {
 		$controller = $this->newController( new ItemSearchResults() );
-		$results = $controller->search( new WbSearchEntitiesRequest( 'foo', 'en', 5, false, null ) );
+		$results = $controller->search( new WbSearchEntitiesRequest( 'foo', 'en', 'en', 5, false, null ) );
 
 		$this->assertSame( [], $results );
 	}
@@ -116,7 +116,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 		);
 
 		$this->expectException( UseCaseError::class );
-		$controller->search( new WbSearchEntitiesRequest( 'test', 'xyz', 5, false, null ) );
+		$controller->search( new WbSearchEntitiesRequest( 'test', 'xyz', 'xyz', 5, false, null ) );
 	}
 
 	private function newController( ItemSearchResults $searchResults ): ItemWbSearchEntitiesController {
