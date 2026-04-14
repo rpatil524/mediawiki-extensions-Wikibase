@@ -33,7 +33,7 @@ mockLibWbui2025();
 
 const addStatementButtonComponent = require( '../../../resources/wikibase.wbui2025/components/addStatementButton.vue' );
 const propertyLookupComponent = require( '../../../resources/wikibase.wbui2025/components/propertyLookup.vue' );
-const { CdxButton, CdxTextInput } = require( '../../../codex.js' );
+const { CdxButton, CdxTextArea } = require( '../../../codex.js' );
 const { mount } = require( '@vue/test-utils' );
 const { storeWithStatements } = require( '../piniaHelpers.js' );
 
@@ -94,9 +94,7 @@ describe( 'wikibase.wbui2025.references', () => {
 				await addButton.vm.$emit( 'click' );
 				propertyLookup = wrapper.findComponent( propertyLookupComponent );
 				await propertyLookup.vm.$emit( 'update:selected', 'P23', { datatype: 'string' } );
-				// The first CdxTextInput component is a child of Wbui2025PropertyLookup.
-				// If the snak value input exists, it is the second one.
-				const snakValueInput = wrapper.findAllComponents( CdxTextInput )[ 1 ];
+				const snakValueInput = wrapper.findComponent( CdxTextArea );
 				expect( snakValueInput.exists() ).toBe( true );
 			} );
 

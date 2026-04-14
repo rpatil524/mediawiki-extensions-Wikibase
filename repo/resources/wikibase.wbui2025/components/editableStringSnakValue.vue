@@ -5,14 +5,20 @@
 		:disabled="disabled"
 		@remove-snak="$emit( 'remove-snak', snakKey )"
 	>
-		<cdx-text-input
+		<cdx-text-area
 			ref="inputElement"
 			v-model="textvalue"
 			autocapitalize="off"
+			autosize
+			rows="1"
 			:disabled="disabled"
-			:class="activeClasses"
+			:class="className"
+			:status="status"
 			@blur="onBlur"
-		></cdx-text-input>
+			@input="removeNewLines"
+			@keydown.enter.prevent
+		>
+		</cdx-text-area>
 	</wikibase-wbui2025-editable-no-value-some-value-snak-value>
 </template>
 
@@ -20,14 +26,14 @@
 const { computed, defineComponent, ref } = require( 'vue' );
 const { mapState, mapWritableState } = require( 'pinia' );
 const wbui2025 = require( 'wikibase.wbui2025.lib' );
-const { CdxTextInput } = require( '../../../codex.js' );
+const { CdxTextArea } = require( '../../../codex.js' );
 const WikibaseWbui2025EditableNoValueSomeValueSnakValue = require( './editableNoValueSomeValueSnakValue.vue' );
 
 // @vue/component
 module.exports = exports = defineComponent( {
 	name: 'WikibaseWbui2025EditableStringSnakValue',
 	components: {
-		CdxTextInput,
+		CdxTextArea,
 		WikibaseWbui2025EditableNoValueSomeValueSnakValue
 	},
 	props: {
@@ -74,9 +80,8 @@ module.exports = exports = defineComponent( {
 		};
 	},
 	computed: {
-		activeClasses() {
-			const hasError = this.inputHadFocus && this.isIncomplete;
-			return [ { 'cdx-text-input--status-error': hasError }, this.className ];
+		status() {
+			return this.inputHadFocus && this.isIncomplete ? 'error' : 'default';
 		}
 	},
 	methods: {
@@ -87,6 +92,10 @@ module.exports = exports = defineComponent( {
 
 		onBlur() {
 			this.inputHadFocus = true;
+		},
+
+		removeNewLines( inputEvent ) {
+			this.textvalue = inputEvent.target.value.replace( /\r?\n/g, '' );
 		}
 	},
 	watch: {
@@ -99,6 +108,13 @@ module.exports = exports = defineComponent( {
 				this.debouncedTriggerParse( newValue );
 			},
 			immediate: true
+		}
+	},
+	mounted() {
+		if ( this.textvalue ) {
+			// when editing an existing value, fix the height to show the full text
+			const textarea = this.$refs.inputElement.$refs.textarea;
+			textarea.style.height = `${ textarea.scrollHeight }px`;
 		}
 	} }
 );

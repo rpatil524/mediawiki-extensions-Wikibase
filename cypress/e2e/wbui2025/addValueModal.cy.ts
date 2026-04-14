@@ -64,7 +64,7 @@ describe( 'wbui2025 item view add additional value to existing statement', () =>
 			edit.addValueButtons().first().click();
 			const modal = new AddValueModal();
 			modal.modal().should( 'be.visible' );
-			modal.lookupInput().clear().type( 'Weather' );
+			modal.textInput().clear().type( 'Weather' );
 			modal.confirmButton().click();
 			modal.modal().should( 'not.exist' );
 			edit.formRoot().should( 'exist' );

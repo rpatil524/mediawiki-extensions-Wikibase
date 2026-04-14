@@ -5,14 +5,19 @@
 		:disabled="disabled"
 		@remove-snak="$emit( 'remove-snak', snakKey )"
 	>
-		<cdx-text-input
+		<cdx-text-area
 			ref="inputElement"
-			v-model.trim="textvalue"
+			v-model="textvalue"
 			autocapitalize="off"
+			autosize
+			rows="1"
 			:disabled="disabled"
-			:class="activeClasses"
+			:class="className"
+			:status="status"
 			@blur="onBlur"
-		></cdx-text-input>
+			@input="removeNewLines"
+			@keydown.enter.prevent
+		></cdx-text-area>
 
 		<template #secondary-input>
 			<div>
@@ -30,7 +35,7 @@
 const { computed, defineComponent, ref, watch } = require( 'vue' );
 const { mapState, mapWritableState, storeToRefs } = require( 'pinia' );
 const wbui2025 = require( 'wikibase.wbui2025.lib' );
-const { CdxTextInput } = require( '../../../codex.js' );
+const { CdxTextArea } = require( '../../../codex.js' );
 const WikibaseWbui2025EditableNoValueSomeValueSnakValue = require( './editableNoValueSomeValueSnakValue.vue' );
 const WikibaseWbui2025ApiItemLookup = require( './apiItemLookup.vue' );
 
@@ -38,7 +43,7 @@ const WikibaseWbui2025ApiItemLookup = require( './apiItemLookup.vue' );
 module.exports = exports = defineComponent( {
 	name: 'WikibaseWbui2025EditableMonolingualTextSnakValue',
 	components: {
-		CdxTextInput,
+		CdxTextArea,
 		WikibaseWbui2025ApiItemLookup,
 		WikibaseWbui2025EditableNoValueSomeValueSnakValue
 	},
@@ -122,8 +127,8 @@ module.exports = exports = defineComponent( {
 		};
 	},
 	computed: {
-		activeClasses() {
-			return [ { 'cdx-text-input--status-error': this.inputHadFocus && this.isIncomplete }, this.className ];
+		status() {
+			return this.inputHadFocus && this.isIncomplete ? 'error' : 'default';
 		}
 	},
 	methods: {
@@ -134,6 +139,10 @@ module.exports = exports = defineComponent( {
 
 		onBlur() {
 			this.inputHadFocus = true;
+		},
+
+		removeNewLines( inputEvent ) {
+			this.textvalue = inputEvent.target.value.replace( /\r?\n/g, '' );
 		}
 	},
 	watch: {
@@ -146,6 +155,13 @@ module.exports = exports = defineComponent( {
 				this.debouncedTriggerParse( newValue );
 			},
 			immediate: true
+		}
+	},
+	mounted() {
+		if ( this.textvalue ) {
+			// when editing an existing value, fix the height to show the full text
+			const textarea = this.$refs.inputElement.$refs.textarea;
+			textarea.style.height = `${ textarea.scrollHeight }px`;
 		}
 	} }
 );

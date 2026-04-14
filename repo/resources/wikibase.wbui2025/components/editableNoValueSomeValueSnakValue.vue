@@ -137,8 +137,13 @@ div.wikibase-wbui2025-edit-statement-snak-value {
 	div.wikibase-wbui2025-snak-value {
 		width: 100%;
 
-		.cdx-text-input {
+		.cdx-text-input, .cdx-text-area {
 			width: 100%;
+		}
+
+		textarea {
+			min-height: revert;
+			max-height: calc( ( 1em * @line-height-medium * 5 ) + ( @border-width-base + @spacing-25 ) * 2 );
 		}
 	}
 

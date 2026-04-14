@@ -31,7 +31,7 @@ mw.config = {
 const { mockLibWbui2025 } = require( '../libWbui2025Helpers.js' );
 mockLibWbui2025();
 
-const { CdxButton, CdxTextInput } = require( '../../../codex.js' );
+const { CdxButton, CdxTextArea } = require( '../../../codex.js' );
 const { mount } = require( '@vue/test-utils' );
 const Wbui2025AddQualifier = require( '../../../resources/wikibase.wbui2025/components/addQualifier.vue' );
 const Wbui2025PropertyLookup = require( '../../../resources/wikibase.wbui2025/components/propertyLookup.vue' );
@@ -89,9 +89,7 @@ describe( 'wikibase.wbui2025.addQualifier', () => {
 
 			beforeEach( async () => {
 				await propertyLookup.vm.$emit( 'update:selected', 'P23', { datatype: 'string' } );
-				// The first CdxTextInput component is a child of Wbui2025PropertyLookup.
-				// If the snak value input exists, it is the second one.
-				snakValueInput = wrapper.findAllComponents( CdxTextInput )[ 1 ];
+				snakValueInput = wrapper.findComponent( CdxTextArea );
 			} );
 
 			it( 'mounts a text input when a property with string datatype is selected', async () => {

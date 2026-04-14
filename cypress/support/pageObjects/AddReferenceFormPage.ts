@@ -4,7 +4,7 @@ export class AddReferenceFormPage {
 	public static SELECTORS = {
 		HEADING: 'h2.wikibase-wbui2025-modal-overlay__header__title',
 		PROPERTY_INPUT: '.wikibase-wbui2025-property-lookup input',
-		SNAK_VALUE_INPUT: '.wikibase-wbui2025-add-reference-value input',
+		SNAK_VALUE_INPUT: '.wikibase-wbui2025-add-reference-value input, .wikibase-wbui2025-add-reference-value textarea',
 		ADD_BUTTON: '.wikibase-wbui2025-add-reference-form > .cdx-button',
 		PROPERTY_OPTIONS: '.wikibase-wbui2025-property-lookup .cdx-menu-item',
 		MENU_ITEM: '.wikibase-wbui2025-add-reference-form .cdx-menu-item',

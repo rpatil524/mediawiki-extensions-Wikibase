@@ -42,7 +42,7 @@ mw.config = {
 	get: jest.fn( ( key ) => mockConfig[ key ] )
 };
 const editStatementComponent = require( '../../../resources/wikibase.wbui2025/components/editStatement.vue' );
-const { CdxSelect, CdxTextInput } = require( '../../../codex.js' );
+const { CdxSelect, CdxTextArea } = require( '../../../codex.js' );
 const { mount } = require( '@vue/test-utils' );
 const Wbui2025AddQualifier = require( '../../../resources/wikibase.wbui2025/components/addQualifier.vue' );
 const Wbui2025EditableQualifiers = require( '../../../resources/wikibase.wbui2025/components/editableQualifiers.vue' );
@@ -67,7 +67,7 @@ describe( 'wikibase.wbui2025.editStatement', () => {
 	describe( 'the mounted component', () => {
 		mw.Api.prototype.get = jest.fn().mockResolvedValue( { result: '<div>html value</div>' } );
 
-		let wrapper, addQualifierButton, addReferenceButton, removeButton, textInput, select, qualifiers, references, referencesSection;
+		let wrapper, addQualifierButton, addReferenceButton, removeButton, textArea, select, qualifiers, references, referencesSection;
 		beforeEach( async () => {
 			const testPropertyId = 'P1';
 			const testStatementId = 'Q1$f80539f8-4635-4e4d-ae20-41e027e093b9';
@@ -196,7 +196,7 @@ describe( 'wikibase.wbui2025.editStatement', () => {
 			addQualifierButton = wrapper.findComponent( '.wikibase-wbui2025-add-qualifier-button' );
 			addReferenceButton = wrapper.findComponent( '.wikibase-wbui2025-add-reference-button' );
 			removeButton = wrapper.findComponent( '.wikibase-wbui2025-remove-value button' );
-			textInput = wrapper.findComponent( CdxTextInput );
+			textArea = wrapper.findComponent( CdxTextArea );
 			select = wrapper.findComponent( CdxSelect );
 			qualifiers = wrapper.findAllComponents( Wbui2025EditableQualifiers );
 			referencesSection = wrapper.findComponent( Wbui2025EditableReferencesSection );
@@ -208,7 +208,7 @@ describe( 'wikibase.wbui2025.editStatement', () => {
 			expect( addQualifierButton.exists() ).toBe( true );
 			expect( addReferenceButton.exists() ).toBe( true );
 			expect( removeButton.exists() ).toBe( true );
-			expect( textInput.exists() ).toBe( true );
+			expect( textArea.exists() ).toBe( true );
 			expect( select.exists() ).toBe( true );
 			expect( wrapper.findComponent( Wbui2025AddQualifier ).exists() ).toBe( false );
 		} );
@@ -220,7 +220,7 @@ describe( 'wikibase.wbui2025.editStatement', () => {
 		} );
 
 		it( 'loads and shows data correctly', () => {
-			expect( textInput.props( 'modelValue' ) ).toBe( 'test value' );
+			expect( textArea.props( 'modelValue' ) ).toBe( 'test value' );
 			expect( qualifiers ).toHaveLength( 1 );
 			expect( wrapper.findAll( '.wikibase-wbui2025-edit-qualifier' ) ).toHaveLength( 1 );
 			expect( referencesSection.props() ).toEqual( {
