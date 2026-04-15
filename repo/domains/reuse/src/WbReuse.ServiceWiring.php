@@ -15,6 +15,7 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemBySitelink\LookUp
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemLabelsWithLanguageFallbackBatchRetriever;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\LanguageFallbackLabelSelector;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\PropertyLabelsWithLanguageFallbackBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\StatementReadModelConverter;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityLookupItemsBatchRetriever;
@@ -142,10 +143,14 @@ return [
 	'WbReuse.ItemLabelsWithLanguageFallbackResolver' => function(
 		MediaWikiServices $services
 	): ItemLabelsWithLanguageFallbackResolver {
+		$languageFallbackChainProvider = new LanguageFallbackChainFactoryFallbackLanguagesProvider(
+			WikibaseRepo::getLanguageFallbackChainFactory( $services )
+		);
 		return new ItemLabelsWithLanguageFallbackResolver(
 			new BatchGetItemLabelsWithLanguageFallback( new ItemLabelsWithLanguageFallbackBatchRetriever(
 				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
-				new LanguageFallbackChainFactoryFallbackLanguagesProvider( WikibaseRepo::getLanguageFallbackChainFactory( $services ) ),
+				$languageFallbackChainProvider,
+				new LanguageFallbackLabelSelector( $languageFallbackChainProvider ),
 			) ),
 		);
 	},
@@ -159,10 +164,14 @@ return [
 	'WbReuse.PropertyLabelsWithLanguageFallbackResolver' => function(
 		MediaWikiServices $services
 	): PropertyLabelsWithLanguageFallbackResolver {
+		$languageFallbackChainProvider = new LanguageFallbackChainFactoryFallbackLanguagesProvider(
+			WikibaseRepo::getLanguageFallbackChainFactory( $services )
+		);
 		return new PropertyLabelsWithLanguageFallbackResolver(
 			new BatchGetPropertyLabelsWithLanguageFallback( new PropertyLabelsWithLanguageFallbackBatchRetriever(
 				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
-				new LanguageFallbackChainFactoryFallbackLanguagesProvider( WikibaseRepo::getLanguageFallbackChainFactory( $services ) ),
+				$languageFallbackChainProvider,
+				new LanguageFallbackLabelSelector( $languageFallbackChainProvider ),
 			) ),
 		);
 	},

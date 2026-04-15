@@ -3,8 +3,6 @@
 namespace Wikibase\Repo\Domains\Reuse\Domain\Services;
 
 use Wikibase\DataModel\Entity\PropertyId;
-use Wikibase\Repo\Domains\Reuse\Domain\Model\Label;
-use Wikibase\Repo\Domains\Reuse\Domain\Model\Labels;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyLabelsWithFallbackBatch;
 
 /**
@@ -14,7 +12,8 @@ class PropertyLabelsWithLanguageFallbackBatchRetriever {
 
 	public function __construct(
 		private readonly BatchPropertyLabelsRetriever $labelsRetriever,
-		private readonly LanguageFallbackChainProvider $languageFallbackChainProvider
+		private readonly LanguageFallbackChainProvider $languageFallbackChainProvider,
+		private readonly LanguageFallbackLabelSelector $languageFallbackLabelSelector
 	) {
 	}
 
@@ -36,7 +35,7 @@ class PropertyLabelsWithLanguageFallbackBatchRetriever {
 		foreach ( $propertyIds as $propertyId ) {
 			$propertyLabels = $fetchedLabels->getPropertyLabels( $propertyId );
 			foreach ( $languageCodes as $requestedLang ) {
-				$result[$propertyId->getSerialization()][$requestedLang] = $this->getBestMatchingLabel(
+				$result[$propertyId->getSerialization()][$requestedLang] = $this->languageFallbackLabelSelector->selectLabel(
 					$requestedLang,
 					$propertyLabels
 				);
@@ -44,18 +43,6 @@ class PropertyLabelsWithLanguageFallbackBatchRetriever {
 		}
 
 		return new PropertyLabelsWithFallbackBatch( $result );
-	}
-
-	private function getBestMatchingLabel( string $requestedLang, Labels $propertyLabels ): ?Label {
-		$fallbackLanguages = $this->languageFallbackChainProvider->getFallbackLanguages( $requestedLang );
-		foreach ( $fallbackLanguages as $language ) {
-			$matchedLabel = $propertyLabels->getLabelInLanguage( $language );
-			if ( $matchedLabel !== null ) {
-				return $matchedLabel;
-			}
-		}
-
-		return null;
 	}
 
 }
