@@ -2,12 +2,21 @@
  * See also: http://webdriver.io/guide/testrunner/configurationfile.html
  */
 import fs from 'fs';
+import { dirname } from 'wdio-mediawiki/Util.js';
 import { saveScreenshot } from 'wdio-mediawiki';
 import * as videoUtil from './VideoUtil.js';
 import * as networkUtil from './NetworkUtil.js';
 import WikibaseApi from 'wdio-wikibase/wikibase.api.js';
 
+const testDir = dirname( import.meta.url );
+
 export const config = {
+	// To enable video recording, enable video and disable browser headless
+	// recordVideo: true,
+	// useBrowserHeadless: false,
+	//
+	// To enable screenshots on all tests, disable screenshotsOnFailureOnly
+	// screenshotsOnFailureOnly: false,
 
 	// Set a base URL in order to shorten url command calls. If your `url` parameter starts
 	// with `/`, the base url gets prepended, not including the path portion of your baseUrl.
@@ -30,7 +39,7 @@ export const config = {
 	path: '/wd/hub',
 
 	specs: [
-		`${__dirname}/specs/*.js`,
+		`${testDir}/specs/*.js`,
 	],
 
 	// ============
@@ -58,7 +67,7 @@ export const config = {
 
 		// Setting this enables automatic screenshots for when a browser command fails
 		// It is also used by afterTest for capturig failed assertions.
-		'mw:screenshotPath': process.env.LOG_DIR || `${__dirname}/log`,
+		'mw:screenshotPath': process.env.LOG_DIR || `${testDir}/log`,
 
 		// custom config to be used for waitFor* timeouts where we're not waiting for an API call or such
 		'mw:nonApiTimeout': 10000,

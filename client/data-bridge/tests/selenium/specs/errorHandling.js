@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import LoginPage from 'wdio-mediawiki/LoginPage.js';
 import DataBridgePage from '../pageobjects/dataBridge.page.js';
 import ErrorSavingAssertUser from '../pageobjects/ErrorSavingAssertUser.js';
@@ -22,7 +22,7 @@ describe( 'App', () => {
 			editFlow: 'single-best-value',
 		} ] );
 
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 
@@ -55,7 +55,7 @@ describe( 'App', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.open( title );
 
@@ -93,7 +93,7 @@ describe( 'App', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 
@@ -147,7 +147,7 @@ describe( 'App', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 
@@ -211,7 +211,7 @@ describe( 'App', () => {
 				propertyId,
 				editFlow: 'single-best-value',
 			} ] );
-			browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+			browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 			DataBridgePage.openAppOnPage( title );
 			DataBridgePage.bridge.waitForDisplayed();
@@ -342,7 +342,7 @@ describe( 'App', () => {
 				propertyId,
 				editFlow: 'single-best-value',
 			} ] );
-			browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+			browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 			DataBridgePage.openAppOnPage( title );
 			DataBridgePage.bridge.waitForDisplayed();
@@ -358,10 +358,10 @@ describe( 'App', () => {
 			} );
 
 			// clear the item, removing the target statement
-			browser.call( () => mwbot().then( ( bot ) => bot.request( {
+			browser.call( () => createApiClient().then( async ( api ) => api.request( {
 				action: 'wbeditentity',
 				id: entityId,
-				token: bot.editToken,
+				token: await api.getEditToken(),
 				data: '{}',
 				clear: 1,
 			} ) ) );

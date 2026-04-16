@@ -1,39 +1,30 @@
-import MWBot from 'mwbot';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
+import { getTestString } from 'wdio-mediawiki/Util.js';
 import Page from 'wdio-mediawiki/Page.js';
 import LoginPage from 'wdio-mediawiki/LoginPage.js';
 
-const bot = new MWBot( {
-	apiUrl: browser.options.baseUrl + '/api.php'
-} );
-
 describe( 'blocked user cannot use', () => {
+	let api;
+	let blockedUsername;
+	let blockedPassword;
 
 	before( async () => {
-		await bot.loginGetEditToken( {
-			username: browser.options.capabilities[ 'mw:user' ],
-			password: browser.options.capabilities[ 'mw:pwd' ]
-		} );
+		api = await createApiClient();
 
-		await LoginPage.loginAdmin();
+		// Create a dedicated user for blocking tests to avoid blocking
+		// the admin user which can cause parallel test to fail
+		blockedUsername = getTestString( 'BlockedUser-' );
+		blockedPassword = getTestString( 'BlockedPassword-' );
+		await api.createAccount( blockedUsername, blockedPassword );
+		await LoginPage.login( blockedUsername, blockedPassword );
 	} );
 
 	beforeEach( async () => {
-		await bot.request( {
-			action: 'block',
-			user: browser.options.capabilities[ 'mw:user' ],
-			expiry: '1 minute',
-			reason: 'Wikibase browser test (T211120)',
-			token: bot.editToken
-		} );
+		await api.blockUser( blockedUsername, '1 minute' );
 	} );
 
 	afterEach( async () => {
-		await bot.request( {
-			action: 'unblock',
-			user: browser.options.capabilities[ 'mw:user' ],
-			reason: 'Wikibase browser test done (T211120)',
-			token: bot.editToken
-		} );
+		await api.unblockUser( blockedUsername );
 	} );
 
 	async function assertIsUserBlockedError() {

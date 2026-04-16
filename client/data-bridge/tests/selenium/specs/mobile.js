@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import DataBridgePage from '../pageobjects/dataBridge.page.js';
 import WikibaseApi from 'wdio-wikibase/wikibase.api.js';
 import * as DomUtil from './../DomUtil.js';
@@ -28,7 +28,7 @@ describe( 'On mobile', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		// switch to mobile
 		DataBridgePage.setMobileWindowSize();

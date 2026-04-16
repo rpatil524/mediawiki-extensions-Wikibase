@@ -1,4 +1,4 @@
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import LinkItemPage from '../pageobjects/linkitem.page.js';
 import LoginPage from 'wdio-mediawiki/LoginPage.js';
 
@@ -11,7 +11,7 @@ describe( 'Add interlanguage links', () => {
 
 		const testPageTitle = 'Project:LinkItemTest';
 
-		await ( await mwbot() ).edit( testPageTitle, 'The page exists' );
+		await ( await createApiClient() ).edit( testPageTitle, 'The page exists' );
 
 		windowSize = await browser.getWindowSize();
 		await browser.setWindowSize( 1185, windowSize.height );

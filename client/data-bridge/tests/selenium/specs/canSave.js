@@ -1,22 +1,22 @@
 import assert from 'assert';
-import { mwbot } from 'wdio-mediawiki/Api.js';
+import { createApiClient } from 'wdio-mediawiki/Api.js';
 import DataBridgePage from '../pageobjects/dataBridge.page.js';
 import WikibaseApi from 'wdio-wikibase/wikibase.api.js';
 import * as DomUtil from './../DomUtil.js';
 
 function createTag( tagname, reason ) {
-	return mwbot().then( ( bot ) => bot.request( {
+	return createApiClient().then( async ( api ) => api.request( {
 		action: 'managetags',
 		operation: 'create',
 		tag: tagname,
 		reason,
-		token: bot.editToken,
+		token: await api.getEditToken(),
 	} ) );
 }
 
 function getLatestRevisionTags( title ) {
-	return mwbot().then( ( bot ) => {
-		return bot.request( {
+	return createApiClient().then( ( api ) => {
+		return api.request( {
 			titles: title,
 			action: 'query',
 			prop: 'revisions',
@@ -71,7 +71,7 @@ describe( 'App', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 
@@ -150,7 +150,7 @@ describe( 'App', () => {
 			propertyId,
 			editFlow: 'single-best-value',
 		} ] );
-		browser.call( () => mwbot().then( ( bot ) => bot.edit( title, content ) ) );
+		browser.call( () => createApiClient().then( ( api ) => api.edit( title, content ) ) );
 
 		DataBridgePage.openAppOnPage( title );
 
