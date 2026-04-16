@@ -21,6 +21,7 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsResolver;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsWithLanguageFallbackResolver;
 use Wikibase\Repo\SiteLinkGlobalIdentifiersProvider;
 
 // The `return ... ??= ...;` shorthand syntax is too convenient in this file to disallow it.
@@ -62,6 +63,7 @@ class Types {
 		private readonly array $validLanguageCodes,
 		private readonly SiteLinkGlobalIdentifiersProvider $siteLinkGlobalIdentifiersProvider,
 		private readonly PropertyLabelsResolver $propertyLabelsResolver,
+		private readonly PropertyLabelsWithLanguageFallbackResolver $propertyLabelsWithFallbackResolver,
 		private readonly DataTypeDefinitions $dataTypeDefinitions,
 		private readonly ItemDescriptionsResolver $itemDescriptionsResolver,
 		private readonly ItemLabelsResolver $itemLabelsResolver,
@@ -89,7 +91,11 @@ class Types {
 
 	public function getPropertyValuePairType(): PropertyValuePairType {
 		return $this->propertyValuePairType ??= new PropertyValuePairType(
-			new PredicatePropertyType( $this->propertyLabelsResolver, $this->getLabelProviderType() ),
+			new PredicatePropertyType(
+				$this->propertyLabelsResolver,
+				$this->propertyLabelsWithFallbackResolver,
+				$this,
+			),
 			new ValueType( $this->dataTypeDefinitions->getGraphqlValueTypes() ),
 		);
 	}

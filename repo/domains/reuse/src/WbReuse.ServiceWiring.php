@@ -5,6 +5,7 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItemDescriptions\Ba
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItemLabels\BatchGetItemLabels;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetItems\BatchGetItems;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabels\BatchGetPropertyLabels;
+use Wikibase\Repo\Domains\Reuse\Application\UseCases\BatchGetPropertyLabelsWithLanguageFallback\BatchGetPropertyLabelsWithLanguageFallback;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearch;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\FacetedItemSearch\FacetedItemSearchValidator;
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\LookUpItemByExternalId;
@@ -12,9 +13,11 @@ use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemByExternalId\Look
 use Wikibase\Repo\Domains\Reuse\Application\UseCases\LookUpItemBySitelink\LookUpItemBySitelink;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\PropertyLabelsWithLanguageFallbackBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\StatementReadModelConverter;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityLookupItemsBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\EntityRevisionLookupItemRedirectResolver;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\LanguageFallbackChainFactoryFallbackLanguagesProvider;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\PrefetchingTermLookupBatchLabelsDescriptionsRetriever;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\SiteLinkLookupItemBySitelinkLookup;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLErrorLogger;
@@ -27,6 +30,7 @@ use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescription
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsResolver;
+use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\PropertyLabelsWithLanguageFallbackResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\SearchItemsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Schema;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Schema\Types;
@@ -100,6 +104,7 @@ return [
 			WikibaseRepo::getTermsLanguages( $services )->getLanguages(),
 			WikibaseRepo::getSiteLinkGlobalIdentifiersProvider( $services ),
 			WbReuse::getPropertyLabelsResolver( $services ),
+			WbReuse::getPropertyLabelsWithLanguageFallbackResolver( $services ),
 			WikibaseRepo::getDataTypeDefinitions( $services ),
 			WbReuse::getItemDescriptionsResolver( $services ),
 			WbReuse::getItemLabelsResolver( $services ),
@@ -135,6 +140,16 @@ return [
 			new BatchGetPropertyLabels(
 				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) )
 			)
+		);
+	},
+	'WbReuse.PropertyLabelsWithLanguageFallbackResolver' => function(
+		MediaWikiServices $services
+	): PropertyLabelsWithLanguageFallbackResolver {
+		return new PropertyLabelsWithLanguageFallbackResolver(
+			new BatchGetPropertyLabelsWithLanguageFallback( new PropertyLabelsWithLanguageFallbackBatchRetriever(
+				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
+				new LanguageFallbackChainFactoryFallbackLanguagesProvider( WikibaseRepo::getLanguageFallbackChainFactory( $services ) ),
+			) ),
 		);
 	},
 ];
