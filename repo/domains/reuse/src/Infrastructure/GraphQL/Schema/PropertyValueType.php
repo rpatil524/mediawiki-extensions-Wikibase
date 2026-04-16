@@ -37,6 +37,24 @@ class PropertyValueType extends ObjectType {
 			},
 		);
 
+		$labelWithLanguageFallbackField = Types::copyFieldDefinition(
+			$labelProviderType->getField( 'labelWithLanguageFallback' ),
+			function(
+				Statement|PropertyValuePair $valueProvider,
+				array $args
+			) use ( $labelsWithFallbackResolver ) {
+				/** @var EntityIdValue $idValue */
+				$idValue = $valueProvider->value;
+				'@phan-var EntityIdValue $idValue';
+
+				/** @var PropertyId $propertyId */
+				$propertyId = $idValue->getEntityId();
+				'@phan-var PropertyId $propertyId';
+
+				return $labelsWithFallbackResolver->resolve( $propertyId, $args['languageCode'] );
+			},
+		);
+
 		parent::__construct( [
 			'fields' => [
 				'id' => [
@@ -50,26 +68,7 @@ class PropertyValueType extends ObjectType {
 					},
 				],
 				$labelField,
-				'labelWithLanguageFallback' => [
-					'type' => $types->getLabelWithLanguageType(),
-					'args' => [
-						'languageCode' => Type::nonNull( $types->getLanguageCodeType() ),
-					],
-					'resolve' => function(
-						Statement|PropertyValuePair $valueProvider,
-						array $args
-					) use ( $labelsWithFallbackResolver ) {
-						/** @var EntityIdValue $idValue */
-						$idValue = $valueProvider->value;
-						'@phan-var EntityIdValue $idValue';
-
-						/** @var PropertyId $propertyId */
-						$propertyId = $idValue->getEntityId();
-						'@phan-var PropertyId $propertyId';
-
-						return $labelsWithFallbackResolver->resolve( $propertyId, $args['languageCode'] );
-					},
-				],
+				$labelWithLanguageFallbackField,
 			],
 			'interfaces' => [ $labelProviderType ],
 		] );

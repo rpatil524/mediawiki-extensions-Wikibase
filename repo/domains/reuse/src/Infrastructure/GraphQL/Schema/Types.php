@@ -122,6 +122,12 @@ class Types {
 						'languageCode' => Type::nonNull( $this->getLanguageCodeType() ),
 					],
 				],
+				'labelWithLanguageFallback' => [
+					'type' => $this->getLabelWithLanguageType(),
+					'args' => [
+						'languageCode' => Type::nonNull( $this->getLanguageCodeType() ),
+					],
+				],
 			],
 		] );
 	}
@@ -310,6 +316,12 @@ class Types {
 				->resolve( $itemSearchResult->itemId, $args['languageCode'] ),
 		);
 
+		$labelWithLanguageFallbackField = self::copyFieldDefinition(
+			$labelProviderType->getField( 'labelWithLanguageFallback' ),
+			fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemLabelsWithLanguageFallbackResolver
+				->resolve( $itemSearchResult->itemId, $args['languageCode'] ),
+		);
+
 		$descriptionProviderType = $this->getDescriptionProviderType();
 		$descriptionField = self::copyFieldDefinition(
 			$descriptionProviderType->getField( 'description' ),
@@ -326,14 +338,7 @@ class Types {
 					'resolve' => fn( ItemSearchResult $itemSearchResult ) => $itemSearchResult->itemId->getSerialization(),
 				],
 				$labelField,
-				'labelWithLanguageFallback' => [
-					'type' => $this->getLabelWithLanguageType(),
-					'args' => [
-						'languageCode' => Type::nonNull( $this->getLanguageCodeType() ),
-					],
-					'resolve' => fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemLabelsWithLanguageFallbackResolver
-						->resolve( $itemSearchResult->itemId, $args['languageCode'] ),
-				],
+				$labelWithLanguageFallbackField,
 				$descriptionField,
 			],
 			'interfaces' => [ $labelProviderType, $descriptionProviderType ],
