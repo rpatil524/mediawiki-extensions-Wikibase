@@ -27,11 +27,23 @@ const saveStatementsFormMixin = {
 						this.showProgress = false;
 					} )
 					.catch( ( errorObj ) => {
-						const errorText = wbui2025.util.extractErrorMessage( errorObj, mw.msg( 'wikibase-publishing-error' ) );
+						const errorHtml = errorObj &&
+						errorObj.errorData &&
+						errorObj.errorData.errors &&
+						errorObj.errorData.errors.length > 0 &&
+						typeof errorObj.errorData.errors[ 0 ].html === 'string'
+							? errorObj.errorData.errors[ 0 ].html
+							: null;
+
+						const errorText = errorHtml ? null : wbui2025.util.extractErrorMessage(
+							errorObj,
+							mw.msg( 'wikibase-publishing-error' )
+						);
 						this.addStatusMessage( {
-							text: errorText,
+							type: 'error',
 							attachTo: currentFormRef,
-							type: 'error'
+							html: errorHtml,
+							text: errorText
 						} );
 						clearTimeout( progressTimeout );
 						this.showProgress = false;
