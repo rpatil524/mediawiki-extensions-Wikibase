@@ -269,6 +269,7 @@ type ItemSearchResultEdge {
 type ItemSearchResultNode implements LabelProvider & DescriptionProvider {
   id: ItemId!
   label(languageCode: LanguageCode!): String
+  labelWithLanguageFallback(languageCode: LanguageCode!): LabelWithLanguage
   description(languageCode: LanguageCode!): String
 }
 

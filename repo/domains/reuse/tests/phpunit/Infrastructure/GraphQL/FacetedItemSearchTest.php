@@ -213,6 +213,26 @@ class FacetedItemSearchTest extends MediaWikiIntegrationTestCase {
 			],
 		];
 
+		yield 'searchItems with labelWithLanguageFallback in search result' => [
+			"{  searchItems( query: {
+				property: \"{$itemProperty->getId()}\",
+			} ) { edges { node { labelWithLanguageFallback(languageCode: \"ko\") { languageCode value } } } } }",
+			[
+				'data' => [
+					'searchItems' => [
+						'edges' => [
+							[ 'node' =>
+								[ 'labelWithLanguageFallback' => [
+									'languageCode' => 'en',
+									'value' => $item->getLabels()->getByLanguage( 'en' )->getText(),
+								] ],
+							],
+						],
+					],
+				],
+			],
+		];
+
 		yield 'pagination - with limit' => [
 			"{  searchItems(
 				query: { property: \"{$stringProperty->getId()}\" },

@@ -326,6 +326,14 @@ class Types {
 					'resolve' => fn( ItemSearchResult $itemSearchResult ) => $itemSearchResult->itemId->getSerialization(),
 				],
 				$labelField,
+				'labelWithLanguageFallback' => [
+					'type' => $this->getLabelWithLanguageType(),
+					'args' => [
+						'languageCode' => Type::nonNull( $this->getLanguageCodeType() ),
+					],
+					'resolve' => fn( ItemSearchResult $itemSearchResult, array $args ) => $this->itemLabelsWithLanguageFallbackResolver
+						->resolve( $itemSearchResult->itemId, $args['languageCode'] ),
+				],
 				$descriptionField,
 			],
 			'interfaces' => [ $labelProviderType, $descriptionProviderType ],
