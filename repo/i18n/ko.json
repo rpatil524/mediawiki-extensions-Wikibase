@@ -15,6 +15,7 @@
 			"Priviet",
 			"Revi",
 			"SeoJeongHo",
+			"Tensama0415",
 			"Winston Sung",
 			"YeBoy371",
 			"Ykhwong",
@@ -62,6 +63,7 @@
 	"wikibase-entitytermsforlanguagelistview-less": "더 적은 언어",
 	"wikibase-entityterms-languagelistview-mul-popup-title": "새 기능입니다! 모든 언어에 대한 기본 레이블과 다른 이름을 추가하세요",
 	"wikibase-entityterms-languagelistview-mul-popup-content": "중복을 최소화하기 위해 레이블과 다른 이름이 비어있는 모든 언어에 기본값이 사용됩니다. [$1 상세 정보]",
+	"wikibase-entityterms-languagelistview-mul-popup-dont-show-again": "다시 표시하지 않음",
 	"wikibase-label-empty": "정의된 레이블이 없습니다",
 	"wikibase-label-edit-placeholder": "레이블 입력",
 	"wikibase-label-edit-placeholder-language-aware": "$1로 번역",
@@ -187,7 +189,9 @@
 	"wikibase-item-reference-edit-placeholder": "항목 ID를 입력하십시오 (예: Q10)",
 	"wikibase-item-reference-edit-invalid-format": "입력한 항목의 ID에 유효하지 않은 포맷이 있습니다",
 	"wikibase-item-reference-edit-nonexistent-item": "이 ID의 항목은 존재하지 않습니다",
+	"wikibase-wbui2025-editable-snak-value-preview-label": "다음과 같이 표시됩니다:",
 	"wikibase-wbui2025-globecoordinateinput-precision-automatic": "자동",
+	"wikibase-wbui2025-timeinput-precision-automatic": "자동",
 	"wikibase-wikibaserepopage-not-itemid": "\"$1\"은 유효한 항목 ID가 아닙니다.",
 	"wikibase-wikibaserepopage-invalid-langcode": "\"$1\" 언어 코드를 알 수 없습니다. \"ko\"와 같은 시스템에 알려진 언어 코드를 사용하세요.",
 	"wikibase-wikibaserepopage-invalid-id": "\"$1\" ID는 시스템에서 알 수 없습니다. 올바른 개체 ID를 사용하세요.",
@@ -445,5 +449,7 @@
 	"wikibase-federated-properties-edit-request-failed-notice-header": "편집 실패",
 	"wikibase-federated-properties-federated-property-api-error-message": "이 API를 사용하여 Federated Properties와 통신할 수 없습니다.",
 	"wikibase-scoped-search-item-scope-name": "항목",
-	"wikibase-scoped-search-property-scope-name": "속성"
+	"wikibase-scoped-search-property-scope-name": "속성",
+	"wikibase-indicator-popover-multiple-issue-previous": "이전",
+	"wikibase-indicator-popover-multiple-issue-next": "다음"
 }
