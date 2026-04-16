@@ -57,6 +57,7 @@ class Types {
 	private ?ObjectType $pageInfoType = null;
 	private ?UnionType $itemByExternalIdResultType = null;
 	private ?ObjectType $externalIdNonUniqueType = null;
+	private ?PropertyValueType $propertyValueType = null;
 	private ?ObjectType $labelWithLanguageType = null;
 
 	public function __construct(
@@ -97,6 +98,14 @@ class Types {
 				$this,
 			),
 			new ValueType( $this->dataTypeDefinitions->getGraphqlValueTypes() ),
+		);
+	}
+
+	public function getPropertyValueType(): PropertyValueType {
+		return $this->propertyValueType ??= new PropertyValueType(
+			$this->propertyLabelsResolver,
+			$this->propertyLabelsWithFallbackResolver,
+			$this,
 		);
 	}
 

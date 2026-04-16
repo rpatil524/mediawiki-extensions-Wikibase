@@ -139,6 +139,7 @@ type ItemValue implements LabelProvider & DescriptionProvider {
 type PropertyValue implements LabelProvider {
   id: String!
   label(languageCode: LanguageCode!): String
+  labelWithLanguageFallback(languageCode: LanguageCode!): LabelWithLanguage
 }
 
 type GlobeCoordinateValue {
