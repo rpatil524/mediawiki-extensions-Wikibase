@@ -23,36 +23,34 @@ abstract class ModifyTermTestCase extends WikibaseApiTestCase {
 
 	public static function provideData() {
 		return [
-			// p => params, e => expected
-
 			// -- Test valid sequence -----------------------------
 			[ //0
-				'p' => [ 'language' => 'en', 'value' => '' ],
-				'e' => [ 'edit-no-change' => true ] ],
+				'params' => [ 'language' => 'en', 'value' => '' ],
+				'expected' => [ 'edit-no-change' => true ] ],
 			[ //1
-				'p' => [ 'language' => 'en', 'value' => 'Value' ],
-				'e' => [ 'value' => [ 'en' => 'Value' ] ] ],
+				'params' => [ 'language' => 'en', 'value' => 'Value' ],
+				'expected' => [ 'value' => [ 'en' => 'Value' ] ] ],
 			[ //2
-				'p' => [ 'language' => 'en', 'value' => 'Value' ],
-				'e' => [ 'value' => [ 'en' => 'Value' ], 'edit-no-change'  => true ] ],
+				'params' => [ 'language' => 'en', 'value' => 'Value' ],
+				'expected' => [ 'value' => [ 'en' => 'Value' ], 'edit-no-change'  => true ] ],
 			[ //3
-				'p' => [ 'language' => 'en', 'value' => 'Another Value', 'summary' => 'Test summary!' ],
-				'e' => [ 'value' => [ 'en' => 'Another Value' ] ] ],
+				'params' => [ 'language' => 'en', 'value' => 'Another Value', 'summary' => 'Test summary!' ],
+				'expected' => [ 'value' => [ 'en' => 'Another Value' ] ] ],
 			[ //4
-				'p' => [ 'language' => 'en', 'value' => 'Different Value' ],
-				'e' => [ 'value' => [ 'en' => 'Different Value' ] ] ],
+				'params' => [ 'language' => 'en', 'value' => 'Different Value' ],
+				'expected' => [ 'value' => [ 'en' => 'Different Value' ] ] ],
 			[ //5
-				'p' => [ 'language' => 'sgs', 'value' => 'V?sata' ],
-				'e' => [ 'value' => [ 'sgs' => 'V?sata', 'en' => 'Different Value' ] ] ],
+				'params' => [ 'language' => 'sgs', 'value' => 'V?sata' ],
+				'expected' => [ 'value' => [ 'sgs' => 'V?sata', 'en' => 'Different Value' ] ] ],
 			[ //6
-				'p' => [ 'language' => 'en', 'value' => '' ],
-				'e' => [ 'value' => [ 'sgs' => 'V?sata' ] ] ],
+				'params' => [ 'language' => 'en', 'value' => '' ],
+				'expected' => [ 'value' => [ 'sgs' => 'V?sata' ] ] ],
 			[ //7
-				'p' => [ 'language' => 'sgs', 'value' => '' ],
-				'e' => [] ],
+				'params' => [ 'language' => 'sgs', 'value' => '' ],
+				'expected' => [] ],
 			[ //8
-				'p' => [ 'language' => 'en', 'value' => "  x\nx  " ],
-				'e' => [ 'value' => [ 'en' => 'x x' ] ] ],
+				'params' => [ 'language' => 'en', 'value' => "  x\nx  " ],
+				'expected' => [ 'value' => [ 'en' => 'x x' ] ] ],
 		];
 	}
 
@@ -127,12 +125,10 @@ abstract class ModifyTermTestCase extends WikibaseApiTestCase {
 
 	public static function provideExceptionData() {
 		return [
-			// p => params, e => expected
-
 			// -- Test Exceptions -----------------------------
 			[ //0
-				'p' => [ 'language' => 'xx', 'value' => 'Foo' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'xx', 'value' => 'Foo' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => self::logicalOr(
 						self::equalTo( 'unknown_language' ),
@@ -141,15 +137,15 @@ abstract class ModifyTermTestCase extends WikibaseApiTestCase {
 				] ],
 			],
 			[ //1
-				'p' => [ 'language' => 'nl', 'value' => TermTestHelper::makeOverlyLongString() ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'nl', 'value' => TermTestHelper::makeOverlyLongString() ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'modification-failed',
 				] ],
 			],
 			[ //2
-				'p' => [ 'language' => 'pt', 'value' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'pt', 'value' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => self::logicalOr(
 						self::equalTo( 'notoken' ),
@@ -160,8 +156,8 @@ abstract class ModifyTermTestCase extends WikibaseApiTestCase {
 				'token' => false,
 			],
 			[ //3
-				'p' => [ 'language' => 'pt', 'value' => 'normalValue', 'token' => '88888888888888888888888888888888+\\' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'language' => 'pt', 'value' => 'normalValue', 'token' => '88888888888888888888888888888888+\\' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'badtoken',
 					'message' => 'Invalid CSRF token.',
@@ -169,16 +165,16 @@ abstract class ModifyTermTestCase extends WikibaseApiTestCase {
 				'token' => false,
 			],
 			[ //4
-				'p' => [ 'id' => 'noANid', 'language' => 'fr', 'value' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'id' => 'noANid', 'language' => 'fr', 'value' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'invalid-entity-id',
 					'message' => 'Invalid entity ID.',
 				] ],
 			],
 			[ //5
-				'p' => [ 'site' => 'qwerty', 'language' => 'pl', 'value' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'site' => 'qwerty', 'language' => 'pl', 'value' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => self::logicalOr(
 						self::equalTo( 'unknown_site' ),
@@ -188,22 +184,22 @@ abstract class ModifyTermTestCase extends WikibaseApiTestCase {
 				] ],
 			],
 			[ //6
-				'p' => [ 'site' => 'enwiki', 'title' => 'GhskiDYiu2nUd', 'language' => 'en', 'value' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'site' => 'enwiki', 'title' => 'GhskiDYiu2nUd', 'language' => 'en', 'value' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'no-such-entity-link',
 				] ],
 			],
 			[ //7
-				'p' => [ 'title' => 'Blub', 'language' => 'en', 'value' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'title' => 'Blub', 'language' => 'en', 'value' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'param-missing',
 				] ],
 			],
 			[ //8
-				'p' => [ 'site' => 'enwiki', 'language' => 'en', 'value' => 'normalValue' ],
-				'e' => [ 'exception' => [
+				'params' => [ 'site' => 'enwiki', 'language' => 'en', 'value' => 'normalValue' ],
+				'expected' => [ 'exception' => [
 					'type' => ApiUsageException::class,
 					'code' => 'param-missing',
 				] ],
