@@ -16,23 +16,12 @@ use Wikibase\Lib\FederatedProperties\FederatedPropertyId;
  */
 class FederatedPropertiesAwareDispatchingEntityIdParser implements EntityIdParser {
 
-	/**
-	 * @var DispatchingEntityIdParser
-	 */
-	private $parser;
+	private DispatchingEntityIdParser $parser;
 
 	private BaseUriExtractor $baseUriExtractor;
 
-	/**
-	 * @var EntitySourceDefinitions
-	 */
-	private $entitySourceDefinitions;
+	private EntitySourceDefinitions $entitySourceDefinitions;
 
-	/**
-	 * @param DispatchingEntityIdParser $parser
-	 * @param BaseUriExtractor $baseUriExtractor
-	 * @param EntitySourceDefinitions $entitySourceDefinitions
-	 */
 	public function __construct(
 		DispatchingEntityIdParser $parser,
 		BaseUriExtractor $baseUriExtractor,
@@ -44,12 +33,9 @@ class FederatedPropertiesAwareDispatchingEntityIdParser implements EntityIdParse
 	}
 
 	/**
-	 * @param string $idSerialization
-	 *
 	 * @throws EntityIdParsingException
-	 * @return EntityId
 	 */
-	public function parse( $idSerialization ): EntityId {
+	public function parse( string $idSerialization ): EntityId {
 		if ( $this->looksLikeURI( $idSerialization ) ) {
 			$entitySource = $this->getEntitySourceForConceptURI( $idSerialization );
 			if ( $entitySource === null ) {
@@ -65,10 +51,7 @@ class FederatedPropertiesAwareDispatchingEntityIdParser implements EntityIdParse
 		return $this->parser->parse( $idSerialization );
 	}
 
-	/**
-	 * @param string $idSerialization
-	 */
-	private function looksLikeURI( $idSerialization ): bool {
+	private function looksLikeURI( string $idSerialization ): bool {
 		return ( filter_var( $idSerialization, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED ) !== false );
 	}
 
