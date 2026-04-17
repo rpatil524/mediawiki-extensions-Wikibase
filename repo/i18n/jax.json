@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Muhamad Izzul Fiqih",
 			"Pitchrigi"
 		]
 	},
-	"wikibase-edit": "sunting"
+	"wikibase-edit": "sunting",
+	"wikibase-add": "tambah"
 }
