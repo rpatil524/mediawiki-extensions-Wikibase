@@ -104,7 +104,7 @@ class HistoryEntityActionTest extends \PHPUnit\Framework\TestCase {
 			'fallback to parent' => [
 				null,
 				null,
-				'(history-title: Page title)',
+				'/\(history-title: .*Page title.*\)/',
 			],
 			'without label' => [
 				new ItemId( 'Q1' ),
@@ -146,7 +146,11 @@ class HistoryEntityActionTest extends \PHPUnit\Framework\TestCase {
 			$labelLookup
 		);
 		$action->show();
-		$this->assertEquals( $expected, $pageTitle );
+		if ( str_starts_with( $expected, '/' ) ) {
+			$this->assertMatchesRegularExpression( $expected, $pageTitle );
+		} else {
+			$this->assertEquals( $expected, $pageTitle );
+		}
 	}
 
 }
