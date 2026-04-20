@@ -11,6 +11,7 @@ use Wikibase\DataModel\Term\Term;
 use Wikibase\DataModel\Term\TermList;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Label;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyLabelsWithFallbackBatch;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\LanguageFallbackLabelSelector;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\PropertyLabelsWithLanguageFallbackBatchRetriever;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\LanguageFallbackChainFactoryFallbackLanguagesProvider;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\DataAccess\PrefetchingTermLookupBatchLabelsDescriptionsRetriever;
@@ -25,113 +26,51 @@ use Wikibase\Repo\WikibaseRepo;
  */
 class PropertyLabelsWithLanguageFallbackBatchRetrieverTest extends TestCase {
 
-	private Property $enDeProperty;
-	private Property $enOnlyProperty;
-	private Property $frOnlyProperty;
+	public function testFetchesLabelsForExpandedLanguagesAndAssemblesResultBatch(): void {
+		$p1 = new NumericPropertyId( 'P1' );
+		$p2 = new NumericPropertyId( 'P2' );
+		$enLabel = new Label( 'en', 'instance of' );
+		$deLabel = new Label( 'de', 'ist ein(e)' );
+		$enLabel2 = new Label( 'en', 'subclass of' );
 
-	public function setUp(): void {
-		$this->enDeProperty = new Property(
-			new NumericPropertyId( 'P1' ),
-			new Fingerprint( new TermList( [ new Term( 'en', 'instance of' ), new Term( 'de', 'ist ein(e)' ) ] ) ),
-			'string'
-		);
-		$this->enOnlyProperty = new Property(
-			new NumericPropertyId( 'P2' ),
-			new Fingerprint( new TermList( [ new Term( 'en', 'subclass of' ) ] ) ),
-			'string'
-		);
-		$this->frOnlyProperty = new Property(
-			new NumericPropertyId( 'P3' ),
-			new Fingerprint( new TermList( [ new Term( 'fr', 'situé dans' ) ] ) ),
-			'string'
-		);
-	}
-
-	public function testReturnsExactMatchWhenAvailable(): void {
-		$result = $this->newRetriever()->getPropertyLabelsWithLanguageFallback(
-			[ $this->enDeProperty->getId() ],
-			[ 'de' ]
-		);
-
-		$this->assertEquals(
-			new PropertyLabelsWithFallbackBatch( [
-				$this->enDeProperty->getId()->getSerialization() => [ 'de' => $this->labelOf( $this->enDeProperty, 'de' ) ],
-			] ),
-			$result
-		);
-	}
-
-	public function testReturnsFallbackLabelWhenNoExactMatchExists(): void {
-		$result = $this->newRetriever()->getPropertyLabelsWithLanguageFallback(
-			[ $this->enOnlyProperty->getId() ],
-			[ 'de' ]
-		);
-
-		$this->assertEquals(
-			new PropertyLabelsWithFallbackBatch( [
-				$this->enOnlyProperty->getId()->getSerialization() => [ 'de' => $this->labelOf( $this->enOnlyProperty, 'en' ) ],
-			] ),
-			$result
-		);
-	}
-
-	public function testReturnsNullWhenNoLabelInFallbackChain(): void {
-		$result = $this->newRetriever()->getPropertyLabelsWithLanguageFallback(
-			[ $this->frOnlyProperty->getId() ],
-			[ 'de' ]
-		);
-
-		$this->assertEquals(
-			new PropertyLabelsWithFallbackBatch( [
-				$this->frOnlyProperty->getId()->getSerialization() => [ 'de' => null ],
-			] ),
-			$result
-		);
-	}
-
-	public function testHandlesMultiplePropertiesAndLanguages(): void {
-		$result = $this->newRetriever()->getPropertyLabelsWithLanguageFallback(
-			[
-				$this->enDeProperty->getId(),
-				$this->enOnlyProperty->getId(),
-				$this->frOnlyProperty->getId(),
-			],
-			[ 'de', 'fr' ]
-		);
-
-		$this->assertEquals(
-			new PropertyLabelsWithFallbackBatch( [
-				$this->enDeProperty->getId()->getSerialization() => [
-					'de' => $this->labelOf( $this->enDeProperty, 'de' ),
-					'fr' => $this->labelOf( $this->enDeProperty, 'en' ),
-				],
-				$this->enOnlyProperty->getId()->getSerialization() => [
-					'de' => $this->labelOf( $this->enOnlyProperty, 'en' ),
-					'fr' => $this->labelOf( $this->enOnlyProperty, 'en' ),
-				],
-				$this->frOnlyProperty->getId()->getSerialization() => [
-					'de' => null,
-					'fr' => $this->labelOf( $this->frOnlyProperty, 'fr' ),
-				],
-			] ),
-			$result
-		);
-	}
-
-	private function labelOf( Property $property, string $languageCode ): Label {
-		return new Label(
-			$languageCode,
-			$property->getFingerprint()->getLabels()->getByLanguage( $languageCode )->getText()
-		);
-	}
-
-	private function newRetriever(): PropertyLabelsWithLanguageFallbackBatchRetriever {
 		$lookup = new InMemoryPrefetchingTermLookup();
-		$lookup->setData( [ $this->enDeProperty, $this->enOnlyProperty, $this->frOnlyProperty ] );
+		$lookup->setData( [
+			new Property(
+				$p1,
+				new Fingerprint(
+					new TermList( [
+						new Term( 'en', 'instance of' ),
+						new Term( 'de', 'ist ein(e)' ),
+					] )
+				),
+				'string'
+			),
+			new Property( $p2, new Fingerprint( new TermList( [ new Term( 'en', 'subclass of' ) ] ) ), 'string' ),
+		] );
+
+		$result = $this->newRetriever( $lookup )
+			->getPropertyLabelsWithLanguageFallback( [ $p1, $p2 ], [ 'de', 'en', 'ar' ] );
+
+		$this->assertEquals(
+			new PropertyLabelsWithFallbackBatch( [
+				'P1' => [ 'de' => $deLabel, 'en' => $enLabel, 'ar' => $enLabel ],
+				'P2' => [ 'de' => $enLabel2, 'en' => $enLabel2, 'ar' => $enLabel2 ],
+			] ),
+			$result
+		);
+	}
+
+	private function newRetriever(
+		InMemoryPrefetchingTermLookup $lookup,
+	): PropertyLabelsWithLanguageFallbackBatchRetriever {
+		$languageFallbackChainProvider = new LanguageFallbackChainFactoryFallbackLanguagesProvider(
+			WikibaseRepo::getLanguageFallbackChainFactory()
+		);
 
 		return new PropertyLabelsWithLanguageFallbackBatchRetriever(
 			new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( $lookup ),
-			new LanguageFallbackChainFactoryFallbackLanguagesProvider( WikibaseRepo::getLanguageFallbackChainFactory() ),
+			$languageFallbackChainProvider,
+			new LanguageFallbackLabelSelector( $languageFallbackChainProvider ),
 		);
 	}
 

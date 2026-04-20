@@ -4,8 +4,6 @@ namespace Wikibase\Repo\Domains\Reuse\Domain\Services;
 
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\ItemLabelsWithFallbackBatch;
-use Wikibase\Repo\Domains\Reuse\Domain\Model\Label;
-use Wikibase\Repo\Domains\Reuse\Domain\Model\Labels;
 
 /**
  * @license GPL-2.0-or-later
@@ -14,7 +12,8 @@ class ItemLabelsWithLanguageFallbackBatchRetriever {
 
 	public function __construct(
 		private readonly BatchItemLabelsRetriever $labelsRetriever,
-		private readonly LanguageFallbackChainProvider $languageFallbackChainProvider
+		private readonly LanguageFallbackChainProvider $languageFallbackChainProvider,
+		private readonly LanguageFallbackLabelSelector $languageFallbackLabelSelector
 	) {
 	}
 
@@ -36,7 +35,7 @@ class ItemLabelsWithLanguageFallbackBatchRetriever {
 		foreach ( $itemIds as $itemId ) {
 			$itemLabels = $fetchedLabels->getItemLabels( $itemId );
 			foreach ( $languageCodes as $requestedLang ) {
-				$result[$itemId->getSerialization()][$requestedLang] = $this->getBestMatchingLabel(
+				$result[$itemId->getSerialization()][$requestedLang] = $this->languageFallbackLabelSelector->selectLabel(
 					$requestedLang,
 					$itemLabels
 				);
@@ -44,18 +43,6 @@ class ItemLabelsWithLanguageFallbackBatchRetriever {
 		}
 
 		return new ItemLabelsWithFallbackBatch( $result );
-	}
-
-	private function getBestMatchingLabel( string $requestedLang, Labels $itemLabels ): ?Label {
-		$fallbackLanguages = $this->languageFallbackChainProvider->getFallbackLanguages( $requestedLang );
-		foreach ( $fallbackLanguages as $language ) {
-			$matchedLabel = $itemLabels->getLabelInLanguage( $language );
-			if ( $matchedLabel !== null ) {
-				return $matchedLabel;
-			}
-		}
-
-		return null;
 	}
 
 }
