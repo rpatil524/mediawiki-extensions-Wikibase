@@ -5,11 +5,11 @@ declare( strict_types = 1 );
 namespace Wikibase\Lib\Modules;
 
 use InvalidArgumentException;
+use MediaWiki\Language\MessageLocalizer;
 // phpcs:disable MediaWiki.Classes.FullQualifiedClassName -- T308814
 use MediaWiki\ResourceLoader as RL;
 use MediaWiki\Site\MediaWikiSite;
 use MediaWiki\Site\Site;
-use MessageLocalizer;
 use Wikibase\Lib\LanguageNameLookupFactory;
 use Wikibase\Lib\SettingsArray;
 

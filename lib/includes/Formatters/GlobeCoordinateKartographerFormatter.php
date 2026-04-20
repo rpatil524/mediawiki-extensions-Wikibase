@@ -5,7 +5,7 @@ namespace Wikibase\Lib\Formatters;
 use DataValues\Geo\Values\GlobeCoordinateValue;
 use InvalidArgumentException;
 use MediaWiki\Html\Html;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use ValueFormatters\FormatterOptions;
 use ValueFormatters\ValueFormatter;
 
