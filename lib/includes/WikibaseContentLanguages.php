@@ -131,6 +131,7 @@ class WikibaseContentLanguages {
 					'smj', // T146707
 					'sms', // T220118, T223544
 					'srq', // T113408
+					'sva', // T407106
 					'thq', // T383785
 					'tpv', // T308062
 					'tvu', // T263946
