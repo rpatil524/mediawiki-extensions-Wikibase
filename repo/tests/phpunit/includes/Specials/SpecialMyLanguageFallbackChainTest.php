@@ -5,7 +5,7 @@ declare( strict_types = 1 );
 namespace Wikibase\Repo\Tests\Specials;
 
 use MediaWiki\MainConfigNames;
-use SpecialPageTestBase;
+use MediaWiki\Tests\Specials\SpecialPageTestBase;
 use Wikibase\Repo\Specials\SpecialMyLanguageFallbackChain;
 use Wikibase\Repo\WikibaseRepo;
 

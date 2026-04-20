@@ -5,7 +5,7 @@ namespace Wikibase\Repo\Tests\Parsers;
 use DataValues\DataValue;
 use DataValues\TimeValue;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWikiIntegrationTestCase;
 use ValueParsers\ParseException;
 use ValueParsers\ParserOptions;

@@ -5,11 +5,12 @@ declare( strict_types = 1 );
 namespace Wikibase\Repo\Tests;
 
 use Exception;
-use ImportStringSource;
 use MediaWiki\Api\ApiMain;
 use MediaWiki\Api\ApiQuerySiteinfo;
 use MediaWiki\Context\DerivativeContext;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Import\ImportStringSource;
+use MediaWiki\Import\WikiImporter;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Parser\ParserOptions;
@@ -17,9 +18,9 @@ use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Skin\SkinTemplate;
 use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleValue;
+use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
-use MediaWiki\User\UserOptionsLookup;
 use MediaWikiIntegrationTestCase;
 use RuntimeException;
 use Wikibase\DataAccess\DatabaseEntitySource;
@@ -33,7 +34,6 @@ use Wikibase\Repo\RepoHooks;
 use Wikibase\Repo\Store\RateLimitingIdGenerator;
 use Wikibase\Repo\WikibaseRepo;
 use Wikibase\View\Wbui2025FeatureFlag;
-use WikiImporter;
 
 /**
  * @covers \Wikibase\Repo\RepoHooks

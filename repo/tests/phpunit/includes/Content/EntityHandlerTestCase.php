@@ -3,7 +3,6 @@
 namespace Wikibase\Repo\Tests\Content;
 
 use DataValues\Serializers\DataValueSerializer;
-use DummySearchIndexFieldDefinition;
 use InvalidArgumentException;
 use LogicException;
 use MediaWiki\Actions\Action;
@@ -17,11 +16,13 @@ use MediaWiki\Page\LinkBatchFactory;
 use MediaWiki\Page\WikiPage;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Search\DummySearchIndexFieldDefinition;
+use MediaWiki\Search\SearchEngine;
+use MediaWiki\Search\SearchIndexField;
 use MediaWiki\Site\Site;
 use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
 use RuntimeException;
-use SearchEngine;
 use Serializers\Serializer;
 use Wikibase\DataAccess\DatabaseEntitySource;
 use Wikibase\DataAccess\EntitySourceDefinitions;
@@ -605,7 +606,7 @@ abstract class EntityHandlerTestCase extends MediaWikiIntegrationTestCase {
 			$this->assertSame( [], $fields );
 		} else {
 			foreach ( $expectedFields as $expected ) {
-				$this->assertInstanceOf( \SearchIndexField::class, $fields[$expected] );
+				$this->assertInstanceOf( SearchIndexField::class, $fields[$expected] );
 				$mapping = $fields[$expected]->getMapping( $searchEngine );
 				$this->assertEquals( $expected, $mapping['name'] );
 			}

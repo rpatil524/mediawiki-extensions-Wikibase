@@ -4,8 +4,8 @@ declare( strict_types=1 );
 
 namespace Wikibase\Repo\Tests\Hooks;
 
+use MediaWiki\Actions\Pager\HistoryPager;
 use MediaWiki\Context\IContextSource;
-use MediaWiki\Pager\HistoryPager;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataAccess\PrefetchingTermLookup;
 use Wikibase\DataModel\Entity\Item;

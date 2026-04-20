@@ -3,9 +3,9 @@
 declare( strict_types = 1 );
 namespace Wikibase\Repo\Tests\Hooks;
 
-use DifferenceEngine;
 use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\Context\IContextSource;
+use MediaWiki\Diff\DifferenceEngine;
 use MediaWiki\Revision\MutableRevisionRecord;
 use MediaWiki\Title\Title;
 use PHPUnit\Framework\TestCase;

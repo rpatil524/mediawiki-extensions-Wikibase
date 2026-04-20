@@ -4,7 +4,7 @@ namespace Wikibase\Repo\Tests\Parsers;
 
 use DataValues\DataValue;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWikiIntegrationTestCase;
 use ValueParsers\ParserOptions;
 use ValueParsers\ValueParser;

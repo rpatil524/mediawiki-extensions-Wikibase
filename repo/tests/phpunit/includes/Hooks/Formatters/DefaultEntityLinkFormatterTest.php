@@ -4,13 +4,13 @@ declare( strict_types=1 );
 namespace Wikibase\Repo\Tests\Hooks\Formatters;
 
 use HamcrestPHPUnitIntegration;
-use HtmlArmor;
 use MediaWiki\Language\Language;
 use MediaWiki\MediaWikiServices;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\Lib\Store\EntityTitleTextLookup;
 use Wikibase\Repo\Hooks\Formatters\DefaultEntityLinkFormatter;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 /**
  * @covers \Wikibase\Repo\Hooks\Formatters\DefaultEntityLinkFormatter

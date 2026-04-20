@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Repo\Tests\Unit\ServiceWiring;
 
-use MediaWiki\User\UserOptionsLookup;
+use MediaWiki\User\Options\UserOptionsLookup;
 use Wikibase\Lib\SettingsArray;
 use Wikibase\Repo\Tests\Unit\ServiceWiringTestCase;
 use Wikibase\View\Wbui2025FeatureFlag;

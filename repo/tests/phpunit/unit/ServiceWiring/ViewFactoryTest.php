@@ -4,9 +4,9 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Repo\Tests\Unit\ServiceWiring;
 
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleFactory;
-use ObjectCacheFactory;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\ItemIdParser;
 use Wikibase\DataModel\Serializers\SerializerFactory;

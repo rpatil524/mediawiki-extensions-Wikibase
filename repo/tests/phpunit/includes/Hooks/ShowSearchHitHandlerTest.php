@@ -2,14 +2,13 @@
 
 namespace Wikibase\Repo\Tests\Hooks;
 
-use HtmlArmor;
 use MediaWiki\Context\ContextSource;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\Search\SearchResult;
 use MediaWiki\Specials\SpecialSearch;
 use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
-use SearchResult;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Services\Lookup\EntityLookup;
@@ -21,6 +20,7 @@ use Wikibase\Lib\Store\EntityIdLookup;
 use Wikibase\Lib\TermLanguageFallbackChain;
 use Wikibase\Repo\Content\EntityContentFactory;
 use Wikibase\Repo\Hooks\ShowSearchHitHandler;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 /**
  * @covers \Wikibase\Repo\Hooks\ShowSearchHitHandler

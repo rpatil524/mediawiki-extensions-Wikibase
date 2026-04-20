@@ -2,7 +2,7 @@
 
 namespace Wikibase\Repo\Tests\Specials;
 
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Request\WebResponse;
 use MediaWiki\Session\Session;

@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 namespace Wikibase\Repo\Tests\FederatedProperties\Specials;
 
 use MediaWiki\MainConfigNames;
-use SpecialPageTestBase;
+use MediaWiki\Tests\Specials\SpecialPageTestBase;
 use Wikibase\Repo\FederatedProperties\SpecialListFederatedProperties;
 
 /**

@@ -3,7 +3,6 @@
 declare( strict_types = 1 );
 namespace Wikibase\Repo\Tests\Hooks;
 
-use HtmlArmor;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MainConfigNames;
@@ -11,6 +10,7 @@ use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Title\Title;
 use Wikibase\Lib\Store\EntityUrlLookup;
 use Wikibase\Repo\WikibaseRepo;
+use Wikimedia\HtmlArmor\HtmlArmor;
 use Wikimedia\TestingAccessWrapper;
 
 /**

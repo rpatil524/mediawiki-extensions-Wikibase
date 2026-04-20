@@ -2,8 +2,8 @@
 
 namespace Wikibase\Repo\Tests\Store;
 
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use MediaWikiIntegrationTestCase;
-use ObjectCacheFactory;
 use Wikibase\DataAccess\DatabaseEntitySource;
 use Wikibase\DataAccess\WikibaseServices;
 use Wikibase\Lib\Changes\ChangeStore;

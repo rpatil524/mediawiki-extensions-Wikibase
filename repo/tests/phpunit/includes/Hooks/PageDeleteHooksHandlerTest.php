@@ -6,6 +6,7 @@ namespace Wikibase\Repo\Tests\Hooks;
 
 use MediaWiki\Content\Content;
 use MediaWiki\Content\WikitextContent;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionRecord;
@@ -85,7 +86,7 @@ class PageDeleteHooksHandlerTest extends TestCase {
 			'deleting for testOnPageDeleteComplete',
 			123,
 			$deletedRev,
-			$this->createMock( \ManualLogEntry::class ),
+			$this->createMock( ManualLogEntry::class ),
 			22,
 		);
 	}
@@ -107,7 +108,7 @@ class PageDeleteHooksHandlerTest extends TestCase {
 			$this->mockAuthority,
 			'restoring for testOnPageUndeleteComplete',
 			$restoredRev,
-			$this->createMock( \ManualLogEntry::class ),
+			$this->createMock( ManualLogEntry::class ),
 			1,
 			true,
 			[],
