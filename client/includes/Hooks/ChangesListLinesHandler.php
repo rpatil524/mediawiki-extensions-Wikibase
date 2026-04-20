@@ -5,12 +5,12 @@ declare( strict_types = 1 );
 namespace Wikibase\Client\Hooks;
 
 use MediaWiki\CommentFormatter\CommentFormatter;
-use MediaWiki\Hook\EnhancedChangesListModifyBlockLineDataHook;
-use MediaWiki\Hook\EnhancedChangesListModifyLineDataHook;
-use MediaWiki\Hook\OldChangesListRecentChangesLineHook;
 use MediaWiki\Language\Language;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\RecentChanges\EnhancedChangesList;
+use MediaWiki\RecentChanges\Hook\EnhancedChangesListModifyBlockLineDataHook;
+use MediaWiki\RecentChanges\Hook\EnhancedChangesListModifyLineDataHook;
+use MediaWiki\RecentChanges\Hook\OldChangesListRecentChangesLineHook;
 use MediaWiki\RecentChanges\OldChangesList;
 use MediaWiki\RecentChanges\RecentChange;
 use MediaWiki\User\UserNameUtils;

@@ -2,8 +2,8 @@
 
 namespace Wikibase\Client\Hooks;
 
+use MediaWiki\Skin\Hook\SkinAfterPortletHook;
 use MediaWiki\Skin\Skin;
-use MediaWiki\Skins\Hook\SkinAfterPortletHook;
 use Wikibase\Client\NamespaceChecker;
 use Wikibase\Client\RepoItemLinkGenerator;
 use Wikibase\Client\RepoLinker;

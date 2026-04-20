@@ -4,8 +4,8 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Client\Hooks;
 
-use MediaWiki\Hook\ParserClearStateHook;
-use MediaWiki\Hook\ParserLimitReportPrepareHook;
+use MediaWiki\Parser\Hook\ParserClearStateHook;
+use MediaWiki\Parser\Hook\ParserLimitReportPrepareHook;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\ParserOutput;
 use Wikibase\DataModel\Services\Lookup\RestrictedEntityLookupFactory;

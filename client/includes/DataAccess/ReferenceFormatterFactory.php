@@ -3,7 +3,7 @@
 namespace Wikibase\Client\DataAccess;
 
 use MediaWiki\Language\Language;
-use MessageLocalizer;
+use MediaWiki\Language\MessageLocalizer;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Wikibase\Client\Usage\UsageAccumulator;
