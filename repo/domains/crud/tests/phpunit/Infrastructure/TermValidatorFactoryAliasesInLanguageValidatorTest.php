@@ -3,7 +3,7 @@
 namespace Wikibase\Repo\Tests\Domains\Crud\Infrastructure;
 
 use Generator;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Term\AliasGroup;

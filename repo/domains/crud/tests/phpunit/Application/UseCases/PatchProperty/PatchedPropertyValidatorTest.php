@@ -4,7 +4,7 @@ namespace Wikibase\Repo\Tests\Domains\Crud\Application\UseCases\PatchProperty;
 
 use Exception;
 use Generator;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use PHPUnit\Framework\TestCase;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\NumericPropertyId;

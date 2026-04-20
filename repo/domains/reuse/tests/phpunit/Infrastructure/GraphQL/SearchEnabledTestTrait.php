@@ -2,7 +2,7 @@
 
 namespace Wikibase\Repo\Tests\Domains\Reuse\Infrastructure\GraphQL;
 
-use ExtensionRegistry;
+use MediaWiki\Registration\ExtensionRegistry;
 
 /**
  * @license GPL-2.0-or-later

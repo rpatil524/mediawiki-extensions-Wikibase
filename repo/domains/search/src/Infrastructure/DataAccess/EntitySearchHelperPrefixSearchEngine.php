@@ -2,7 +2,7 @@
 
 namespace Wikibase\Repo\Domains\Search\Infrastructure\DataAccess;
 
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWiki\Request\WebRequest;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\Property;
