@@ -5,7 +5,6 @@ declare( strict_types = 1 );
 namespace Wikibase\Repo\Hooks;
 
 use MediaWiki\Cache\HTMLCacheUpdater;
-use MediaWiki\Hook\ArticleRevisionVisibilitySetHook;
 use MediaWiki\JobQueue\JobQueueGroup;
 use MediaWiki\JobQueue\JobSpecification;
 use MediaWiki\Logging\ManualLogEntry;
@@ -13,6 +12,7 @@ use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\RevisionDelete\Hook\ArticleRevisionVisibilitySetHook;
 use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleFactory;
 use Wikibase\Lib\Store\EntityIdLookup;

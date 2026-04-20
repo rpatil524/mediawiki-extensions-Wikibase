@@ -2,7 +2,7 @@
 
 namespace Wikibase\Repo\Diff;
 
-use DifferenceEngine;
+use MediaWiki\Diff\DifferenceEngine;
 use MediaWiki\Html\Html;
 use MediaWiki\Language\Language;
 use MediaWiki\MediaWikiServices;

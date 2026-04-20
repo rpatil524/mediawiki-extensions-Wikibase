@@ -7,11 +7,11 @@ use InvalidArgumentException;
 use LogicException;
 use MediaWiki\Content\Content;
 use MediaWiki\Content\ContentHandler;
+use MediaWiki\Content\ContentSerializationException;
 use MediaWiki\Content\Renderer\ContentParseParams;
 use MediaWiki\Content\ValidationParams;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
-use MediaWiki\Exception\MWContentSerializationException;
 use MediaWiki\Html\Html;
 use MediaWiki\Language\Language;
 use MediaWiki\MediaWikiServices;
@@ -22,9 +22,10 @@ use MediaWiki\Parser\ParserOptions;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Search\SearchEngine;
+use MediaWiki\Search\SearchIndexField;
 use MediaWiki\Status\Status;
 use MediaWiki\Title\Title;
-use SearchEngine;
 use ValueValidators\Result;
 use Wikibase\DataModel\Entity\EntityDocument;
 use Wikibase\DataModel\Entity\EntityId;
@@ -360,7 +361,7 @@ abstract class EntityHandler extends ContentHandler {
 	 * @param string|null $format
 	 *
 	 * @throws InvalidArgumentException
-	 * @throws MWContentSerializationException
+	 * @throws ContentSerializationException
 	 * @return string
 	 */
 	public function serializeContent( Content $content, $format = null ) {
@@ -385,7 +386,7 @@ abstract class EntityHandler extends ContentHandler {
 	 * @param string $blob
 	 * @param string|null $format
 	 *
-	 * @throws MWContentSerializationException
+	 * @throws ContentSerializationException
 	 * @return EntityContent
 	 */
 	public function unserializeContent( $blob, $format = null ) {
@@ -665,7 +666,7 @@ abstract class EntityHandler extends ContentHandler {
 
 	/**
 	 * @param SearchEngine $engine
-	 * @return \SearchIndexField[] List of fields this content handler can provide.
+	 * @return SearchIndexField[] List of fields this content handler can provide.
 	 */
 	public function getFieldsForSearchIndex( SearchEngine $engine ) {
 		$fields = [];
