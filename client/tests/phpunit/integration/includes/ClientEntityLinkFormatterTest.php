@@ -4,7 +4,7 @@ namespace Wikibase\Client\Tests\Integration;
 
 use HamcrestPHPUnitIntegration;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use PHPUnit\Framework\TestCase;
 use Wikibase\Client\Hooks\Formatter\ClientEntityLinkFormatter;
 use Wikibase\DataModel\Entity\ItemId;

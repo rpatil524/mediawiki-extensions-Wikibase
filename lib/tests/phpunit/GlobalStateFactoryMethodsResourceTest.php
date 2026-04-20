@@ -3,8 +3,8 @@
 namespace Wikibase\Lib\Tests;
 
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use MediaWikiIntegrationTestCase;
-use ObjectCacheFactory;
 use Psr\Log\NullLogger;
 use Wikibase\Lib\StatslibRecordingSimpleCache;
 use Wikibase\Lib\TermFallbackCache\TermFallbackCacheServiceFactory;

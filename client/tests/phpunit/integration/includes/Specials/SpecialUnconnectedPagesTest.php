@@ -4,9 +4,9 @@ namespace Wikibase\Client\Tests\Integration\Specials;
 
 use Iterator;
 use MediaWiki\Skin\Skin;
+use MediaWiki\Tests\Specials\SpecialPageTestBase;
 use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleFactory;
-use SpecialPageTestBase;
 use Wikibase\Client\NamespaceChecker;
 use Wikibase\Client\Specials\SpecialUnconnectedPages;
 use Wikibase\Client\WikibaseClient;

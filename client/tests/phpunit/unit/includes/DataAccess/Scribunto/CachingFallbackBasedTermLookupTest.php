@@ -4,8 +4,8 @@ declare( strict_types=1 );
 namespace Wikibase\Client\Tests\Unit\DataAccess\Scribunto;
 
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageFactory;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 use PHPUnit\Framework\TestCase;
 use Wikibase\Client\DataAccess\Scribunto\CachingFallbackBasedTermLookup;

@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 namespace Wikibase\Lib\Tests\TermFallbackCache;
 
 use Iterator;
-use ObjectCacheFactory;
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Wikibase\Lib\SimpleCacheWithBagOStuff;
