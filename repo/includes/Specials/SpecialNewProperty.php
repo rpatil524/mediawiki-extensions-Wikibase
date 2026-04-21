@@ -69,7 +69,6 @@ class SpecialNewProperty extends SpecialNewEntity {
 	) {
 		parent::__construct(
 			'NewProperty',
-			'property-create',
 			$tags,
 			$specialPageCopyrightView,
 			$entityNamespaceLookup,
@@ -119,6 +118,11 @@ class SpecialNewProperty extends SpecialNewEntity {
 			$errorLocalizer,
 			$isMobileView
 		);
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'property-create';
 	}
 
 	/**

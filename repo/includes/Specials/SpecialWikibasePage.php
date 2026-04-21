@@ -26,10 +26,9 @@ abstract class SpecialWikibasePage extends SpecialPage {
 
 	/**
 	 * @param string $name
-	 * @param string $restriction
 	 */
-	public function __construct( $name = '', $restriction = '' ) {
-		parent::__construct( $name, $restriction );
+	public function __construct( $name = '' ) {
+		parent::__construct( $name );
 
 		// XXX: Use StringNormalizer as a plain composite - since it
 		//      doesn't have any dependencies, local instantiation isn't an issue.

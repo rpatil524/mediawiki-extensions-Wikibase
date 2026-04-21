@@ -46,7 +46,7 @@ class SpecialMergeItems extends SpecialWikibasePage {
 		bool $isMobileView,
 		TokenCheckInteractor $tokenCheck
 	) {
-		parent::__construct( 'MergeItems', 'item-merge' );
+		parent::__construct( 'MergeItems' );
 
 		$this->anonymousEditWarningBuilder = $anonymousEditWarningBuilder;
 		$this->idParser = $idParser;
@@ -55,6 +55,11 @@ class SpecialMergeItems extends SpecialWikibasePage {
 		$this->titleLookup = $titleLookup;
 		$this->tokenCheck = $tokenCheck;
 		$this->isMobileView = $isMobileView;
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'item-merge';
 	}
 
 	/** @inheritDoc */

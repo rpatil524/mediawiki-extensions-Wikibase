@@ -84,7 +84,6 @@ class SpecialNewItem extends SpecialNewEntity {
 	) {
 		parent::__construct(
 			'NewItem',
-			'createpage',
 			$tags,
 			$copyrightView,
 			$entityNamespaceLookup,
@@ -141,6 +140,11 @@ class SpecialNewItem extends SpecialNewEntity {
 			$repoSettings->getSetting( 'badgeItems' ),
 			$isMobileView
 		);
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'createpage';
 	}
 
 	/**

@@ -62,7 +62,6 @@ abstract class SpecialModifyEntity extends SpecialWikibaseRepoPage {
 	) {
 		parent::__construct(
 			$title,
-			'edit',
 			$tags,
 			$copyrightView,
 			$summaryFormatter,
@@ -70,6 +69,11 @@ abstract class SpecialModifyEntity extends SpecialWikibaseRepoPage {
 			$editEntityFactory
 		);
 		$this->anonymousEditWarningBuilder = $anonymousEditWarningBuilder;
+	}
+
+	/** @inheritDoc */
+	public function getRestriction(): string {
+		return 'edit';
 	}
 
 	/** @inheritDoc */
