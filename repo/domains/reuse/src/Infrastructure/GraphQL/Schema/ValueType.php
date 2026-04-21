@@ -27,8 +27,9 @@ class ValueType extends UnionType {
 
 		parent::__construct( [
 			'types' => array_values( [ ...array_unique( $valueTypes ), $unknownValueType ] ),
-			'resolveType' => fn( Statement|PropertyValuePair $valueProvider ) => $valueTypes[$valueProvider->property->dataType]
-				?? $unknownValueType,
+			'resolveType' => fn( Statement|PropertyValuePair $valueProvider ) => $valueProvider->property->dataType !== null ?
+				$valueTypes[$valueProvider->property->dataType] ?? $unknownValueType :
+				$unknownValueType,
 		] );
 	}
 
