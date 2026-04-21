@@ -1,5 +1,7 @@
 <?php
 
+declare( strict_types = 1 );
+
 namespace Wikibase\Repo\Tests;
 
 use InvalidArgumentException;
@@ -20,21 +22,17 @@ use Wikibase\Repo\DispatchingEntityTypeStatementGrouper;
  */
 class DispatchingEntityTypeStatementGrouperTest extends \PHPUnit\Framework\TestCase {
 
-	/**
-	 * @param int $count
-	 *
-	 * @return StatementGrouper
-	 */
-	private function newGrouper( $count ) {
+	private function newGrouper( int $count ): StatementGrouper {
 		$grouper = $this->createMock( StatementGrouper::class );
 
 		$grouper->expects( $this->exactly( $count ) )
-			->method( 'groupStatements' );
+			->method( 'groupStatements' )
+			->willReturnCallback( fn ( $statements ) => [ 'default' => $statements ] );
 
 		return $grouper;
 	}
 
-	private function getStatementGuidParser() {
+	private function getStatementGuidParser(): StatementGuidParser {
 		return new StatementGuidParser( new ItemIdParser() );
 	}
 
