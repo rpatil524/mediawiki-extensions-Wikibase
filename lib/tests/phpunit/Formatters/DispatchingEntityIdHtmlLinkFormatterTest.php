@@ -31,8 +31,12 @@ class DispatchingEntityIdHtmlLinkFormatterTest extends TestCase {
 	public function testGivenFormatterMissing_UseDefaultFormatter() {
 		$this->defaultFormatter->expects( $this->once() )
 			->method( 'formatEntityId' );
+		$entityId = $this->createMock( EntityId::class );
+		$entityId->expects( $this->once() )
+			->method( 'getEntityType' )
+			->willReturn( 'unknown' );
 		$formatter = new DispatchingEntityIdHtmlLinkFormatter( [], $this->defaultFormatter );
-		$formatter->formatEntityId( $this->createMock( EntityId::class ) );
+		$formatter->formatEntityId( $entityId );
 	}
 
 	public function testGivenFormatterExists_FormatterUsed() {
