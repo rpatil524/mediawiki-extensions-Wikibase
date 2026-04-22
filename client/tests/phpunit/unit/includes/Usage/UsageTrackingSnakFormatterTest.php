@@ -33,6 +33,8 @@ use Wikibase\Lib\Formatters\SnakFormatter;
 class UsageTrackingSnakFormatterTest extends \PHPUnit\Framework\TestCase {
 	use MediaWikiCoversValidator;
 
+	private const NON_ITEM_UNIT = '1';
+
 	/**
 	 * @param string $method
 	 * @param string $return
@@ -96,7 +98,7 @@ class UsageTrackingSnakFormatterTest extends \PHPUnit\Framework\TestCase {
 		$parser->expects( $this->once() )
 			->method( 'parse' )
 			->willReturnCallback( function ( $id ) {
-				if ( $id === '1' ) {
+				if ( $id === self::NON_ITEM_UNIT ) {
 					throw new EntityIdParsingException();
 				} else {
 					return new ItemId( $id );
@@ -108,7 +110,7 @@ class UsageTrackingSnakFormatterTest extends \PHPUnit\Framework\TestCase {
 
 	public static function formatSnakQuantityProvider() {
 		return [
-			[ '1', null ],
+			[ self::NON_ITEM_UNIT, null ],
 			[ 'Q1', new ItemId( 'Q1' ) ],
 		];
 	}
