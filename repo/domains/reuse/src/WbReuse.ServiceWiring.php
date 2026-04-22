@@ -115,7 +115,7 @@ return [
 			WbReuse::getItemLabelsWithLanguageFallbackResolver( $services ),
 			WikibaseRepo::getPropertyInfoLookup( $services ),
 			WikibaseRepo::getSettings( $services ),
-			WikibaseRepo::getLanguageFallbackChainFactory( $services ),
+			WbReuse::getLanguageFallbackLabelSelector( $services )
 		);
 	},
 	'WbReuse.ItemByExternalIdLookup' => function( MediaWikiServices $services ): ItemByExternalIdLookup {
@@ -150,8 +150,15 @@ return [
 			new BatchGetItemLabelsWithLanguageFallback( new ItemLabelsWithLanguageFallbackBatchRetriever(
 				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
 				$languageFallbackChainProvider,
-				new LanguageFallbackLabelSelector( $languageFallbackChainProvider ),
+				WbReuse::getLanguageFallbackLabelSelector( $services ),
 			) ),
+		);
+	},
+	'WbReuse.LanguageFallbackLabelSelector' => function( MediaWikiServices $services ): LanguageFallbackLabelSelector {
+		return new LanguageFallbackLabelSelector(
+			new LanguageFallbackChainFactoryFallbackLanguagesProvider(
+				WikibaseRepo::getLanguageFallbackChainFactory( $services )
+			)
 		);
 	},
 	'WbReuse.PropertyLabelsResolver' => function( MediaWikiServices $services ): PropertyLabelsResolver {
@@ -171,7 +178,7 @@ return [
 			new BatchGetPropertyLabelsWithLanguageFallback( new PropertyLabelsWithLanguageFallbackBatchRetriever(
 				new PrefetchingTermLookupBatchLabelsDescriptionsRetriever( WikibaseRepo::getPrefetchingTermLookup( $services ) ),
 				$languageFallbackChainProvider,
-				new LanguageFallbackLabelSelector( $languageFallbackChainProvider ),
+				WbReuse::getLanguageFallbackLabelSelector( $services )
 			) ),
 		);
 	},

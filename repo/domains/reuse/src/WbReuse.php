@@ -6,6 +6,7 @@ use MediaWiki\MediaWikiServices;
 use Psr\Container\ContainerInterface;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\FacetedItemSearchEngine;
 use Wikibase\Repo\Domains\Reuse\Domain\Services\ItemByExternalIdLookup;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\LanguageFallbackLabelSelector;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLService;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\GraphQLTracking;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
@@ -55,6 +56,13 @@ class WbReuse {
 	): ItemLabelsWithLanguageFallbackResolver {
 		return ( $services ?: MediaWikiServices::getInstance() )
 			->get( 'WbReuse.ItemLabelsWithLanguageFallbackResolver' );
+	}
+
+	public static function getLanguageFallbackLabelSelector(
+		?ContainerInterface $services = null
+	): LanguageFallbackLabelSelector {
+		return ( $services ?: MediaWikiServices::getInstance() )
+			->get( 'WbReuse.LanguageFallbackLabelSelector' );
 	}
 
 	public static function getPropertyLabelsResolver( ?ContainerInterface $services = null ): PropertyLabelsResolver {
