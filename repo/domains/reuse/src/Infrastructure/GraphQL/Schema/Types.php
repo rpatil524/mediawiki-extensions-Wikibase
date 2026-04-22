@@ -10,7 +10,6 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\Lib\DataTypeDefinitions;
-use Wikibase\Lib\LanguageFallbackChainFactory;
 use Wikibase\Lib\SettingsArray;
 use Wikibase\Lib\Store\PropertyInfoLookup;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Item;
@@ -18,6 +17,7 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\ItemSearchResult;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Label;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\PropertyValuePair;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\LanguageFallbackLabelSelector;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemDescriptionsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsResolver;
 use Wikibase\Repo\Domains\Reuse\Infrastructure\GraphQL\Resolvers\ItemLabelsWithLanguageFallbackResolver;
@@ -73,7 +73,7 @@ class Types {
 		private readonly ItemLabelsWithLanguageFallbackResolver $itemLabelsWithLanguageFallbackResolver,
 		private readonly PropertyInfoLookup $propertyInfoLookup,
 		private readonly SettingsArray $settings,
-		private readonly LanguageFallbackChainFactory $languageFallbackChainFactory,
+		private readonly LanguageFallbackLabelSelector $languageFallbackLabelSelector,
 	) {
 	}
 
@@ -213,7 +213,7 @@ class Types {
 	}
 
 	public function getItemType(): ItemType {
-		return $this->itemType ??= new ItemType( $this, $this->languageFallbackChainFactory );
+		return $this->itemType ??= new ItemType( $this, $this->languageFallbackLabelSelector );
 	}
 
 	public function getItemValueType(): ItemValueType {

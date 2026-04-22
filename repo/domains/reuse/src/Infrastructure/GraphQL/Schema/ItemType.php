@@ -7,10 +7,10 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Statement\Statement as StatementWriteModel;
-use Wikibase\Lib\LanguageFallbackChainFactory;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Item;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Reference;
 use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
+use Wikibase\Repo\Domains\Reuse\Domain\Services\LanguageFallbackLabelSelector;
 
 /**
  * @license GPL-2.0-or-later
@@ -18,7 +18,7 @@ use Wikibase\Repo\Domains\Reuse\Domain\Model\Statement;
 class ItemType extends ObjectType {
 	public function __construct(
 		private readonly Types $types,
-		private readonly LanguageFallbackChainFactory $languageFallbackChainFactory,
+		private readonly LanguageFallbackLabelSelector $languageFallbackLabelSelector,
 	) {
 		$labelProviderType = $types->getLabelProviderType();
 		$labelField = Types::copyFieldDefinition(
@@ -29,17 +29,9 @@ class ItemType extends ObjectType {
 
 		$labelWithLanguageFallbackField = Types::copyFieldDefinition(
 			$labelProviderType->getField( 'labelWithLanguageFallback' ),
-			function( Item $item, array $args ) {
-				$fallbackChain = $this->languageFallbackChainFactory
-					->newFromLanguageCode( $args['languageCode'] );
-				foreach ( $fallbackChain->getFetchLanguageCodes() as $code ) {
-					$label = $item->labels->getLabelInLanguage( $code );
-					if ( $label !== null ) {
-						return $label;
-					}
-				}
-
-				return null;
+			function( Item $item, array $args ) use ( $languageFallbackLabelSelector ) {
+				return $languageFallbackLabelSelector
+					->selectLabel( $args['languageCode'], $item->labels );
 			},
 		);
 
