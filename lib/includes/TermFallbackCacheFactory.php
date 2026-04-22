@@ -3,7 +3,7 @@
 declare( strict_types = 1 );
 namespace Wikibase\Lib;
 
-use ObjectCacheFactory;
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Wikibase\Lib\TermFallbackCache\TermFallbackCacheServiceFactory;

@@ -8,7 +8,7 @@ use DataValues\Geo\Formatters\GlobeCoordinateFormatter;
 use DataValues\Geo\Formatters\LatLongFormatter;
 use InvalidArgumentException;
 use MediaWiki\Context\RequestContext;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWiki\Parser\ParserOptions;
 use ValueFormatters\DecimalFormatter;
 use ValueFormatters\FormatterOptions;

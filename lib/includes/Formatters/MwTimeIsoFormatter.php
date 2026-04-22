@@ -5,7 +5,7 @@ namespace Wikibase\Lib\Formatters;
 use DataValues\TimeValue;
 use InvalidArgumentException;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use ValueFormatters\FormatterOptions;
 use ValueFormatters\ValueFormatter;
 

@@ -3,7 +3,7 @@
 namespace Wikibase\Lib;
 
 use MediaWiki\HookContainer\HookContainer;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 use OutOfRangeException;
 use Wikibase\Lib\Hooks\WikibaseLibHookRunner;

@@ -2,7 +2,7 @@
 
 namespace Wikibase\Lib\Store\Sql;
 
-use MediaWiki\Exception\MWContentSerializationException;
+use MediaWiki\Content\ContentSerializationException;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Revision\RevisionStore;
 use MediaWiki\Revision\SlotRecord;
@@ -109,7 +109,7 @@ class WikiPageEntityRevisionLookup implements EntityRevisionLookup {
 			/** @var EntityRedirect $redirect */
 			try {
 				[ $entityRevision, $redirect ] = $this->loadEntity( $row, $mode );
-			} catch ( MWContentSerializationException $ex ) {
+			} catch ( ContentSerializationException $ex ) {
 				throw new StorageException( 'Failed to unserialize the content object.', 0, $ex );
 			}
 

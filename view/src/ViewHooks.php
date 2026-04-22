@@ -3,7 +3,7 @@
 namespace Wikibase\View;
 
 use MediaWiki\Hook\UnitTestsListHook;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\ResourceLoader\Context;

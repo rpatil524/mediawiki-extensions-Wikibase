@@ -2,7 +2,7 @@
 
 namespace Wikibase\Lib;
 
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageNameUtils;
 use MediaWiki\MediaWikiServices;
 
 /**
