@@ -2,9 +2,9 @@
 
 namespace Wikibase\Repo\Tests\Domains\Search\RouteHandlers;
 
-use ExtensionRegistry;
 use Generator;
 use LogicException;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Rest\Handler;
 use MediaWiki\Rest\Reporter\ErrorReporter;
 use MediaWiki\Rest\RequestData;

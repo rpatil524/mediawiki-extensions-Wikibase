@@ -2,8 +2,8 @@
 
 namespace Wikibase\Repo\Domains\Reuse\Infrastructure\Search;
 
-use ISearchResultSet;
-use SearchEngineFactory;
+use MediaWiki\Search\ISearchResultSet;
+use MediaWiki\Search\SearchEngineFactory;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\PropertyId;

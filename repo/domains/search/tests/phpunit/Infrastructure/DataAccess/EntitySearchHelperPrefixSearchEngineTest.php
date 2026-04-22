@@ -3,7 +3,7 @@
 namespace Wikibase\Repo\Tests\Domains\Search\Infrastructure\DataAccess;
 
 use Generator;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\WebRequest;
 use PHPUnit\Framework\TestCase;

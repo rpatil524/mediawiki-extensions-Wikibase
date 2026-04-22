@@ -2,13 +2,13 @@
 
 namespace Wikibase\Repo\Tests\Domains\Reuse\Infrastructure\Search;
 
-use ISearchResultSet;
+use MediaWiki\Search\ISearchResultSet;
+use MediaWiki\Search\SearchEngine;
+use MediaWiki\Search\SearchEngineFactory;
+use MediaWiki\Search\SearchResult;
 use MediaWiki\Status\Status;
 use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
-use SearchEngine;
-use SearchEngineFactory;
-use SearchResult;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;

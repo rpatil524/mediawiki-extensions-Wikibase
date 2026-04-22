@@ -4,8 +4,8 @@ namespace Wikibase\Repo\Tests\Domains\Reuse\Infrastructure\GraphQL;
 
 use Generator;
 use MediaWiki\Site\HashSiteStore;
+use MediaWiki\Site\MediaWikiSite;
 use MediaWikiIntegrationTestCase;
-use MediaWikiSite;
 use Wikibase\DataModel\Entity\Item;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Services\Lookup\InMemoryEntityLookup;

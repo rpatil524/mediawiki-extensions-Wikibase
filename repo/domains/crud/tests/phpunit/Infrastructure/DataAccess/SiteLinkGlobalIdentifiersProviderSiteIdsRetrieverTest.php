@@ -3,8 +3,8 @@
 namespace Wikibase\Repo\Tests\Domains\Crud\Infrastructure\DataAccess;
 
 use MediaWiki\Site\HashSiteStore;
+use MediaWiki\Site\Site;
 use MediaWikiIntegrationTestCase;
-use Site;
 use Wikibase\Lib\Tests\FakeCache;
 use Wikibase\Repo\Domains\Crud\Infrastructure\DataAccess\SiteLinkGlobalIdentifiersProviderSiteIdsRetriever;
 use Wikibase\Repo\SiteLinkGlobalIdentifiersProvider;

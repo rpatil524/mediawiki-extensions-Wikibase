@@ -2,7 +2,7 @@
 
 namespace Wikibase\Repo\Domains\Crud\Infrastructure\DataAccess;
 
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Services\Lookup\LabelDescriptionLookupException;
 use Wikibase\Lib\Store\FallbackLabelDescriptionLookupFactory;
