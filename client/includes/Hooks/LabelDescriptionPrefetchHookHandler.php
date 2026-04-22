@@ -2,9 +2,9 @@
 
 namespace Wikibase\Client\Hooks;
 
-use ChangesList;
 use LogicException;
-use MediaWiki\Hook\ChangesListInitRowsHook;
+use MediaWiki\RecentChanges\ChangesList;
+use MediaWiki\RecentChanges\Hook\ChangesListInitRowsHook;
 use MediaWiki\Revision\RevisionRecord;
 use Wikibase\DataModel\Entity\BasicEntityIdParser;
 use Wikibase\DataModel\Entity\EntityId;

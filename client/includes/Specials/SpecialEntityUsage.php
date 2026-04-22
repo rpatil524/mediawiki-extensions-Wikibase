@@ -2,10 +2,9 @@
 
 namespace Wikibase\Client\Specials;
 
-use HtmlArmor;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
-use MediaWiki\Languages\LanguageConverterFactory;
+use MediaWiki\Language\LanguageConverterFactory;
 use MediaWiki\Linker\Linker;
 use MediaWiki\Skin\Skin;
 use MediaWiki\SpecialPage\QueryPage;
@@ -16,6 +15,7 @@ use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\DataModel\Entity\EntityIdParsingException;
 use Wikibase\Lib\Rdbms\ClientDomainDb;
 use Wikibase\Lib\Rdbms\ClientDomainDbFactory;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 /**
  * A special page that lists client wiki pages that use a given entity ID from the repository, and

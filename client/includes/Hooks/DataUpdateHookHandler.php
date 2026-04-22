@@ -6,13 +6,13 @@ namespace Wikibase\Client\Hooks;
 
 use InvalidArgumentException;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Deferred\Hook\LinksUpdateCompleteHook;
 use MediaWiki\Deferred\LinksUpdate\LinksUpdate;
-use MediaWiki\Hook\LinksUpdateCompleteHook;
-use MediaWiki\Hook\ParserCacheSaveCompleteHook;
 use MediaWiki\JobQueue\JobQueueGroup;
 use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;
+use MediaWiki\Parser\Hook\ParserCacheSaveCompleteHook;
 use MediaWiki\Parser\ParserCache;
 use MediaWiki\Parser\ParserOptions;
 use MediaWiki\Parser\ParserOutput;

@@ -5,14 +5,14 @@ declare( strict_types=1 );
 namespace Wikibase\Client\Hooks;
 
 use MediaWiki\FileRepo\File\File;
-use MediaWiki\Hook\SkinAfterBottomScriptsHook;
 use MediaWiki\Html\Html;
 use MediaWiki\Output\Hook\OutputPageParserOutputHook;
 use MediaWiki\Revision\RevisionLookup;
+use MediaWiki\Skin\Hook\SkinAfterBottomScriptsHook;
+use MediaWiki\Skin\Skin;
 use MediaWiki\Title\Title;
 use MediaWiki\Utils\UrlUtils;
 use PageImages\PageImages;
-use Skin;
 use Wikibase\Client\RepoLinker;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;

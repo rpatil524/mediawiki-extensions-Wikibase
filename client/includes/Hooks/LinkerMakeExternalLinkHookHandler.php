@@ -5,8 +5,8 @@ declare( strict_types=1 );
 namespace Wikibase\Client\Hooks;
 
 use MediaWiki\Context\RequestContext;
-use MediaWiki\Hook\LinkerMakeExternalLinkHook;
 use MediaWiki\Language\Language;
+use MediaWiki\Linker\Hook\LinkerMakeExternalLinkHook;
 use MediaWiki\Title\Title;
 use Wikibase\Client\Hooks\Formatter\ClientEntityLinkFormatter;
 use Wikibase\DataModel\Entity\EntityIdParser;

@@ -5,8 +5,8 @@ namespace Wikibase\Client\DataAccess\Scribunto;
 
 use LogicException;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
-use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Language\LanguageFactory;
+use MediaWiki\Language\LanguageNameUtils;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Services\Lookup\TermLookup;
 use Wikibase\DataModel\Term\TermFallback;

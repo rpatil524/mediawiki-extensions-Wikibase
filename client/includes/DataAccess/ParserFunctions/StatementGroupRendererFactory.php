@@ -5,8 +5,8 @@ declare( strict_types = 1 );
 namespace Wikibase\Client\DataAccess\ParserFunctions;
 
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageConverterFactory;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageConverterFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWiki\Page\PageReference;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\ParserOutput;

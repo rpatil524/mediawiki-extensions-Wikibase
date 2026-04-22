@@ -7,7 +7,7 @@ namespace Wikibase\Client\Hooks;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Hook\EditPage__showStandardInputs_optionsHook;
 use MediaWiki\Html\Html;
-use MessageLocalizer;
+use MediaWiki\Language\MessageLocalizer;
 use Wikibase\Client\RepoLinker;
 use Wikibase\Client\Store\ClientStore;
 use Wikibase\Client\Usage\EntityUsage;

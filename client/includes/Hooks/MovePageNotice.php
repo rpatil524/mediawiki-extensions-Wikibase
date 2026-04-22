@@ -4,8 +4,8 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Client\Hooks;
 
-use MediaWiki\Hook\SpecialMovepageAfterMoveHook;
 use MediaWiki\Html\Html;
+use MediaWiki\Specials\Hook\SpecialMovepageAfterMoveHook;
 use MediaWiki\Specials\SpecialMovePage;
 use MediaWiki\Title\Title;
 use Wikibase\Client\RepoLinker;

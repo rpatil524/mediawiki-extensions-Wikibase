@@ -2,10 +2,10 @@
 
 namespace Wikibase\Client\Hooks\Formatter;
 
-use HtmlArmor;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use Wikibase\DataModel\Entity\EntityId;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 /**
  * @license GPL-2.0-or-later

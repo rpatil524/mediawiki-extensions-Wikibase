@@ -2,8 +2,8 @@
 
 namespace Wikibase\Client\Hooks;
 
+use MediaWiki\Actions\Hook\InfoActionHook;
 use MediaWiki\Context\IContextSource;
-use MediaWiki\Hook\InfoActionHook;
 use MediaWiki\Html\Html;
 use MediaWiki\Title\Title;
 use Wikibase\Client\NamespaceChecker;

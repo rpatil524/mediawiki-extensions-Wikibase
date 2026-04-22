@@ -2,10 +2,10 @@
 
 namespace Wikibase\Client\Hooks;
 
-use MediaWiki\Hook\GetMagicVariableIDsHook;
-use MediaWiki\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Language\Language;
 use MediaWiki\Message\Message;
+use MediaWiki\Parser\Hook\GetMagicVariableIDsHook;
+use MediaWiki\Parser\Hook\ParserGetVariableValueSwitchHook;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\PPFrame;
 // phpcs:disable MediaWiki.Classes.FullQualifiedClassName -- T308814
