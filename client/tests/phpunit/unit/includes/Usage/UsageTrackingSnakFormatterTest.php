@@ -10,6 +10,7 @@ use Wikibase\Client\Usage\UsageTrackingLanguageFallbackLabelDescriptionLookup;
 use Wikibase\Client\Usage\UsageTrackingSnakFormatter;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
+use Wikibase\DataModel\Entity\EntityIdParsingException;
 use Wikibase\DataModel\Entity\EntityIdValue;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\ItemIdParser;
@@ -95,7 +96,11 @@ class UsageTrackingSnakFormatterTest extends \PHPUnit\Framework\TestCase {
 		$parser->expects( $this->once() )
 			->method( 'parse' )
 			->willReturnCallback( function ( $id ) {
-				return $id === '1' ? null : new ItemId( $id );
+				if ( $id === '1' ) {
+					throw new EntityIdParsingException();
+				} else {
+					return new ItemId( $id );
+				}
 			} );
 
 		return $parser;

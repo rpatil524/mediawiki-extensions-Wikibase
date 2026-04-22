@@ -7,14 +7,18 @@ use MediaWiki\Language\Language;
 use MediaWiki\Language\LanguageFactory;
 use MediaWiki\Title\Title;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 use Wikibase\Client\Hooks\Formatter\ClientEntityLinkFormatter;
 use Wikibase\Client\Hooks\LinkerMakeExternalLinkHookHandler;
 use Wikibase\Client\WikibaseClient;
+use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Entity\EntityIdParser;
+use Wikibase\DataModel\Entity\EntityIdParsingException;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Entity\NumericPropertyId;
 use Wikibase\DataModel\Services\Lookup\LabelDescriptionLookupException;
 use Wikibase\DataModel\Term\TermFallback;
+use Wikibase\Lib\FederatedProperties\FederatedPropertyId;
 use Wikibase\Lib\SettingsArray;
 use Wikibase\Lib\Store\FallbackLabelDescriptionLookup;
 
@@ -78,40 +82,62 @@ class LinkerMakeExternalLinkHookHandlerTest extends TestCase {
 
 	public static function onLinkerMakeExternalLinkFailuresProvider(): \Generator {
 		yield "Non-Wikibase Url" => [
-			"https://en.wikipedia.org/wiki/Berlin",
-			"Berlin",
+			"url" => "https://en.wikipedia.org/wiki/Berlin",
+			"originalText" => "Berlin",
+			"parseInput" => "Berlin",
+			"parseOutput" => new EntityIdParsingException(),
 		];
 		yield "Non-entity namespace" => [
-			"https://www.wikidata.org/wiki/Talk:Q64",
-			"Talk:Q64",
+			"url" => "https://www.wikidata.org/wiki/Talk:Q64",
+			"originalText" => "Talk:Q64",
+			"parseInput" => "Q64",
+			"parseOutput" => new ItemId( "Q64" ),
 		];
 		yield "Invalid QID - Q0" => [
-			"https://www.wikidata.org/wiki/Q0",
-			"Q0",
+			"url" => "https://www.wikidata.org/wiki/Q0",
+			"originalText" => "Q0",
+			"parseInput" => "Q0",
+			"parseOutput" => new EntityIdParsingException(),
 		];
-		yield "Invalid QID - Not an item id but a Lexeme entity id" => [
-			"https://www.wikidata.org/wiki/L23",
-			"L23",
+		yield "Invalid QID - Not an item id but a federated property id" => [
+			"url" => "https://www.wikidata.org/wiki/P23",
+			"originalText" => "P23",
+			"parseInput" => "P23",
+			"parseOutput" => new FederatedPropertyId( "https://www.wikidata.org/wiki/P23", "P23" ),
 		];
 		yield "Invalid QID - Not an item id but a different page title" => [
-			"https://www.wikidata.org/wiki/Main_page",
-			"Main_page",
+			"url" => "https://www.wikidata.org/wiki/Main_page",
+			"originalText" => "Main_page",
+			"parseInput" => "Main_page",
+			"parseOutput" => new EntityIdParsingException(),
 		];
 		yield "Item not found - Q123456789" => [
-			"https://www.wikidata.org/wiki/Q123456789",
-			"Q123456789",
+			"url" => "https://www.wikidata.org/wiki/Q123456789",
+			"originalText" => "Q123456789",
+			"parseInput" => "Q123456789",
+			"parseOutput" => new ItemId( "Q123456789" ),
 		];
 	}
 
 	/**
 	 * @dataProvider onLinkerMakeExternalLinkFailuresProvider
 	 */
-	public function testOnLinkerMakeExternalLink_failureCases( string $url, string $originalText ) {
+	public function testOnLinkerMakeExternalLink_failureCases(
+		string $url,
+		string $originalText,
+		string $parseInput,
+		EntityId|EntityIdParsingException $parseOutput
+	) {
 		$this->mockParser = $this->createMock( EntityIdParser::class );
 		$this->mockParser->method( 'parse' )
-			->willReturnMap( [
-				[ 'Q123456789', new ItemId( 'Q123456789' ) ],
-			] );
+			->with( $parseInput )
+			->willReturnCallback( static function () use ( $parseOutput ) {
+				if ( $parseOutput instanceof Throwable ) {
+					throw $parseOutput;
+				} else {
+					return $parseOutput;
+				}
+			} );
 
 		$this->mockLookup = $this->createStub( FallbackLabelDescriptionLookup::class );
 

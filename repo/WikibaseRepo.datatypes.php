@@ -472,16 +472,16 @@ return call_user_func( function() {
 			'deserializer-builder' => static function ( $value ) {
 				// TODO this should perhaps be factored out into a class
 				if ( isset( $value['id'] ) ) {
+					if ( !is_string( $value['id'] ) ) {
+						throw new InvalidArgumentException(
+							'Can not parse id of type ' . get_debug_type( $value['id'] ) . ' to build EntityIdValue with'
+						);
+					}
 					try {
 						return new EntityIdValue( WikibaseRepo::getEntityIdParser()->parse( $value['id'] ) );
 					} catch ( EntityIdParsingException $parsingException ) {
-						if ( is_string( $value['id'] ) ) {
-							$message = 'Can not parse id \'' . $value['id'] . '\' to build EntityIdValue with';
-						} else {
-							$message = 'Can not parse id of type ' . get_debug_type( $value['id'] ) . ' to build EntityIdValue with';
-						}
 						throw new InvalidArgumentException(
-							$message,
+							'Can not parse id \'' . $value['id'] . '\' to build EntityIdValue with',
 							0,
 							$parsingException
 						);
