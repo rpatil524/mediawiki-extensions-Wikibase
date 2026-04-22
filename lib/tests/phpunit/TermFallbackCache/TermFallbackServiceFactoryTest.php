@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Lib\Tests\TermFallbackCache;
 
-use ObjectCacheFactory;
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\SimpleCache\CacheInterface;
 use Wikibase\Lib\SimpleCacheWithBagOStuff;

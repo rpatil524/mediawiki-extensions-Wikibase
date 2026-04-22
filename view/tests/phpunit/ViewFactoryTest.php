@@ -3,7 +3,7 @@
 namespace Wikibase\View\Tests;
 
 use InvalidArgumentException;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Site\HashSiteStore;
 use Wikibase\DataModel\Entity\EntityIdParser;

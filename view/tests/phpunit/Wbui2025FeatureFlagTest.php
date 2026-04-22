@@ -4,8 +4,8 @@ declare( strict_types = 1 );
 
 namespace Wikibase\View\Tests;
 
+use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\User;
-use MediaWiki\User\UserOptionsLookup;
 use PHPUnit\Framework\TestCase;
 use Wikibase\Lib\SettingsArray;
 use Wikibase\View\Wbui2025FeatureFlag;

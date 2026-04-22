@@ -4,7 +4,7 @@ namespace Wikibase\Client\Tests\Integration\Hooks;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use MediaWiki\Title\Title;
 use PHPUnit\Framework\TestCase;
 use Wikibase\Client\Hooks\Formatter\ClientEntityLinkFormatter;

@@ -4,8 +4,8 @@ namespace Wikibase\View\Tests\Termbox\Renderer;
 
 use Exception;
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\Http\MWHttpRequest;
 use MediaWiki\MediaWikiServices;
-use MWHttpRequest;
 use OutOfBoundsException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
