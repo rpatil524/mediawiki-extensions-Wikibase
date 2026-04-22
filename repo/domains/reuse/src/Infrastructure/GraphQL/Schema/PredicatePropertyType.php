@@ -17,10 +17,20 @@ class PredicatePropertyType extends ObjectType {
 		PropertyLabelsResolver $labelsResolver,
 		PropertyLabelsWithLanguageFallbackResolver $labelsWithFallbackResolver,
 		Types $types,
+
 	) {
+		$labelProviderType = $types->getLabelProviderType();
 		$labelField = Types::copyFieldDefinition(
-			$types->getLabelProviderType()->getField( 'label' ),
+			$labelProviderType->getField( 'label' ),
 			fn( PredicateProperty $property, array $args ) => $labelsResolver->resolve(
+				$property->id,
+				$args['languageCode']
+			),
+		);
+
+		$labelWithLanguageFallbackField = Types::copyFieldDefinition(
+			$labelProviderType->getField( 'labelWithLanguageFallback' ),
+			fn( PredicateProperty $property, array $args ) => $labelsWithFallbackResolver->resolve(
 				$property->id,
 				$args['languageCode']
 			),
@@ -37,18 +47,9 @@ class PredicatePropertyType extends ObjectType {
 					'resolve' => fn( PredicateProperty $rootValue ) => $rootValue->dataType,
 				],
 				$labelField,
-				'labelWithLanguageFallback' => [
-					'type' => $types->getLabelWithLanguageType(),
-					'args' => [
-						'languageCode' => Type::nonNull( $types->getLanguageCodeType() ),
-					],
-					'resolve' => fn( PredicateProperty $property, array $args ) => $labelsWithFallbackResolver->resolve(
-						$property->id,
-						$args['languageCode']
-					),
-				],
+				$labelWithLanguageFallbackField,
 			],
-			'interfaces' => [ $types->getLabelProviderType() ],
+			'interfaces' => [ $labelProviderType ],
 		] );
 	}
 

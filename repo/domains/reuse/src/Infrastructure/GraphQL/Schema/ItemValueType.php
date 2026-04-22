@@ -39,6 +39,24 @@ class ItemValueType extends ObjectType {
 			},
 		);
 
+		$labelWithLanguageFallbackField = Types::copyFieldDefinition(
+			$labelProviderType->getField( 'labelWithLanguageFallback' ),
+			function(
+				Statement|PropertyValuePair $valueProvider,
+				array $args
+			) use ( $labelsWithFallbackResolver ) {
+				/** @var EntityIdValue $idValue */
+				$idValue = $valueProvider->value;
+				'@phan-var EntityIdValue $idValue';
+
+				/** @var ItemId $itemId */
+				$itemId = $idValue->getEntityId();
+				'@phan-var ItemId $itemId';
+
+				return $labelsWithFallbackResolver->resolve( $itemId, $args['languageCode'] );
+			},
+		);
+
 		$descriptionProviderType = $types->getDescriptionProviderType();
 		$descriptionField = Types::copyFieldDefinition(
 			$descriptionProviderType->getField( 'description' ),
@@ -68,26 +86,7 @@ class ItemValueType extends ObjectType {
 					},
 				],
 				$labelField,
-				'labelWithLanguageFallback' => [
-					'type' => $types->getLabelWithLanguageType(),
-					'args' => [
-						'languageCode' => Type::nonNull( $types->getLanguageCodeType() ),
-					],
-					'resolve' => function(
-						Statement|PropertyValuePair $valueProvider,
-						array $args
-					) use ( $labelsWithFallbackResolver ) {
-						/** @var EntityIdValue $idValue */
-						$idValue = $valueProvider->value;
-						'@phan-var EntityIdValue $idValue';
-
-						/** @var ItemId $itemId */
-						$itemId = $idValue->getEntityId();
-						'@phan-var ItemId $itemId';
-
-						return $labelsWithFallbackResolver->resolve( $itemId, $args['languageCode'] );
-					},
-				],
+				$labelWithLanguageFallbackField,
 				$descriptionField,
 			],
 			'interfaces' => [ $labelProviderType, $descriptionProviderType ],

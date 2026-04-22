@@ -50,17 +50,18 @@ type Item implements LabelProvider & DescriptionProvider {
 
 interface LabelProvider {
   label(languageCode: LanguageCode!): String
+  labelWithLanguageFallback(languageCode: LanguageCode!): LabelWithLanguage
 }
 
 scalar LanguageCode
 
-interface DescriptionProvider {
-  description(languageCode: LanguageCode!): String
-}
-
 type LabelWithLanguage {
   languageCode: LanguageCode!
   value: String!
+}
+
+interface DescriptionProvider {
+  description(languageCode: LanguageCode!): String
 }
 
 scalar SiteId

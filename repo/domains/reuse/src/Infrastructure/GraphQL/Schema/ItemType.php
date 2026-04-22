@@ -27,6 +27,22 @@ class ItemType extends ObjectType {
 				->getLabelInLanguage( $args['languageCode'] )?->text,
 		);
 
+		$labelWithLanguageFallbackField = Types::copyFieldDefinition(
+			$labelProviderType->getField( 'labelWithLanguageFallback' ),
+			function( Item $item, array $args ) {
+				$fallbackChain = $this->languageFallbackChainFactory
+					->newFromLanguageCode( $args['languageCode'] );
+				foreach ( $fallbackChain->getFetchLanguageCodes() as $code ) {
+					$label = $item->labels->getLabelInLanguage( $code );
+					if ( $label !== null ) {
+						return $label;
+					}
+				}
+
+				return null;
+			},
+		);
+
 		$descriptionProviderType = $types->getDescriptionProviderType();
 		$descriptionField = Types::copyFieldDefinition(
 			$descriptionProviderType->getField( 'description' ),
@@ -41,24 +57,7 @@ class ItemType extends ObjectType {
 					'resolve' => fn( Item $item ) => $item->id->getSerialization(),
 				],
 				$labelField,
-				'labelWithLanguageFallback' => [
-					'type' => $types->getLabelWithLanguageType(),
-					'args' => [
-						'languageCode' => Type::nonNull( $types->getLanguageCodeType() ),
-					],
-					'resolve' => function( Item $item, array $args ) {
-						$fallbackChain = $this->languageFallbackChainFactory
-							->newFromLanguageCode( $args['languageCode'] );
-						foreach ( $fallbackChain->getFetchLanguageCodes() as $code ) {
-							$label = $item->labels->getLabelInLanguage( $code );
-							if ( $label !== null ) {
-								return $label;
-							}
-						}
-
-						return null;
-					},
-				],
+				$labelWithLanguageFallbackField,
 				$descriptionField,
 				'aliases' => [
 					'type' => Type::nonNull( Type::listOf( Type::string() ) ),
