@@ -2,8 +2,8 @@
 
 namespace Wikibase\Repo\Hooks;
 
-use MediaWiki\Hook\ChangesListInitRowsHook;
 use MediaWiki\RecentChanges\ChangesList;
+use MediaWiki\RecentChanges\Hook\ChangesListInitRowsHook;
 use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleFactory;
 use Wikibase\DataAccess\PrefetchingTermLookup;

@@ -9,7 +9,7 @@ use MediaWiki\Api\ApiBase;
 use MediaWiki\Api\ApiCreateTempUserTrait;
 use MediaWiki\Api\ApiMain;
 use MediaWiki\Api\ApiUsageException;
-use MediaWiki\Exception\MWContentSerializationException;
+use MediaWiki\Content\ContentSerializationException;
 use MediaWiki\Status\Status;
 use MediaWiki\User\User;
 use StatusValue;
@@ -333,7 +333,7 @@ abstract class ModifyEntity extends ApiBase {
 				$this->extractRequestParams(),
 				$this->getContext()
 			);
-		} catch ( MWContentSerializationException $ex ) {
+		} catch ( ContentSerializationException $ex ) {
 			// This happens if the $entity created via modifyEntity() above (possibly cleared
 			// before) is not sufficiently initialized and failed serialization.
 			$this->errorReporter->dieError( $ex->getMessage(), 'failed-save' );

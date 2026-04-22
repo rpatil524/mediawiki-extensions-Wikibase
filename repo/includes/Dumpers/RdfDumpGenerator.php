@@ -5,7 +5,7 @@ declare( strict_types = 1 );
 namespace Wikibase\Repo\Dumpers;
 
 use InvalidArgumentException;
-use MediaWiki\Exception\MWContentSerializationException;
+use MediaWiki\Content\ContentSerializationException;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\DataModel\Services\Entity\EntityPrefetcher;
 use Wikibase\DataModel\Services\Lookup\EntityLookupException;
@@ -119,7 +119,7 @@ class RdfDumpGenerator extends DumpGenerator {
 				$entityRevision->getEntity()
 			);
 
-		} catch ( MWContentSerializationException ) {
+		} catch ( ContentSerializationException ) {
 			throw new StorageException( 'Deserialization error for ' . $entityId->getSerialization() );
 		} catch ( RevisionedUnresolvedRedirectException $e ) {
 			if ( $e->getRevisionId() > 0 ) {

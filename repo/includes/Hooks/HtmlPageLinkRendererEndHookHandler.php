@@ -4,7 +4,6 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Repo\Hooks;
 
-use HtmlArmor;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Interwiki\InterwikiLookup;
 use MediaWiki\Linker\Hook\HtmlPageLinkRendererEndHook;
@@ -30,6 +29,7 @@ use Wikibase\Lib\Store\LanguageFallbackLabelDescriptionLookup;
 use Wikibase\Lib\Store\LinkTargetEntityIdLookup;
 use Wikibase\Repo\FederatedProperties\FederatedPropertiesException;
 use Wikibase\Repo\Hooks\Formatters\EntityLinkFormatterFactory;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 /**
  * Handler for the HtmlPageLinkRendererEnd hook, used to change the default link text of links to

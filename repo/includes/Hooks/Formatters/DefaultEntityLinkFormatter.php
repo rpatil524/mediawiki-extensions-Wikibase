@@ -2,11 +2,11 @@
 
 namespace Wikibase\Repo\Hooks\Formatters;
 
-use HtmlArmor;
 use MediaWiki\Language\Language;
-use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Language\LanguageFactory;
 use Wikibase\DataModel\Entity\EntityId;
 use Wikibase\Lib\Store\EntityTitleTextLookup;
+use Wikimedia\HtmlArmor\HtmlArmor;
 
 /**
  * Utility class to format entity links with labels for usage in hooks.

@@ -4,11 +4,11 @@ declare( strict_types = 1 );
 
 namespace Wikibase\Repo;
 
-use BatchRowIterator;
 use MediaWiki\Cache\HTMLCacheUpdater;
 use MediaWiki\JobQueue\Job;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Title\Title;
+use MediaWiki\Utils\BatchRowIterator;
 use Wikibase\DataModel\Entity\EntityIdParser;
 use Wikibase\Lib\Rdbms\RepoDomainDb;
 use Wikibase\Repo\LinkedData\EntityDataUriManager;

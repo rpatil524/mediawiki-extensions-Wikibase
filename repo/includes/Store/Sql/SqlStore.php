@@ -3,7 +3,7 @@
 namespace Wikibase\Repo\Store\Sql;
 
 use MediaWiki\MediaWikiServices;
-use ObjectCacheFactory;
+use MediaWiki\ObjectCache\ObjectCacheFactory;
 use Wikibase\DataAccess\DatabaseEntitySource;
 use Wikibase\DataAccess\WikibaseServices;
 use Wikibase\DataModel\Entity\EntityIdParser;
