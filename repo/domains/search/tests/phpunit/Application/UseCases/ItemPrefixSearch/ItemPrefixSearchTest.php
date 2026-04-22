@@ -25,12 +25,13 @@ class ItemPrefixSearchTest extends TestCase {
 		$limit = 10;
 		$offset = 0;
 		$resultLanguage = 'de';
+		$disableLanguageFallback = false;
 		$expectedResults = $this->createStub( ItemSearchResults::class );
 
 		$searchEngine = $this->createMock( ItemPrefixSearchEngine::class );
 		$searchEngine->expects( $this->once() )
 			->method( 'suggestItems' )
-			->with( $query, $language, $limit, $offset, $resultLanguage, null )
+			->with( $query, $language, $limit, $offset, $disableLanguageFallback, $resultLanguage, null )
 			->willReturn( $expectedResults );
 
 		$this->assertEquals(
@@ -38,7 +39,15 @@ class ItemPrefixSearchTest extends TestCase {
 			$this->newUseCase(
 				$this->createStub( ItemPrefixSearchValidator::class ),
 				$searchEngine
-			)->execute( new ItemPrefixSearchRequest( $query, $language, $limit, $offset, $resultLanguage ) )->results
+			)->execute( new ItemPrefixSearchRequest(
+				$query,
+				$language,
+				$limit,
+				$offset,
+				$disableLanguageFallback,
+				$resultLanguage,
+				null
+			) )->results
 		);
 	}
 
@@ -48,7 +57,7 @@ class ItemPrefixSearchTest extends TestCase {
 		$searchEngine = $this->createMock( ItemPrefixSearchEngine::class );
 		$searchEngine->expects( $this->once() )
 			->method( 'suggestItems' )
-			->with( 'potat', 'en', 10, 0, 'custom' )
+			->with( 'potat', 'en', 10, 0, false, 'en', 'custom' )
 			->willReturn( $expectedResults );
 
 		$this->assertEquals(
@@ -56,7 +65,7 @@ class ItemPrefixSearchTest extends TestCase {
 			$this->newUseCase(
 				$this->createStub( ItemPrefixSearchValidator::class ),
 				$searchEngine,
-			)->execute( new ItemPrefixSearchRequest( 'potat', 'en', 10, 0, 'custom' ) )->results
+			)->execute( new ItemPrefixSearchRequest( 'potat', 'en', 10, 0, false, 'en', 'custom' ) )->results
 		);
 	}
 

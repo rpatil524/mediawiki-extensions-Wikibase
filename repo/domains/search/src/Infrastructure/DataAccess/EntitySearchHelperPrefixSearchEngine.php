@@ -36,6 +36,7 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 		string $languageCode,
 		int $limit,
 		int $offset,
+		bool $disableLanguageFallback,
 		?string $resultLanguageCode,
 		?string $profile
 	): ItemSearchResults {
@@ -45,7 +46,16 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 
 		return new ItemSearchResults( ...array_map(
 			$this->convertResult( ItemSearchResult::class ),
-			$this->suggestEntities( Item::ENTITY_TYPE, $searchTerm, $languageCode, $limit, $offset, $resultLanguageCode, $profileContext )
+			$this->suggestEntities(
+				Item::ENTITY_TYPE,
+				$searchTerm,
+				$languageCode,
+				$limit,
+				$offset,
+				$disableLanguageFallback,
+				$resultLanguageCode,
+				$profileContext
+			)
 		) );
 	}
 
@@ -62,6 +72,7 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 		string $languageCode,
 		int $limit,
 		int $offset,
+		bool $disableLanguageFallback = false,
 		?string $resultLanguageCode = null,
 		?string $profileContext = null
 	): array {
@@ -75,7 +86,7 @@ class EntitySearchHelperPrefixSearchEngine implements ItemPrefixSearchEngine, Pr
 				$languageCode,
 				$entityType,
 				$limit + $offset + 1,
-				false,
+				$disableLanguageFallback,
 				$profileContext
 			),
 			$offset,

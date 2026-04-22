@@ -51,17 +51,18 @@ class EntitySearchHelperPrefixSearchEngineTest extends TestCase {
 		$searchTerm = 'potato';
 		$language = 'en';
 		$resultLanguage = 'de';
+		$disableLanguageFallback = false;
 
 		$entitySearchHelper = $this->createMock( EntitySearchHelper::class );
 		$entitySearchHelper->expects( $this->once() )
 			->method( 'getRankedSearchResults' )
-			->with( $searchTerm, $language, Item::ENTITY_TYPE, $limit + $offset + 1, false, null )
+			->with( $searchTerm, $language, Item::ENTITY_TYPE, $limit + $offset + 1, $disableLanguageFallback, null )
 			->willReturn( $results );
 
 			$this->assertEquals(
 				$expected,
 				$this->newSearchEngine( $entitySearchHelper )
-					->suggestItems( $searchTerm, $language, $limit, $offset, $resultLanguage, null )
+					->suggestItems( $searchTerm, $language, $limit, $offset, $disableLanguageFallback, $resultLanguage, null )
 			);
 	}
 
@@ -188,7 +189,7 @@ class EntitySearchHelperPrefixSearchEngineTest extends TestCase {
 			->with( 'potato', 'en', Item::ENTITY_TYPE, 11, false, 'some_profile_context' )
 			->willReturn( [] );
 
-		$this->newSearchEngine( $entitySearchHelper )->suggestItems( 'potato', 'en', 10, 0, 'de', 'custom' );
+		$this->newSearchEngine( $entitySearchHelper )->suggestItems( 'potato', 'en', 10, 0, false, 'de', 'custom' );
 	}
 
 	/**

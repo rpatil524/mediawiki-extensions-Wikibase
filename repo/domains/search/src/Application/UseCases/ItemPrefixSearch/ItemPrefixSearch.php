@@ -28,6 +28,7 @@ class ItemPrefixSearch {
 			$itemRequest->language,
 			$itemRequest->limit,
 			$itemRequest->offset,
+			$itemRequest->disableLanguageFallback,
 			$itemRequest->resultLanguage,
 			$itemRequest->profile
 		) );
