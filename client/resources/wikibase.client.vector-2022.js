@@ -27,7 +27,7 @@
 			itemUrl += '#sitelinks-' + clientConfig.group;
 		}
 
-		if ( mw.uls.shouldLoadUlsRewrite() ) {
+		if ( mw.config.get( 'wgULSLanguageSelectorV2Enabled' ) ) {
 			const { cdxIconEdit } = require( './icons.json' );
 			mw.loader.using( 'ext.uls.rewrite.entrypoints' ).then( ( require ) => {
 				const EntrypointRegistry = require( 'ext.uls.rewrite.entrypoints' );
