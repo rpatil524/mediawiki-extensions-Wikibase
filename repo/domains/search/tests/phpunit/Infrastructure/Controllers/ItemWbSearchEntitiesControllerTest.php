@@ -8,9 +8,9 @@ use Wikibase\DataAccess\EntitySourceLookup;
 use Wikibase\DataModel\Entity\ItemId;
 use Wikibase\DataModel\Term\Term;
 use Wikibase\Lib\Interactors\TermSearchResult;
+use Wikibase\Repo\Api\EntitySearchException;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearch;
 use Wikibase\Repo\Domains\Search\Application\UseCases\ItemPrefixSearch\ItemPrefixSearchValidator;
-use Wikibase\Repo\Domains\Search\Application\UseCases\UseCaseError;
 use Wikibase\Repo\Domains\Search\Application\Validation\SearchLanguageValidator;
 use Wikibase\Repo\Domains\Search\Application\Validation\ValidationError;
 use Wikibase\Repo\Domains\Search\Domain\Model\Description;
@@ -96,7 +96,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 		$this->assertSame( [], $results );
 	}
 
-	public function testInvalidLanguageThrowsUseCaseError(): void {
+	public function testInvalidLanguageThrowsEntitySearchException(): void {
 		$rejectingValidator = $this->createStub( SearchLanguageValidator::class );
 		$rejectingValidator->method( 'validate' )->willReturn(
 			new ValidationError(
@@ -115,7 +115,7 @@ class ItemWbSearchEntitiesControllerTest extends TestCase {
 			$this->createStub( EntitySourceLookup::class )
 		);
 
-		$this->expectException( UseCaseError::class );
+		$this->expectException( EntitySearchException::class );
 		$controller->search( new WbSearchEntitiesRequest( 'test', 'xyz', 'xyz', 5, false, null ) );
 	}
 
