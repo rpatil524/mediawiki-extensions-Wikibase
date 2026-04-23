@@ -14,6 +14,83 @@ For each registered controller, there are typically four types of components:
 
 Examples can be found by exploring usages of the [ControllerRegistry::get()](@ref Wikibase::Repo::ControllerRegistry::get()) method and the controller definition files such as [WikibaseRepo.controllers.php](@ref WikibaseRepo.controllers.php).
 
+## Example: `wbsearchentities-controller`
+
+The `wbsearchentities-controller` (entry point for the `wbsearchentities` Action API module) illustrates what each of the four component types looks like in practice.
+
+### 1. Controller interface
+
+The interface defines the feature contract without committing to a specific entity type. See [WbSearchEntitiesController](@ref Wikibase::Repo::Domains::Search::Infrastructure::Controllers::WbSearchEntitiesController):
+
+```php
+interface WbSearchEntitiesController {
+    /** @return TermSearchResult[] */
+    public function search( WbSearchEntitiesRequest $request ): array;
+}
+```
+
+### 2. Entity-type-specific implementation
+
+Each entity type that supports the feature gets its own implementation, which owns the full execution of the use case for that type. For items, this is [ItemWbSearchEntitiesController](@ref Wikibase::Repo::Domains::Search::Infrastructure::Controllers::ItemWbSearchEntitiesController):
+
+```php
+class ItemWbSearchEntitiesController implements WbSearchEntitiesController {
+    public function __construct(
+        private readonly ItemPrefixSearch $itemPrefixSearch,
+        private readonly EntitySourceLookup $entitySourceLookup
+    ) {}
+
+    public function search( WbSearchEntitiesRequest $request ): array {
+        $response = $this->itemPrefixSearch->execute( /* ... */ );
+        return array_map( fn ( $r ) => $this->convertResult( $r ), iterator_to_array( $response->results ) );
+    }
+    // ...
+}
+```
+
+An entity type may also share a generic implementation — for example [FallbackEntitySearchHelperController](@ref Wikibase::Repo::Domains::Search::Infrastructure::Controllers::FallbackEntitySearchHelperController), which is parameterised by entity type and is currently used for properties.
+
+### 3. Factory callbacks
+
+Controllers are instantiated lazily through callbacks keyed by entity type and controller constant. For built-in entity types these live in [WikibaseRepo.controllers.php](@ref WikibaseRepo.controllers.php):
+
+```php
+return [
+    Item::ENTITY_TYPE => [
+        ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER => static function () {
+            return new ItemWbSearchEntitiesController(
+                WbSearch::getItemPrefixSearch(),
+                WikibaseRepo::getEntitySourceLookup()
+            );
+        },
+    ],
+    Property::ENTITY_TYPE => [
+        ControllerRegistry::WB_SEARCH_ENTITIES_CONTROLLER => static function () {
+            return new FallbackEntitySearchHelperController( /* ... */ );
+        },
+    ],
+];
+```
+
+Extensions that add new entity types register their callbacks via the [WikibaseRepoControllers hook](@ref Wikibase::Repo::Hooks::WikibaseRepoControllersHook) instead of editing this file.
+
+### 4. Dispatcher
+
+The entry point — here the [SearchEntities](@ref Wikibase::Repo::Api::SearchEntities) Action API module — does not depend on any single implementation. It uses a dispatcher that resolves the right controller per entity type via [ControllerRegistry::get()](@ref Wikibase::Repo::ControllerRegistry::get()). See [DispatchingWbSearchEntitiesController](@ref Wikibase::Repo::Domains::Search::Infrastructure::Controllers::DispatchingWbSearchEntitiesController):
+
+```php
+class DispatchingWbSearchEntitiesController {
+    public function __construct( private readonly array $callbacks ) {}
+
+    public function getControllerForEntityType( string $entityType ): WbSearchEntitiesController {
+        if ( !isset( $this->callbacks[$entityType] ) ) {
+            throw new InvalidArgumentException( "No controller registered for entity type '$entityType'" );
+        }
+        return ( $this->callbacks[$entityType] )();
+    }
+}
+```
+
 ## Available controllers
 
 * `wbsearchentities-controller`: entry point for the `wbsearchentities` Action API module for a given entity type.
