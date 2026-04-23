@@ -363,7 +363,7 @@
 	"wikibase-api-no-such-sitelink": "Не атрымалася знайсьці спасылку на «$1» пры спробе рэдагаваць адзнакі.",
 	"wikibase-api-not-statement": "Ня сьцьверджаньне.",
 	"wikibase-api-not-item": "Не элемэнт.",
-	"wikibase-api-not-recognized-datatype": "Чакаўся тып зьвестак, але ён ці адсутнічае, ці не распазнаны.",
+	"wikibase-api-not-recognized-datatype": "Чакаўся тып зьвестак, але яго бракуе, ці не распазнаны.",
 	"wikibase-api-target-not-empty": "Перанакіраваньне можа быць створанае толькі на месцы пустога ці выдаленага элемэнту.",
 	"wikibase-api-target-is-redirect": "Мэтай перанакіраваньня ня мусіць быць перанакіраваньне.",
 	"wikibase-api-target-is-incompatible": "Спроба перанакіраваць на элемэнт іншага тыпу.",
