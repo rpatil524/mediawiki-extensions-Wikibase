@@ -11,7 +11,8 @@ export class EditStatementFormPage {
 		ADD_VALUE_BUTTONS: '.wikibase-wbui2025-add-value > .cdx-button',
 		SUBMIT_BUTTONS: '.wikibase-wbui2025-edit-form-actions > .cdx-button',
 		ADD_QUALIFIER_BUTTON: '.wikibase-wbui2025-add-qualifier-button',
-		TEXT_INPUT: '.wikibase-wbui2025-edit-statement-value-input .cdx-text-input input',
+		TEXT_INPUT:
+			'.wikibase-wbui2025-edit-statement-value-input .cdx-text-input input, .wikibase-wbui2025-edit-statement-value-input textarea',
 		LOOKUP_INPUT: '.wikibase-wbui2025-edit-statement-value-input .cdx-lookup input',
 		LOOKUP_COMPONENT: '.wikibase-wbui2025-edit-statement-value-input .cdx-lookup',
 		MENU: '.wikibase-wbui2025-edit-statement-value-input .cdx-menu',

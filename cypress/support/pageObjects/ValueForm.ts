@@ -2,9 +2,10 @@ import Chainable = Cypress.Chainable;
 
 export class ValueForm {
 
-	public static VALUE_INPUT_SELECTOR = '.wikibase-wbui2025-edit-statement-value-input .cdx-text-input input';
+	public static VALUE_INPUT_SELECTOR =
+		'.wikibase-wbui2025-edit-statement-value-input .cdx-text-input input, .wikibase-wbui2025-edit-statement-value-input textarea';
 
-	public static QUALIFIER_INPUT_SELECTOR = '.wikibase-wbui2025-qualifiers .cdx-text-input input';
+	public static QUALIFIER_INPUT_SELECTOR = '.wikibase-wbui2025-qualifiers .cdx-text-input input, .wikibase-wbui2025-qualifiers textarea';
 
 	public static QUALIFIER_REMOVE_BUTTON = '.wikibase-wbui2025-qualifiers .wikibase-wbui2025-remove-snak button.cdx-button';
 
@@ -18,7 +19,7 @@ export class ValueForm {
 
 	public static NO_VALUE_SOME_VALUE_PLACEHOLDER = '.wikibase-wbui2025-novalue-somevalue-holder';
 
-	public static TEXT_INPUT = '.cdx-text-input input';
+	public static TEXT_INPUT = '.cdx-text-input input, textarea';
 
 	public static ADD_SNAK_BUTTON = 'button.wikibase-wbui2025-add-snak-button';
 

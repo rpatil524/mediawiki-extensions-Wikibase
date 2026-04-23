@@ -17,7 +17,7 @@ jest.mock(
 jest.mock(
 	'../../../resources/wikibase.wbui2025/api/editEntity.js',
 	() => ( {
-		renderSnakValueText: jest.fn(),
+		renderSnakValueText: jest.fn( ( datavalue ) => datavalue.value.text ),
 		renderSnakValueHtml: jest.fn( () => Promise.resolve( '' ) ),
 		parseValue: jest.fn( () => Promise.resolve( {} ) )
 	} )
@@ -26,7 +26,8 @@ jest.mock(
 jest.mock(
 	'../../../resources/wikibase.wbui2025/api/commons.js',
 	() => ( {
-		searchLanguages: jest.fn( () => Promise.resolve( { tr: 'tr - Türkçe' } ) )
+		searchLanguages: jest.fn( () => Promise.resolve( { tr: 'tr - Türkçe' } ) ),
+		transformLanguageSearchResults: jest.fn().mockReturnValue( [] )
 	} )
 );
 
@@ -40,7 +41,7 @@ Object.assign( wbui2025.store.snakValueStrategyFactory, {
 } );
 
 const editableMonolingualTextSnakValueComponent = require( '../../../resources/wikibase.wbui2025/components/editableMonolingualTextSnakValue.vue' );
-const { CdxTextInput, CdxLookup } = require( '../../../codex.js' );
+const { CdxTextArea, CdxLookup } = require( '../../../codex.js' );
 const { mount } = require( '@vue/test-utils' );
 const { storeWithStatements } = require( '../piniaHelpers.js' );
 const { useEditStatementsStore, useEditStatementStore } = require( '../../../resources/wikibase.wbui2025/store/editStatementsStore.js' );
@@ -101,9 +102,39 @@ describe( 'wikibase.wbui2025.editableMonolingualTextSnakValue', () => {
 			global: { plugins: [ testingPinia ] }
 		} );
 
-		const input = wrapper.findComponent( CdxTextInput );
-		expect( input.props( 'modelValue' ) ).toBe( '' );
-		expect( input.props( 'modelValue' ) ).not.toBe( 'NaN' );
+		const textarea = wrapper.findComponent( CdxTextArea );
+		expect( textarea.props( 'modelValue' ) ).toBe( '' );
+		expect( textarea.props( 'modelValue' ) ).not.toBe( 'NaN' );
+	} );
+
+	it( 'shows existing string value in the input', async () => {
+		const existingStatementId = '$Q1$existing-statement';
+		const existingStatement = createStatement( existingStatementId );
+		existingStatement.mainsnak.datavalue = {
+			value: {
+				text: 'existing value',
+				language: 'tr'
+			},
+			type: 'monolingualtext'
+		};
+
+		const testingPinia = storeWithStatements( [ existingStatement ] );
+		const editStatementsStore = useEditStatementsStore();
+		await editStatementsStore.initializeFromStatementStore( [ existingStatementId ], 'P1' );
+		const editStatementStore = useEditStatementStore( existingStatementId )();
+
+		const wrapper = await mount( editableMonolingualTextSnakValueComponent, {
+			props: {
+				snakKey: editStatementStore.mainSnakKey,
+				disabled: false
+			},
+			global: { plugins: [ testingPinia ] }
+		} );
+
+		const textarea = wrapper.findComponent( CdxTextArea );
+		expect( textarea.props( 'modelValue' ) ).toBe( 'existing value' );
+		const languageLookup = wrapper.findComponent( CdxLookup );
+		expect( languageLookup.props( 'selected' ) ).toBe( 'tr' );
 	} );
 
 	it( 'updates store monolingualtextlanguagecode when lookup input changes (reactive)', async () => {

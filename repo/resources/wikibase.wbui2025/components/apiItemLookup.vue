@@ -6,9 +6,10 @@
 		v-model:selected="lookupSelection"
 		:input-value="lookupInputValue"
 		autocapitalize="off"
-		:class="activeClasses"
+		:class="className"
 		:menu-items="lookupMenuItems"
 		:menu-config="menuConfig"
+		:status="status"
 		@input="onInput"
 		@load-more="onLoadMore"
 		@blur="onBlur"
@@ -57,8 +58,8 @@ module.exports = exports = defineComponent( {
 		isIncomplete() {
 			return this.lookupSource.isIncomplete();
 		},
-		activeClasses() {
-			return [ { 'cdx-text-input--status-error': this.inputHadFocus && this.isIncomplete }, this.className ];
+		status() {
+			return this.inputHadFocus && this.isIncomplete ? 'error' : 'default';
 		}
 	},
 	methods: {

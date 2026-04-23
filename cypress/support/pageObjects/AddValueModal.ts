@@ -10,6 +10,10 @@ export class AddValueModal {
 			'.wikibase-wbui2025-add-statement-value .wikibase-wbui2025-edit-form-actions .cdx-button--action-progressive',
 		CANCEL_BUTTON:
 			'.wikibase-wbui2025-add-statement-value .wikibase-wbui2025-edit-form-actions .cdx-button--weight-quiet',
+		SNAK_VALUE_LOOKUP_INPUT:
+			'.wikibase-wbui2025-edit-statement-snak-value .cdx-lookup input',
+		SNAK_VALUE_STRING_INPUT:
+			'.wikibase-wbui2025-edit-statement-snak-value input, .wikibase-wbui2025-edit-statement-snak-value textarea',
 	};
 
 	/** The ONLY root of the AddValue modal */
@@ -25,10 +29,17 @@ export class AddValueModal {
 		return this.root().find( AddValueModal.SELECTORS.HEADER );
 	}
 
+	public textInput(): Chainable {
+		return cy
+			.get( AddValueModal.SELECTORS.ROOT )
+			.find( AddValueModal.SELECTORS.SNAK_VALUE_STRING_INPUT )
+			.first();
+	}
+
 	public lookupInput(): Chainable {
 		return cy
 			.get( AddValueModal.SELECTORS.ROOT )
-			.find( '.wikibase-wbui2025-edit-statement-snak-value input' )
+			.find( AddValueModal.SELECTORS.SNAK_VALUE_LOOKUP_INPUT )
 			.first();
 	}
 

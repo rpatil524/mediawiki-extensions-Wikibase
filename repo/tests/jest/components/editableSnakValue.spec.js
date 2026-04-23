@@ -19,7 +19,7 @@ mockLibWbui2025();
 
 const editableAnyDatatypeSnakValueComponent = require( '../../../resources/wikibase.wbui2025/components/editableAnyDatatypeSnakValue.vue' );
 const editableNoValueSomeValueSnakValueComponent = require( '../../../resources/wikibase.wbui2025/components/editableNoValueSomeValueSnakValue.vue' );
-const { CdxButton, CdxMenuButton, CdxTextInput } = require( '../../../codex.js' );
+const { CdxButton, CdxMenuButton, CdxTextArea, CdxTextInput } = require( '../../../codex.js' );
 const { mount } = require( '@vue/test-utils' );
 const { storeWithStatements } = require( '../piniaHelpers.js' );
 const { useEditStatementsStore, useEditStatementStore } = require( '../../../resources/wikibase.wbui2025/store/editStatementsStore.js' );
@@ -32,7 +32,7 @@ describe( 'wikibase.wbui2025.editableSnakValue', () => {
 	} );
 
 	describe( 'string datatype', () => {
-		let wrapper, textInput, removeButton, innerSnakValue, snakTypeSelector, snakKey;
+		let wrapper, textarea, removeButton, innerSnakValue, snakTypeSelector, snakKey;
 
 		const testPropertyId = 'P1';
 		const testStatementId = 'Q1$string-statement-id';
@@ -73,19 +73,19 @@ describe( 'wikibase.wbui2025.editableSnakValue', () => {
 				}
 			} );
 
-			textInput = wrapper.findComponent( CdxTextInput );
+			textarea = wrapper.findComponent( CdxTextArea );
 			removeButton = wrapper.findComponent( CdxButton );
 			snakTypeSelector = wrapper.findComponent( CdxMenuButton );
 			innerSnakValue = wrapper.findComponent( editableNoValueSomeValueSnakValueComponent );
 		} );
 
-		it( 'should set the text-input to the current snak value', async () => {
-			expect( textInput.props( 'modelValue' ) ).toBe( 'example string' );
+		it( 'should set the textarea to the current snak value', async () => {
+			expect( textarea.props( 'modelValue' ) ).toBe( 'example string' );
 		} );
 
 		it( 'correctly mounts the child components', () => {
-			expect( textInput.exists() ).toBe( true );
-			expect( textInput.props( 'disabled' ) ).toBe( false );
+			expect( textarea.exists() ).toBe( true );
+			expect( textarea.props( 'disabled' ) ).toBe( false );
 			expect( snakTypeSelector.exists() ).toBe( true );
 			expect( snakTypeSelector.props( 'disabled' ) ).toBe( false );
 			expect( removeButton.exists() ).toBe( true );
@@ -98,37 +98,42 @@ describe( 'wikibase.wbui2025.editableSnakValue', () => {
 		} );
 
 		it( 'allows changing snak type and restores value', async () => {
-			expect( textInput.exists() ).toBe( true );
-			expect( textInput.props( 'modelValue' ) ).toBe( 'example string' );
+			expect( textarea.exists() ).toBe( true );
+			expect( textarea.props( 'modelValue' ) ).toBe( 'example string' );
 
 			// Empty the string input
-			await textInput.vm.$emit( 'update:modelValue', '' );
-			expect( textInput.props( 'modelValue' ) ).toBe( '' );
-			expect( textInput.classes() ).not.toContain( 'cdx-text-input--status-error' );
+			await textarea.vm.$emit( 'update:modelValue', '' );
+			expect( textarea.props( 'modelValue' ) ).toBe( '' );
+			expect( textarea.classes() ).not.toContain( 'cdx-text-area--status-error' );
 			// After a blur on the input, the field should indicate an error
-			await textInput.vm.$emit( 'blur' );
-			expect( textInput.classes() ).toContain( 'cdx-text-input--status-error' );
+			await textarea.vm.$emit( 'blur' );
+			expect( textarea.classes() ).toContain( 'cdx-text-area--status-error' );
 
 			innerSnakValue.vm.snakTypeSelection = 'novalue';
 			await innerSnakValue.vm.$nextTick();
-			expect( textInput.exists() ).toBe( false );
+			expect( textarea.exists() ).toBe( false );
 
 			// Restore the original value (should no longer be in an erroneous state)
 			innerSnakValue.vm.snakTypeSelection = 'value';
 			// This needs two ticks to propagate from one child component to another
 			await innerSnakValue.vm.$nextTick();
 			await innerSnakValue.vm.$nextTick();
-			textInput = wrapper.findComponent( CdxTextInput );
-			expect( textInput.exists() ).toBe( true );
-			expect( textInput.props( 'modelValue' ) ).toBe( 'example string' );
+			textarea = wrapper.findComponent( CdxTextArea );
+			expect( textarea.exists() ).toBe( true );
+			expect( textarea.props( 'modelValue' ) ).toBe( 'example string' );
 			// this expectation somehow relies on debounce being mocked with lodash. This has been
 			// changed in jest.setup.js, but is overridden with the old behavior in this file.
 			// TODO: fix this test so it doesn't require the debounce override (T419592)
-			expect( textInput.classes() ).not.toContain( 'cdx-text-input--status-error' );
+			expect( textarea.classes() ).not.toContain( 'cdx-text-area--status-error' );
 		} );
 
 		it( 'should set autocapitalize to "off" for the text input', async () => {
-			expect( textInput.find( 'input' ).element.getAttribute( 'autocapitalize' ) ).toBe( 'off' );
+			expect( textarea.find( 'textarea' ).element.getAttribute( 'autocapitalize' ) ).toBe( 'off' );
+		} );
+
+		it( 'strips out line breaks from the input', async () => {
+			await textarea.find( 'textarea' ).setValue( 'with\nline\rbreaks' );
+			expect( textarea.props( 'modelValue' ) ).toBe( 'withlinebreaks' );
 		} );
 
 		describe( 'when it is disabled', () => {
@@ -136,7 +141,7 @@ describe( 'wikibase.wbui2025.editableSnakValue', () => {
 				await wrapper.setProps( { disabled: true } );
 			} );
 			it( 'disables the child components', () => {
-				expect( textInput.props( 'disabled' ) ).toBe( true );
+				expect( textarea.props( 'disabled' ) ).toBe( true );
 				expect( snakTypeSelector.props( 'disabled' ) ).toBe( true );
 				expect( removeButton.isDisabled() ).toBe( true );
 			} );

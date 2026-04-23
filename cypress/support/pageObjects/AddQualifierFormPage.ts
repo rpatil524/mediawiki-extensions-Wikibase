@@ -4,7 +4,7 @@ export class AddQualifierFormPage {
 	public static SELECTORS = {
 		HEADING: '.wikibase-wbui2025-modal-overlay__header__title-group h2',
 		PROPERTY_INPUT: '.wikibase-wbui2025-property-lookup input',
-		SNAK_VALUE_INPUT: '.wikibase-wbui2025-add-qualifier-value input',
+		SNAK_VALUE_INPUT: '.wikibase-wbui2025-add-qualifier-value input, .wikibase-wbui2025-add-qualifier-value textarea',
 		SNAK_VALUE_LOOKUP: '.wikibase-wbui2025-add-qualifier-value.cdx-lookup',
 		SNAK_VALUE_TEXT_INPUT: '.wikibase-wbui2025-add-qualifier-value.cdx-text-input',
 		SNAK_VALUE_LOOKUP_INPUT: '.wikibase-wbui2025-add-qualifier-value .cdx-lookup__input input',
@@ -33,10 +33,6 @@ export class AddQualifierFormPage {
 
 	public snakValueLookup(): Chainable {
 		return cy.get( AddQualifierFormPage.SELECTORS.SNAK_VALUE_LOOKUP );
-	}
-
-	public snakValueTextInput(): Chainable {
-		return cy.get( AddQualifierFormPage.SELECTORS.SNAK_VALUE_TEXT_INPUT );
 	}
 
 	public snakValueLookupInput(): Chainable {

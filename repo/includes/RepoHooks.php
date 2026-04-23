@@ -1143,6 +1143,7 @@ final class RepoHooks implements
 					'CdxMessage',
 					'CdxPopover',
 					'CdxSelect',
+					'CdxTextArea',
 					'CdxTextInput',
 					'CdxProgressBar',
 				],

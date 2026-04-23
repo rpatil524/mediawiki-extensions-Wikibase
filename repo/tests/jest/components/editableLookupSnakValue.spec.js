@@ -97,12 +97,12 @@ describe( 'wikibase.wbui2025.editableLookupSnakValue', () => {
 		} );
 
 		it( 'indicates an error when the input changes and nothing is selected', async () => {
-			expect( innerWrapper.find( '.cdx-lookup' ).classes() ).not.toContain( 'cdx-text-input--status-error' );
+			expect( lookup.props( 'status' ) ).not.toBe( 'error' );
 			lookup.vm.$emit( 'blur' );
 			innerWrapper.vm.lookupSelection = null;
 			innerWrapper.vm.lookupInputValue = 'foo';
 			await flushPromises();
-			expect( innerWrapper.find( '.cdx-lookup' ).classes() ).toContain( 'cdx-text-input--status-error' );
+			expect( lookup.props( 'status' ) ).toBe( 'error' );
 		} );
 
 		it( 'should set autocapitalize to "off" for the text input', async () => {

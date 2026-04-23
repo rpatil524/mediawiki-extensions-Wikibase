@@ -211,8 +211,6 @@ describe( 'wbui2025 add qualifiers', () => {
 
 			addQualifierFormPage.snakValueLookup()
 				.should( 'exist' );
-			addQualifierFormPage.snakValueTextInput()
-				.should( 'not.exist' );
 
 			addQualifierFormPage.snakValueLookupInput()
 				.type( 'Example' );
@@ -310,8 +308,6 @@ describe( 'wbui2025 add qualifiers', () => {
 
 			addQualifierFormPage.snakValueLookup()
 				.should( 'exist' );
-			addQualifierFormPage.snakValueTextInput()
-				.should( 'not.exist' );
 
 			addQualifierFormPage.snakValueLookupInput()
 				.type( 'Country' );
