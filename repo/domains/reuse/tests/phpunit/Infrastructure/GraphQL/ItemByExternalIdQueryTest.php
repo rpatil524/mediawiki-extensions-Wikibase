@@ -37,7 +37,7 @@ class ItemByExternalIdQueryTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expectedResult, $result );
 	}
 
-	public function queryProvider(): Generator {
+	public static function queryProvider(): Generator {
 		$item = NewItem::withId( 'Q42' )
 				->andLabel( 'en', 'potato' )
 				->build();
