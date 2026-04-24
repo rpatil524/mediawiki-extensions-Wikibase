@@ -29,7 +29,7 @@
 	"apihelp-wbsearchentities-param-search": "이 텍스트를 찾습니다.",
 	"apihelp-wbsearchentities-param-language": "이 언어로 검색합니다.",
 	"apihelp-wbsearchentities-param-props": "각 엔티티마다 이 속성들을 반환합니다.",
-	"apihelp-wbsearchentities-example-5": "URL 변수를 제외하고 영어로 \"alphabet\"을 검색합니다",
+	"apihelp-wbsearchentities-example-5": "URL 매개변수를 제외하고 영어로 \"alphabet\"을 검색합니다",
 	"apihelp-wbsearchentities-example-6": "엔티티 ID와 일치하기 위해 영어로 \"Q1234\"를 검색합니다.",
 	"apihelp-query+entityterms-example-item": "항목 Q84의 레이블과 다른 이름을 가져옵니다.",
 	"apihelp-query+wbcontentlanguages-param-prop": "각 언어에 대해 반환되어야 할 속성입니다.",
@@ -62,5 +62,5 @@
 	"apihelp-wbsetreference-summary": "각주를 만들고 기존 항목의 값을 설정합니다.",
 	"apihelp-wbsetreference-param-tags": "이 판에 적용할 변경 태그입니다.",
 	"apihelp-wbsetsitelink-param-tags": "이 판에 적용할 변경 태그입니다.",
-	"apihelp-wbformatentities-extended-description": "언어는 <var>uselang</var> 전역 변수로 지정할 수 있습니다."
+	"apihelp-wbformatentities-extended-description": "언어는 <var>uselang</var> 전역 매개변수로 지정할 수 있습니다."
 }

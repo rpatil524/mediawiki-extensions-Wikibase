@@ -46,6 +46,7 @@
 	"wikibase-snakview-snaktypeselector-somevalue": "något värde",
 	"wikibase-snakview-snaktypeselector-novalue": "inget värde",
 	"wikibase-undeserializable-value": "Värdet är ogiltigt och kunde inte visas.",
+	"wikibase-undisplayable-value": "Kunde inte visa värdet.",
 	"datatypes-type-string": "Sträng",
 	"datatypes-type-quantity": "Kvantitet",
 	"datatypes-type-monolingualtext": "Enspråkig text",

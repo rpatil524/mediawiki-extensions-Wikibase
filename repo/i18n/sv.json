@@ -211,6 +211,9 @@
 	"wikibase-item-reference-edit-placeholder": "Ange objekt-ID, t.ex. Q10",
 	"wikibase-item-reference-edit-invalid-format": "Angivet objekt-ID har ogiltigt format",
 	"wikibase-item-reference-edit-nonexistent-item": "Objekt med detta ID finns inte",
+	"wikibase-wbui2025-editable-snak-value-preview-label": "kommer visas som:",
+	"wikibase-wbui2025-globecoordinateinput-precision-automatic": "Automatisk",
+	"wikibase-wbui2025-timeinput-precision-automatic": "automatisk",
 	"wikibase-wikibaserepopage-not-itemid": "\"$1\" är inte ett giltigt objekt-ID.",
 	"wikibase-wikibaserepopage-invalid-langcode": "Språkkoden \"$1\" är okänd. Var god använd en språkkod som känns igen av systemet, t.ex. \"en\".",
 	"wikibase-wikibaserepopage-pipe-in-alias": "Alias som innehåller rör kan endast redigeras på entitetens sida (med JavaScript aktiverat) eller via API:et",
@@ -373,6 +376,8 @@
 	"wikibase-parse-error-entity-id": "Entitets-ID:et är felformaterat.",
 	"wikibase-parse-error-quantity": "Kvantitetsvärdet är felformaterat.",
 	"wikibase-parse-error-time": "Tidsvärdet är felformaterat.",
+	"wikibase-quantitydetails-unit-optional": "Enhet (valfri)",
+	"wikibase-monolingualtextcode-mandatory": "Språk (obligatoriskt)",
 	"special-redirectentity": "Omdirigera en entitet",
 	"wikibase-redirectentity-success": "$1 omdirigerades till $2.",
 	"wikibase-redirectentity-fromid": "ID att omdirigera från",
@@ -555,5 +560,9 @@
 	"wikibase-scoped-search-item-scope-name": "Objekt",
 	"wikibase-scoped-search-property-scope-name": "Egenskaper",
 	"wikibase-mobile-editing-ui-beta-feature-message": "Redigera Wikidata-objekt på mobila enheter",
-	"wikibase-mobile-editing-ui-beta-feature-description": "Aktivera den här funktionen för att redigera Wikidata från din mobila enhet! Detta projekt, som är under utveckling, av Wikidata-teamet gör det möjligt att redigera objekt från din smartphone med en mobiloptimerad upplevelse."
+	"wikibase-mobile-editing-ui-beta-feature-description": "Aktivera den här funktionen för att redigera Wikidata från din mobila enhet! Detta projekt, som är under utveckling, av Wikidata-teamet gör det möjligt att redigera objekt från din smartphone med en mobiloptimerad upplevelse.",
+	"wikibase-stepper-progress": "$1 av $2",
+	"wikibase-indicator-popover-multiple-issue-title": "Problem och förslag",
+	"wikibase-indicator-popover-multiple-issue-previous": "Föregående",
+	"wikibase-indicator-popover-multiple-issue-next": "Nästa"
 }
