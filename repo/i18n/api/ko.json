@@ -34,6 +34,8 @@
 	"apihelp-query+entityterms-example-item": "항목 Q84의 레이블과 다른 이름을 가져옵니다.",
 	"apihelp-query+wbcontentlanguages-param-prop": "각 언어에 대해 반환되어야 할 속성입니다.",
 	"apihelp-query+wbcontentlanguages-paramvalue-prop-code": "언어 코드입니다.",
+	"apihelp-query+wbcontentlanguages-paramvalue-prop-autonym": "언어의 자칭, 즉 해당 언어에서 해당 언어를 부르는 이름입니다. 모든 언어가 알려져 있는 것은 아닐 수 있습니다.",
+	"apihelp-query+wbcontentlanguages-example-2": "단일 언어 텍스트 값에 대한 언어 코드 및 자칭을 포함한 유효한 언어를 가져옵니다.",
 	"apihelp-query+wbdatabridgeconfig-extended-description": "이것은 내부 모듈입니다. 사용하지 말아 주십시오.",
 	"apihelp-query+wbsearch-param-search": "이 텍스트를 찾습니다.",
 	"apihelp-query+wbsearch-param-language": "이 언어로 검색합니다.",
