@@ -117,7 +117,6 @@ class GetEntitiesTest extends WikibaseApiTestCase {
 	 */
 	protected static $goodFormats = [
 		'json',
-		'php',
 		'xml',
 	];
 
