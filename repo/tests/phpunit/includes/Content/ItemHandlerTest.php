@@ -340,7 +340,7 @@ class ItemHandlerTest extends EntityHandlerTestCase {
 		$parserOptions = ParserOptions::newFromAnon();
 		$parserOutput = $contentRenderer->getParserOutput( $content, $title, null, $parserOptions );
 
-		$html = $parserOutput->runOutputPipeline( $parserOptions, [] )->getRawText();
+		$html = $parserOutput->runOutputPipeline( $parserOptions, [] )->getContentHolderText();
 
 		$this->assertStringContainsString( '<div class="redirectMsg">', $html, 'redirect message' );
 		$this->assertStringContainsString( '<a href="', $html, 'redirect target link' );

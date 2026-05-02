@@ -159,7 +159,7 @@ class FullEntityParserOutputGeneratorIntegrationTest extends MediaWikiIntegratio
 
 		$parserOutput = $entityParserOutputGenerator->getParserOutput( $revision );
 
-		$this->assertStringContainsString( 'target label', $parserOutput->getRawText() );
+		$this->assertStringContainsString( 'target label', $parserOutput->getContentHolderText() );
 	}
 
 }
